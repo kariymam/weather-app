@@ -1,0 +1,41 @@
+{
+	"console.log": {
+		"prefix": "clg",
+		"body": [
+			"console.log(\"$1\")",
+		],
+		"description": "useEffect function template"
+	},
+	"Vue Single File Component": {
+		"prefix": "vfc",
+		"body": [
+		  "<script lang=\"ts\" setup>",
+		  "  //",
+		  "</script>",
+		  "",
+		  "<template>",
+          "  //",
+          "</template>",
+		],
+		"description": "Create a Vue single-file component"
+	},
+    "Vue Single File Component w/ Props": {
+		"prefix": "vfcp",
+		"body": [
+		  "<script lang=\"ts\" setup>",
+		  "const { foo, bar } = defineProps({",
+          "    foo: String,",
+          "    bar: {",
+          "        type: Number,",
+          "        required: true,",
+          "    },",
+          "});",
+		  "</script>",
+		  "",
+		  "<template>",
+          "  //",
+          "</template>",
+		],
+		"description": "Create a Vue single-file component"
+	}
+}

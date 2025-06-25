@@ -1,15 +1,12 @@
 <script lang="ts" setup>
-const { location, coordinatesForWeatherData } = useWeatherStore();
-
+const { location } = useLocationStore();
 </script>
 
 <template>
-	<div>
-		<h1>Hello {{ location.place_name }}</h1>
-		<h2>
-			<NuxtLink
-				:to="{ name: 'coordinates', params: { coordinates: coordinatesForWeatherData } }"
-			>{{ coordinatesForWeatherData }}</NuxtLink>
-		</h2>
-	</div>
+	<ui-hero :location="location">
+		<template #default="{ data }">
+			<h1>Hello {{ data.place_name }}</h1>
+			<p>{{ data.coordinates }}</p>
+		</template>
+	</ui-hero>
 </template>

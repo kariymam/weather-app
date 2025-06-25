@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import { WeatherLocationSettings } from '#components';
-
-const { location } = storeToRefs(useWeatherStore());
-const { alerts, place } = defineProps<{
+const { location } = useLocationStore()
+const { alerts } = defineProps<{
 	place: string;
 	alerts?: { title: string; text: string }[] | null;
 }>();
@@ -45,12 +43,12 @@ const toggleTheme = () => {
 				align="center"
 				cols="6"
 			>
-				{{ location }}
+				{{ location.place_name }}
 			</v-col>
 			<v-col
 				align="end"
 			>
-				<WeatherLocationSettings />
+				<slot name="location-settings" />
 				<v-icon-btn
 					:icon="current === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
 					variant="text"

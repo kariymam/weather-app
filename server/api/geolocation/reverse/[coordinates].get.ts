@@ -7,8 +7,6 @@ export default defineEventHandler(async (event) => {
 
 	const { features } = await $fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates}.json?types=place&access_token=${config.mpbx}`) as MapboxResponse;
 
-  console.log(features)
-
 	const [results] = features;
 
 	return {

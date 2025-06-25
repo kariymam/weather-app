@@ -1,3 +1,22 @@
+export interface Geolocation {
+	place_name: string | '';
+	coordinates: number[] | [];
+}
+
+export interface GeolocationNavigatorError {
+	name: string;
+	code: number;
+	message: string;
+}
+
+export interface UserGeolocation {
+	location: Geolocation;
+	navigator: {
+		isError: boolean;
+		error?: GeolocationNavigatorError | undefined;
+	};
+}
+
 export type MapboxResponseFeature = {
   id: string,
   type: string,
