@@ -4,9 +4,15 @@ const { location } = useLocationStore();
 
 <template>
 	<ui-hero :location="location">
-		<template #default="{ data }">
-			<h1>Hello {{ data.place_name }}</h1>
-			<p>{{ data.coordinates }}</p>
+		<template #heading>
+			Weather
+		</template>
+		<template #forecast="{ coordinates }">
+			{{ coordinates }}
+			<weather-periods :coordinates="coordinates" />
+		</template>
+		<template #subtitle="{ place }">
+			{{ place }}
 		</template>
 	</ui-hero>
 </template>

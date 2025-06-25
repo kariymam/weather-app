@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-const { location } = useLocationStore()
 const { alerts } = defineProps<{
 	place: string;
 	alerts?: { title: string; text: string }[] | null;
@@ -43,12 +42,11 @@ const toggleTheme = () => {
 				align="center"
 				cols="6"
 			>
-				{{ location.place_name }}
+				<slot name="location-settings" />
 			</v-col>
 			<v-col
 				align="end"
 			>
-				<slot name="location-settings" />
 				<v-icon-btn
 					:icon="current === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
 					variant="text"

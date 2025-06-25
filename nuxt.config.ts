@@ -9,6 +9,10 @@ export default defineNuxtConfig({
 		dirs: ['store'],
 	},
 	devtools: { enabled: true },
+	runtimeConfig: {
+		mpbx: process.env.MAPBOX_API_KEY,
+		openweather: process.env.OPENWEATHER_API_KEY,
+	},
 	compatibilityDate: '2025-05-15',
 	eslint: {
 		config: {
@@ -19,7 +23,4 @@ export default defineNuxtConfig({
 			},
 		},
 	},
-	runtimeConfig: {
-		mpbx: process.env.MAPBOX_API_KEY
-	}
 });
