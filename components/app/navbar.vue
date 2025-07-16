@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 const { alerts } = defineProps<{
-	place: string;
 	alerts?: { title: string; text: string }[] | null;
 }>();
 const theme = useTheme();
@@ -47,8 +46,8 @@ const toggleTheme = () => {
 			<v-col
 				align="end"
 			>
-				<v-icon-btn
-					:icon="current === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
+				<v-btn
+					:prepend-icon="current === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
 					variant="text"
 					@click="toggleTheme"
 				/>

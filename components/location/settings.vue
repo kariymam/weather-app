@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Geolocation, GeolocationNavigatorError } from '~/types';
 
-const { status, location, locations } = defineProps<{
+const { location, locations } = defineProps<{
 	location: Geolocation;
 	locations: Set<Geolocation>;
 	status: {
@@ -43,8 +43,8 @@ watch(
 				<v-toolbar-title>Location Settings</v-toolbar-title>
 				<template #append>
 					<div class="d-flex ga-4 align-center">
-						<v-icon-btn
-							icon="mdi-close"
+						<v-btn
+							prepend-icon="mdi-close"
 							@click="() => {
 								dialog = false
 							}"
@@ -56,12 +56,6 @@ watch(
 				<v-list-item
 					title="Current location"
 				>
-					<v-alert
-						v-if="status.isError"
-						type="warning"
-					>
-						{{ status.error }}
-					</v-alert>
 					<v-col>
 						<v-row>
 							<p>{{ location.place_name }}</p>

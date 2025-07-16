@@ -14,7 +14,10 @@ export const useLocationStore = () => {
 				 * [latitude, longitude]
 				* [40.730610, -73.935242]
 				*/
-				coordinates: [40.730610, -73.935242],
+				coordinates: {
+					latitude: 40.730610,
+					longitude: -73.935242 
+				},
 			} as Geolocation,
 			geolocationAPI: {
 				isError: false,
@@ -23,11 +26,15 @@ export const useLocationStore = () => {
 			},
 			locations: new Set() as Set<Geolocation>,
 		}),
+		getters: {
+			coordinates: (state) => state.location.coordinates,
+			coordsString: (state) => `${state.location.coordinates.latitude},${state.location.coordinates.longitude}`
+		},
 		actions: {
 			addToLocationHistory(location: Geolocation) {
 				this.locations.add(location);
 			},
-			async initializeLocationStore() {
+			async initialize() {
 				const { data } = await useFetch(`/api/cookie`);
 
 				if (!data.value || data.value.location === undefined) {
@@ -49,9 +56,12 @@ export const useLocationStore = () => {
 			},
 			saveLocationFromMapboxRes(res: MapboxResponseFeature) {
 				const { center, place_name } = res;
+
+				const [longitude, latitude] = center
+
 				const location = {
 					place_name,
-					coordinates: center,
+					coordinates: { latitude, longitude },
 				};
 
 				return this.location = location;
@@ -65,7 +75,7 @@ export const useLocationStore = () => {
 
 					this.location = {
 						place_name,
-						coordinates: [latitude, longitude],
+						coordinates: { latitude, longitude },
 					};
 
 					this.geolocationAPI = {
@@ -113,17 +123,19 @@ export const useLocationStore = () => {
 	},
 	);
 
-	locationStore().initializeLocationStore();
+	locationStore().initialize();
 
-	const { location, geolocationAPI: status, locations } = storeToRefs(locationStore());
+	const { location, coordinates, geolocationAPI: status, locations } = storeToRefs(locationStore());
 
 	return {
 		status,
 		location,
 		locations,
-		addToLocationHistory: (location: { place_name: string; coordinates: number[] }) => locationStore().addToLocationHistory(location),
+		coordinates,
+		coordsString: () => locationStore().coordsString,
+		addToLocationHistory: (location: Geolocation) => locationStore().addToLocationHistory(location),
 		useGeolocationAPI: () => locationStore().useNavigatorGeolocation(),
-		useSearchAPI: async (value: string) => await locationStore().getMapboxSearchResponse(value),
-		saveLocationFromMapbox: (value: MapboxResponseFeature) => locationStore().saveLocationFromMapboxRes(value),
+		useSearchAPI: async (query: string) => await locationStore().getMapboxSearchResponse(query),
+		saveLocationFromMapbox: (res: MapboxResponseFeature) => locationStore().saveLocationFromMapboxRes(res),
 	};
 };

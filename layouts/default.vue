@@ -11,7 +11,7 @@ const {
 
 <template>
 	<v-app>
-		<AppNavbar place="Atlanta">
+		<AppNavbar>
 			<template #home>
 				Home
 			</template>

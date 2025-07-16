@@ -10,6 +10,9 @@ export const useParseCookieToLocation = (cookie: string | null) => {
 
 	return {
 		place_name,
-		coordinates: [Number(latitude), Number(longitude)],
+		coordinates: {
+			latitude: Number(latitude), 
+			longitude: Number(longitude)
+		},
 	} as Geolocation;
 };

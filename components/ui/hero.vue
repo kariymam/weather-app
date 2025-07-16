@@ -1,12 +1,15 @@
 <script lang="ts" setup>
-import type { Geolocation } from '~/types';
+import type { AsyncDataRequestStatus } from '#app';
 
-const { location } = defineProps<{
-	location: Geolocation;
+const { status } = defineProps<{
+	status?: AsyncDataRequestStatus;
 }>();
 </script>
 
 <template>
+	<slot
+		name="alerts"
+	/>
 	<div class="hero">
 		<div
 			v-if="$slots.image"
@@ -34,19 +37,17 @@ const { location } = defineProps<{
 					class="ga-4 py-4 hero__forecast rounded-lg"
 				>
 					<section>
-						<div
-							:class="{ 'text-shadow': $slots.image || $slots.media }"
-						>
+						<v-row v-if="$slots.forecast">
+							<v-col>
+								<slot name="subtitle" />
+								<slot />
+							</v-col>
 							<slot
-								:place="location.place_name"
-								name="subtitle"
+								name="forecast"
+								:status="status"
 							/>
-						</div>
+						</v-row>
 					</section>
-					<slot
-						:coordinates="location.coordinates"
-						name="forecast"
-					/>
 				</div>
 				<div
 					v-else
@@ -83,19 +84,9 @@ span.scrim::after {
     backdrop-filter: blur(5px);
   }
 
-  .hero__forecast > * {
-    flex: 50%;
-  }
-
   .hero__container > div {
     grid-row-start: 2;
     position: relative;
-  }
-
-  @media (min-width: 1024px) {
-    .hero__forecast {
-      display: flex;
-    }
   }
 
   .hero__forecast {
@@ -104,10 +95,6 @@ span.scrim::after {
     & > div {
       height: max-content;
       margin: auto;
-    }
-
-    & * {
-      width: auto;
     }
   }
 

@@ -1,18 +1,29 @@
 <script lang="ts" setup>
-const { location } = useLocationStore();
+const { location, coordinates, coordsString } = useLocationStore();
+
+const { data, status } = useAsyncData(
+	'weather',
+	() => $fetch<unknown>(`/api/weather/${coordsString()}`),
+	{ watch: [coordinates] },
+);
 </script>
 
 <template>
-	<ui-hero :location="location">
-		<template #heading>
-			Weather
-		</template>
-		<template #forecast="{ coordinates }">
-			{{ coordinates }}
-			<weather-periods :coordinates="coordinates" />
-		</template>
-		<template #subtitle="{ place }">
-			{{ place }}
-		</template>
-	</ui-hero>
+	<div>
+		<weather-hero
+			:location="location"
+			:data="data"
+			:status="status"
+		/>
+	</div>
 </template>
+
+<style lang="css">
+
+.current-temperature::after {
+	content:'°F';
+	vertical-align: text-top;
+	line-height: 1.425;
+}
+
+</style>
