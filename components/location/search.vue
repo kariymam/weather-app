@@ -25,7 +25,6 @@ const handleOnSelect = (value: MapboxResponseFeature | null) => {
 
 <template>
 	<div>
-		{{ selected }}
 		<v-autocomplete
 			v-model="selected"
 			append-inner-icon="mdi-magnify"
