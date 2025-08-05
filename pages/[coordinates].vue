@@ -17,34 +17,35 @@ onBeforeMount(async () => {
 	}
 });
 
-const { location, forecast } = defineProps<{
+const { weatherData } = defineProps<{
 	location: Geolocation;
-	forecast: { forecast: WeatherApiResponse | null, status: AsyncDataRequestStatus };
+	weatherData: {
+		forecast: WeatherApiResponse | null;
+		status: AsyncDataRequestStatus;
+	};
 }>();
-
 </script>
 
 <template>
 	<div>
 		<ui-hero
-			:status="forecast.status"
+			:status="weatherData.status"
 		>
 			<template #heading>
-				Right now in {{ location.place_name }}...
+				Weather
 			</template>
 			<template #subtitle>
-				<h3 v-if="forecast.forecast?.current">
-					{{ Math.floor(forecast.forecast?.current.temperature2m) }}
-				</h3>
+					Right now...
 			</template>
 			<template #forecast="{ isLoading }">
 				<div class="container">
+					{{ weatherData.forecast?.periods }}
 					<ul
-						v-if="forecast.forecast?.periodsByDay"
+						v-if="weatherData.forecast?.periods"
 						id="periodsByDay"
 					>
 						<weather-by-day
-							v-for="(weekday, idx) in forecast.forecast?.periodsByDay"
+							v-for="(weekday, idx) in weatherData.forecast?.periods"
 							:key="idx"
 							:period="weekday"
 							:idx="idx"
@@ -52,6 +53,9 @@ const { location, forecast } = defineProps<{
 						/>
 					</ul>
 				</div>
+			</template>
+			<template #default>
+				<p>{{ weatherData.forecast?.current.temperature2m &&Math.floor(weatherData.forecast?.current.temperature2m) }}</p>
 			</template>
 		</ui-hero>
 	</div>

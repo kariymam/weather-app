@@ -17,7 +17,7 @@ const { data: forecast, status } = await useAsyncData(
 	<NuxtLayout>
 		<NuxtPage
 			:location="location"
-			:forecast="{ forecast, status }"
+			:weather-data="{ forecast, status }"
 		/>
 	</NuxtLayout>
 </template>

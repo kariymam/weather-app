@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import '../styles/global.css';
+
 const {
 	location,
 	locations,
@@ -15,10 +17,10 @@ const {
 	<v-app>
 		<AppNavbar>
 			<template #home>
-				Home
+				{{ location.place_name }}
 			</template>
 			<template #location-settings>
-				<settings-dialog
+				<location-settings-dialog
 					:location="location"
 					:locations="locations"
 					:geolocation-a-p-i="geolocationAPI"

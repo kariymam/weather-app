@@ -2,17 +2,29 @@
 import type { AsyncDataRequestStatus } from '#app';
 import type { Geolocation, WeatherApiResponse } from '~/types';
 
-const { location, forecast } = defineProps<{
+const { weatherData } = defineProps<{
 	location: Geolocation;
-	forecast: { forecast: WeatherApiResponse | null, status: AsyncDataRequestStatus };
+	weatherData: {
+		forecast: WeatherApiResponse | null;
+		status: AsyncDataRequestStatus;
+	};
 }>();
-
 </script>
 
 <template>
 	<div>
-		{{ location.place_name }}
-		{{ forecast.status }}
-		{{ forecast.forecast }}
+		<ui-hero
+			:status="weatherData.status"
+		>
+			<template #heading>
+				Home
+			</template>
+			<template #subtitle>
+				A subtitle goes here
+			</template>
+			<template #default>
+				Hello
+			</template>
+		</ui-hero>
 	</div>
 </template>

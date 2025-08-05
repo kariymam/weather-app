@@ -38,7 +38,7 @@ import { isSameDay, isThisHour } from 'date-fns';
 // 	return periodsByDay && map;
 // };
 
-export function filterTodayPeriods(periods: any[], prop: string) {
+export function filterTodayPeriods(periods: unknown[], prop: string) {
 	const filtered = () => periods?.filter(p => isSameDay(new Date(), p[prop]));
 	const timeIdx = filtered().findIndex(p => isThisHour(p[prop]));
 

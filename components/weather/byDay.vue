@@ -1,17 +1,14 @@
 <script lang="ts" setup>
-import type { WeatherGovPeriods } from '~/types';
-
 const { period, idx } = defineProps<{
 	period: {
-		name: string;
-		daytime: WeatherGovPeriods | null;
-		night: WeatherGovPeriods;
-		assets: {
-			icon: string[];
-			cldURL: string;
-			cardColor: string | string[];
-		};
-	} | undefined;
+		time: Date;
+		temperature2m: number;
+		apparentTemperature: number;
+		precipitationProbability: number;
+		showers: number;
+		rain: number;
+		snowfall: number;
+	};
 	idx: number;
 	isLoading: boolean;
 }>();
