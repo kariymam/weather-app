@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-// const {
-// 	coordinates,
-// } = await useLocationStore();
 const {
 	location,
 	locations,
