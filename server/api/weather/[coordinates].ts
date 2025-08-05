@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import { fetchWeatherApi } from 'openmeteo';
+import type { openmeteo } from '~/types';
 import { filterTodayPeriods } from '~/utils';
 
 const BASE_URL = {
@@ -80,13 +81,13 @@ export default defineEventHandler(async (event) => {
 
 	const [lat, long] = getLatAndLong(coordinates);
 
-	const openmeteo = await fetchOpenMeteo(lat, long, Intl.DateTimeFormat().resolvedOptions().timeZone);
+	const openmeteo = await fetchOpenMeteo(lat, long, Intl.DateTimeFormat().resolvedOptions().timeZone) as openmeteo;
 	const weathergov = await fetchWeatherGovAlerts(openmeteo.current.time.toISOString(), lat, long);
 
 	return {
 		coordinates,
 		current: openmeteo.current,
 		periods: openmeteo.periods,
-		alerts: weathergov,
+		alerts: weathergov.features,
 	};
 });
