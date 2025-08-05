@@ -1,6 +1,9 @@
-import type { Geolocation } from '~/types';
-
-export const useSetLocationCookie = (name: string, data: string | Geolocation) => {
+export const useSetLocationCookie = (
+	/** name of the cookie */
+	name: string, 
+	/** data for the cookie */
+	data: string
+) => {
 	const cookie = useCookie(
 		name,
 		{
@@ -8,8 +11,6 @@ export const useSetLocationCookie = (name: string, data: string | Geolocation) =
 			watch: 'shallow',
 		},
 	);
-
-  data = useParseLocationToCookie(data as Geolocation);
 
 	cookie.value = cookie.value || data;
 

@@ -4,6 +4,8 @@ import type { AsyncDataRequestStatus } from '#app';
 const { status } = defineProps<{
 	status?: AsyncDataRequestStatus;
 }>();
+
+const isLoading = computed(() => status === 'success' ? false : true);
 </script>
 
 <template>
@@ -37,16 +39,18 @@ const { status } = defineProps<{
 					class="ga-4 py-4 hero__forecast rounded-lg"
 				>
 					<section>
-						<v-row v-if="$slots.forecast">
-							<v-col>
+						<v-col>
+							<v-row v-if="$slots.forecast">
 								<slot name="subtitle" />
-								<slot />
-							</v-col>
-							<slot
-								name="forecast"
-								:status="status"
-							/>
-						</v-row>
+								<slot
+									name="forecast"
+									:is-loading="isLoading"
+								/>
+							</v-row>
+						</v-col>
+						<v-col>
+							<slot />
+						</v-col>
 					</section>
 				</div>
 				<div

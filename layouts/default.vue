@@ -1,12 +1,17 @@
 <script lang="ts" setup>
+// const {
+// 	coordinates,
+// } = await useLocationStore();
 const {
 	location,
 	locations,
-	status,
+	coordinates,
+	geolocationAPI,
 	useGeolocationAPI,
 	useSearchAPI,
 	saveLocationFromMapbox,
-} = useLocationStore();
+	saveLocation,
+} = await useLocationStore();
 </script>
 
 <template>
@@ -16,25 +21,18 @@ const {
 				Home
 			</template>
 			<template #location-settings>
-				<location-settings
+				<settings-dialog
 					:location="location"
 					:locations="locations"
-					:status="status"
-				>
-					<template #location-permissions>
-						<location-permissions-btn
-							:status="status"
-							:location="location"
-							:click-func="useGeolocationAPI"
-						/>
-					</template>
-					<template #location-search>
-						<location-search
-							:select-func="saveLocationFromMapbox"
-							:search-func="useSearchAPI"
-						/>
-					</template>
-				</location-settings>
+					:geolocation-a-p-i="geolocationAPI"
+					:use-geolocation-a-p-i="useGeolocationAPI"
+					:use-search-a-p-i="useSearchAPI"
+					:save-location-from-mapbox="saveLocationFromMapbox"
+					:save-location="saveLocation"
+				/>
+			</template>
+			<template #weather>
+				<nuxt-link :to="{ name: 'coordinates', params: { coordinates } }">Weather</nuxt-link>
 			</template>
 		</AppNavbar>
 		<v-main>
@@ -42,3 +40,25 @@ const {
 		</v-main>
 	</v-app>
 </template>
+
+<style>
+/* .container {
+	display: flex;
+	flex-flow: column nowrap;
+  container-type: inline-size;
+	overflow: auto hidden;
+	overscroll-behavior-x: contain;
+	scroll-snap-type: x mandatory;
+  border: solid 1px #010c1346;
+  border-radius: 4px;
+  width: 100%;
+  height: 273px;
+}
+
+ul#periodsByDay {
+	display: grid;
+	grid-template-columns: repeat(7, auto);
+	gap: 0.5em;
+	margin-bottom: 1em;
+} */
+</style>

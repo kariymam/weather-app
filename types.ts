@@ -1,10 +1,18 @@
 export interface Geolocation {
 	place_name: string | '';
 	coordinates: {
-		latitude: number;
-		longitude: number;
+		latitude: number | string;
+		longitude: number | string;
 	};
 }
+
+export type WeatherApiResponse = {
+	location: Geolocation;
+	current: any;
+	periodsByHour: any[];
+	periodsByDay: any[];
+	alerts: any[];
+};
 
 export interface GeolocationNavigatorError {
 	name: string;

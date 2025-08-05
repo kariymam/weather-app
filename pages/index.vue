@@ -1,29 +1,18 @@
 <script lang="ts" setup>
-const { location, coordinates, coordsString } = useLocationStore();
+import type { AsyncDataRequestStatus } from '#app';
+import type { Geolocation, WeatherApiResponse } from '~/types';
 
-const { data, status } = useAsyncData(
-	'weather',
-	() => $fetch<unknown>(`/api/weather/${coordsString()}`),
-	{ watch: [coordinates] },
-);
+const { location, forecast } = defineProps<{
+	location: Geolocation;
+	forecast: { forecast: WeatherApiResponse | null, status: AsyncDataRequestStatus };
+}>();
+
 </script>
 
 <template>
 	<div>
-		<weather-hero
-			:location="location"
-			:data="data"
-			:status="status"
-		/>
+		{{ location.place_name }}
+		{{ forecast.status }}
+		{{ forecast.forecast }}
 	</div>
 </template>
-
-<style lang="css">
-
-.current-temperature::after {
-	content:'°F';
-	vertical-align: text-top;
-	line-height: 1.425;
-}
-
-</style>

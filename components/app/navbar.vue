@@ -22,7 +22,6 @@ const toggleTheme = () => {
 	</div>
 	<nav
 		id="main"
-		class="v-container"
 	>
 		<v-row
 			align="center"
@@ -46,6 +45,7 @@ const toggleTheme = () => {
 			<v-col
 				align="end"
 			>
+				<slot name="weather" />
 				<v-btn
 					:prepend-icon="current === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
 					variant="text"
