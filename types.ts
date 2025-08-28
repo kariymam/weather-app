@@ -52,19 +52,20 @@ export type WeatherApiResponse = {
 	coordinates: string;
 	current: openmeteo['current'];
 	periods: openmeteo['periods'];
+	daily: openmeteo['daily'];
 	alerts: [] | WeatherGovAlert[];
 };
 
 export type openmeteo = {
 	current: {
-		time: Date;
+		time: string;
 		temperature2m: number;
 		precipitation: number;
 		isDay: number;
 		apparentTemperature: number;
 	};
 	periods: {
-		time: Date;
+		time: string;
 		temperature2m: number;
 		apparentTemperature: number;
 		precipitationProbability: number;
@@ -72,57 +73,67 @@ export type openmeteo = {
 		rain: number;
 		snowfall: number;
 	}[];
+	daily: {
+		time: string;
+		weather_code: number;
+		temperature_2m_max: number;
+		apparent_temperature_max: number;
+		temperature_2m_min: number;
+		apparent_temperature_min: number;
+		precipitation_probability_max: number;
+		precipitation_hours: number;
+	}[];
 };
 
 export interface WeatherGovAlert {
-  '@id': string;
-  '@type': string;
-  id: string;
-  areaDesc: string;
-  geocode: {
-    SAME: string[];
-    UGC: string[];
-  };
-  affectedZones: string[];
-  references: {
-    '@id': string;
-    identifier: string;
-    sender: string;
-    sent: string;
-  }[];
-  sent: string;
-  effective: string;
-  onset: string;
-  expires: string;
-  ends: string;
-  status: string;
-  messageType: string;
-  category: string;
-  severity: string;
-  certainty: string;
-  urgency: string;
-  event: string;
-  sender: string;
-  senderName: string;
-  headline: string;
-  description: string;
-  instruction: string;
-  response: string;
-  parameters: {
-    AWIPSidentifier: string[];
-    WMOidentifier: string[];
-    NWSheadline: string[];
-    BLOCKCHANNEL: string[];
-    VTEC: string[];
-    eventEndingTime: string[];
-    expiredReferences: string[];
-  };
-  scope: string;
-  code: string;
-  language: string;
-  web: string;
-  eventCode: {
-    SAME: string[];
-    NationalWeatherService: string[];
-  };
+	'@id': string;
+	'@type': string;
+	'id': string;
+	'areaDesc': string;
+	'geocode': {
+		SAME: string[];
+		UGC: string[];
+	};
+	'affectedZones': string[];
+	'references': {
+		'@id': string;
+		'identifier': string;
+		'sender': string;
+		'sent': string;
+	}[];
+	'sent': string;
+	'effective': string;
+	'onset': string;
+	'expires': string;
+	'ends': string;
+	'status': string;
+	'messageType': string;
+	'category': string;
+	'severity': string;
+	'certainty': string;
+	'urgency': string;
+	'event': string;
+	'sender': string;
+	'senderName': string;
+	'headline': string;
+	'description': string;
+	'instruction': string;
+	'response': string;
+	'parameters': {
+		AWIPSidentifier: string[];
+		WMOidentifier: string[];
+		NWSheadline: string[];
+		BLOCKCHANNEL: string[];
+		VTEC: string[];
+		eventEndingTime: string[];
+		expiredReferences: string[];
+	};
+	'scope': string;
+	'code': string;
+	'language': string;
+	'web': string;
+	'eventCode': {
+		SAME: string[];
+		NationalWeatherService: string[];
+	};
 }

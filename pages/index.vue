@@ -1,30 +1,24 @@
 <script lang="ts" setup>
-import type { AsyncDataRequestStatus } from '#app';
-import type { Geolocation, WeatherApiResponse } from '~/types';
+import type { Geolocation } from '~/types';
 
-const { weatherData } = defineProps<{
+const { location } = defineProps<{
 	location: Geolocation;
-	weatherData: {
-		forecast: WeatherApiResponse | null;
-		status: AsyncDataRequestStatus;
-	};
 }>();
+
+const coordinates = computed(() => `${location.coordinates.latitude},${location.coordinates.longitude}`);
+
+const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
+	method: 'post',
+	body: {
+		data: location,
+	},
+},
+);
 </script>
 
 <template>
 	<div>
-		<ui-hero
-			:status="weatherData.status"
-		>
-			<template #heading>
-				Home
-			</template>
-			<template #subtitle>
-				A subtitle goes here
-			</template>
-			<template #default>
-				Hello
-			</template>
-		</ui-hero>
+		{{ data }}
+		{{ status }}
 	</div>
 </template>

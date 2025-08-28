@@ -25,6 +25,7 @@ const route = useRoute();
 const router = useRouter();
 const dialog = ref(false);
 const currentLocation = computed(() => location);
+const selected: Ref<MapboxResponseFeature | null> = ref(null);
 
 const handleLocationPermissionsBtn = async () => {
 	const results = await useGeolocationAPI();
@@ -38,20 +39,28 @@ const handleLocationPermissionsBtn = async () => {
 };
 
 const handleSearchSelect = async (res: MapboxResponseFeature) => {
-	console.log(res);
+	selected.value = res;
+
 	dialog.value = false;
+
 	if (res) {
 		const [longitude, latitude] = res.center;
+
 		const place_name = res.place_name;
+
 		useSetCookie({ place_name, coordinates: { longitude, latitude } });
+
 		saveLocationFromMapbox(res);
+
 		if (route.params.coordinates) {
 			router.push({ name: 'coordinates', params: { coordinates: `${latitude},${longitude}` } });
 		}
+
 		return dialog.value = false;
 	}
 	else {
 		dialog.value = false;
+		selected.value = null;
 		throw Error('No mapbox response');
 	}
 };

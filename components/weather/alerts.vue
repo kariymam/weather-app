@@ -1,16 +1,18 @@
 <script lang="ts" setup>
+import type { WeatherApiResponse } from '~/types';
+
 const { alerts } = defineProps<{
-	alerts: { title: string; text: string }[];
+	alerts: WeatherApiResponse['alerts'];
 }>();
 </script>
 
 <template>
 	<div v-if="alerts !== undefined">
 		<v-alert
-			v-for="({ text, title }, idx) in alerts"
+			v-for="({ headline, description }, idx) in alerts"
 			:key="idx"
-			:text="text"
-			:title="title"
+			:text="description"
+			:title="headline"
 			type="warning"
 			closable
 		/>
