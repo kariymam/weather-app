@@ -20,6 +20,11 @@ export interface UserGeolocation {
 	};
 }
 
+export type WeatherCodeObj = {
+	day: { description: string; image: string };
+	night: { description: string; image: string };
+}
+
 export type MapboxResponseFeature = {
 	id: string;
 	type: string;

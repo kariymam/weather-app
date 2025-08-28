@@ -15,7 +15,7 @@ import { format } from 'date-fns';
 				<div class="weather-day high-low-temperature">
 					<div>
 						<span>
-							Weather Icon
+							<slot name="weather-code" />
 						</span>
 						<span class="temperature">
 							<slot name="high-temperature" />°

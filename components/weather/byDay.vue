@@ -7,6 +7,9 @@ const { daily, isLoading } = defineProps<{
 	daily: WeatherApiResponse['daily'] | undefined;
 	isLoading: AsyncDataRequestStatus;
 }>();
+
+const weather_codes = useGetWeatherIcon(daily)
+
 </script>
 
 <template>
@@ -15,7 +18,7 @@ const { daily, isLoading } = defineProps<{
 		id="periodsByDay"
 	>
 		<div
-			v-for="({ time, weather_code, temperature_2m_max, temperature_2m_min }, idx) in daily"
+			v-for="({ time, temperature_2m_max, temperature_2m_min }, idx) in daily"
 			:key="idx"
 		>
 			<weather-day>
@@ -24,6 +27,9 @@ const { daily, isLoading } = defineProps<{
 				</template>
 				<template #date="{ format }">
 					{{ format(time) }}
+				</template>
+				<template #weather-code>
+					<weather-code v-if="weather_codes" :code="weather_codes![idx]"/>
 				</template>
 				<template #high-temperature>
 					{{ Math.round(temperature_2m_max) }}
