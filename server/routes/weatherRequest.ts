@@ -48,9 +48,10 @@ async function fetchOpenMeteo(lat: string, long: string, zone?: string) {
 	}));
 
 	const periodsByDay = [...Array((Number(daily.timeEnd()) - Number(daily.time())) / daily.interval())].map(
-		(_, i) => {
+			(_, i) => new Date((Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) * 1000)).map(
+		(date, i) => {
 			return {
-				time: new Date((Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) * 1000).toISOString(),
+				time: date.toISOString(),
 				weather_code: daily.variables(0)!.valuesArray()![i],
 				temperature_2m_max: daily.variables(1)!.valuesArray()![i],
 				apparent_temperature_max: daily.variables(2)!.valuesArray()![i],

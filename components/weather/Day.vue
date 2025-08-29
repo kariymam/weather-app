@@ -1,19 +1,14 @@
-<script lang="ts" setup>
-import { format } from 'date-fns';
-</script>
-
 <template>
 	<v-card>
 		<v-col>
-			<div class="weather-day grid">
+			<div class="weather-day grid high-low-temperature">
 				<h3 class="weather-day">
 					<slot
 						name="weekday"
-						:format="(time: string) => format(time, 'ccc')"
 					/>
 				</h3>
-				<div class="weather-day high-low-temperature">
-					<div>
+				<div>
+					<div class="high">
 						<span>
 							<slot name="weather-code" />
 						</span>
@@ -21,10 +16,12 @@ import { format } from 'date-fns';
 							<slot name="high-temperature" />°
 						</span>
 					</div>
-					<v-divider vertical></v-divider>
-					<div>
+				</div>
+				<v-divider vertical></v-divider>
+				<div>
+					<div class="low">
 						<v-icon size="1.25rem" aria-label="Night temperature" role="img" aria-hidden="false">
-					  		mdi-weather-night
+							  mdi-weather-night
 						</v-icon>
 					<span class="temperature">
 						 <slot name="low-temperature" />°
@@ -34,7 +31,6 @@ import { format } from 'date-fns';
 				<span class="weather-day date">
 					<slot
 						name="date"
-						:format="(time: string) => format(time, 'MMM c')"
 					/>
 				</span>
 			</div>
@@ -45,10 +41,11 @@ import { format } from 'date-fns';
 <style lang="css">
 .weather-day.grid {
     display: grid;
+	grid-template-columns: 1fr max-content 1fr;
     grid-template-areas:
     "header header header"
-    ". temp ."
-    "date . .";
+    "high . low"
+    ". . date";
 }
 
 h3.weather-day {
@@ -57,15 +54,30 @@ h3.weather-day {
 
 span.weather-day.date {
     grid-area: date;
+	margin-left: auto;
 }
 
-.weather-day.high-low-temperature {
-	display: flex;
-	gap: 2rem;
-    grid-area: temp / 2;
+.high-low-temperature .high {
+	grid-area: high;
+}
+
+.high-low-temperature .low {
+	grid-area: low;
+}
+
+.high-low-temperature .low,
+.high-low-temperature .high {
+	max-width: max-content;
 	margin: auto;
-	width: max-content;
-	place-items: center;
+	place-self: center;
+}
+
+.high-low-temperature .low {
+	margin-left: 1.5rem;
+}
+
+.high-low-temperature .high {
+	margin-right: 1.5rem;
 }
 
 .weather-day.high-low-temperature span,

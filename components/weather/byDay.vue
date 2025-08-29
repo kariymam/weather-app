@@ -8,8 +8,6 @@ const { daily, isLoading } = defineProps<{
 	isLoading: AsyncDataRequestStatus;
 }>();
 
-const weather_codes = useGetWeatherIcon(daily)
-
 </script>
 
 <template>
@@ -18,18 +16,18 @@ const weather_codes = useGetWeatherIcon(daily)
 		id="periodsByDay"
 	>
 		<div
-			v-for="({ time, temperature_2m_max, temperature_2m_min }, idx) in daily"
+			v-for="({ time, weather_code, temperature_2m_max, temperature_2m_min }, idx) in daily"
 			:key="idx"
 		>
 			<weather-day>
-				<template #weekday="{ format }">
-					{{ format(time) }}
+				<template #weekday>
+					{{ useFormatDate(time, 'eee') }}
 				</template>
-				<template #date="{ format }">
-					{{ format(time) }}
+				<template #date>
+					{{ useFormatDate(time) }}
 				</template>
 				<template #weather-code>
-					<weather-code v-if="weather_codes" :code="weather_codes![idx]"/>
+					<weather-code :code="weather_code" />
 				</template>
 				<template #high-temperature>
 					{{ Math.round(temperature_2m_max) }}
