@@ -39,9 +39,9 @@ const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
 			:daily="data?.daily"
 			:is-loading="status"
 		/>
-		<weather-by-hour
+		<!-- <weather-by-hour
 			:periods="data?.periods"
 			:is-loading="status"
-		/>
+		/> -->
 	</div>
 </template>

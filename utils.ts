@@ -1,11 +1,11 @@
-import { isSameDay, isThisHour } from 'date-fns';
+// import { isSameDay, isThisHour } from 'date-fns';
 
-export function filterTodayPeriods(periods: unknown[], prop: string) {
-	const filtered = () => periods?.filter(p => isSameDay(new Date(), p[prop]));
-	const timeIdx = filtered().findIndex(p => isThisHour(p[prop]));
+// export function filterTodayPeriods(periods: unknown[], prop: string) {
+// 	const filtered = () => periods?.filter(p => isSameDay(new Date(), p[prop]));
+// 	const timeIdx = filtered().findIndex(p => isThisHour(p[prop]));
 
-	return filtered().slice(timeIdx);
-}
+// 	return filtered().slice(timeIdx);
+// }
 
 export const weatherIconsList = [
 	{

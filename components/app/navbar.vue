@@ -27,12 +27,11 @@ const toggleTheme = () => {
 			align="center"
 		>
 			<v-col
-				v-if="$slots.home"
 				class="link-home"
 			>
 				<h1>
 					<NuxtLink to="/">
-						<slot name="home" />
+						<slot name="location" />
 					</NuxtLink>
 				</h1>
 			</v-col>

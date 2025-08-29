@@ -16,7 +16,7 @@ const { daily, isLoading } = defineProps<{
 		id="periodsByDay"
 	>
 		<div
-			v-for="({ time, weather_code, temperature_2m_max, temperature_2m_min }, idx) in daily"
+			v-for="({ time, weather_code, precipitation_probability_max, temperature_2m_max, temperature_2m_min }, idx) in daily"
 			:key="idx"
 		>
 			<weather-day>
@@ -30,10 +30,13 @@ const { daily, isLoading } = defineProps<{
 					<weather-code :code="weather_code" />
 				</template>
 				<template #high-temperature>
-					{{ Math.round(temperature_2m_max) }}
+					{{ Math.round(temperature_2m_max) }}°
 				</template>
 				<template #low-temperature>
-					{{ Math.round(temperature_2m_min) }}
+					{{ Math.round(temperature_2m_min) }}°
+				</template>
+				<template v-if="precipitation_probability_max > 20" #precipitation>
+					{{ precipitation_probability_max }}%
 				</template>
 			</weather-day>
 		</div>

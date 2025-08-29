@@ -13,7 +13,7 @@
 							<slot name="weather-code" />
 						</span>
 						<span class="temperature">
-							<slot name="high-temperature" />°
+							<slot name="high-temperature" />
 						</span>
 					</div>
 				</div>
@@ -24,10 +24,11 @@
 							  mdi-weather-night
 						</v-icon>
 					<span class="temperature">
-						 <slot name="low-temperature" />°
+						 <slot name="low-temperature" />
 					</span>
 					</div>
 				</div>
+				<slot name="precipitation" />
 				<span class="weather-day date">
 					<slot
 						name="date"

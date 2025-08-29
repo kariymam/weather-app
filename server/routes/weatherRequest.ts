@@ -1,5 +1,5 @@
 import { fetchWeatherApi } from 'openmeteo';
-import { filterTodayPeriods } from '~/utils';
+import { isSameDay, isThisHour, addHours } from 'date-fns';
 
 const BASE_URL = {
 	OPENMETEO: 'https://api.open-meteo.com/v1/forecast',
@@ -16,9 +16,10 @@ async function fetchOpenMeteo(lat: string, long: string, zone?: string) {
 			'precipitation_probability',
 			'showers',
 			'rain',
-			'snowfall'],
+			'snowfall',
+			'weather_code'
+		],
 		daily: [
-			'weather_code',
 			'temperature_2m_max',
 			'apparent_temperature_max',
 			'temperature_2m_min',
@@ -27,7 +28,7 @@ async function fetchOpenMeteo(lat: string, long: string, zone?: string) {
 			'precipitation_hours',
 		],
 		current: ['temperature_2m', 'precipitation', 'is_day', 'apparent_temperature'],
-		timezone: zone,
+		timezone: "GMT",
 		wind_speed_unit: 'mph',
 		temperature_unit: 'fahrenheit',
 	};
@@ -45,25 +46,35 @@ async function fetchOpenMeteo(lat: string, long: string, zone?: string) {
 		showers: hourly.variables(3)!.valuesArray()![i],
 		rain: hourly.variables(4)!.valuesArray()![i],
 		snowfall: hourly.variables(5)!.valuesArray()![i],
+		weather_code: hourly.variables(6)!.valuesArray()![i]
 	}));
 
 	const periodsByDay = [...Array((Number(daily.timeEnd()) - Number(daily.time())) / daily.interval())].map(
 			(_, i) => new Date((Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) * 1000)).map(
-		(date, i) => {
+		(time, i) => {
+
 			return {
-				time: date.toISOString(),
-				weather_code: daily.variables(0)!.valuesArray()![i],
-				temperature_2m_max: daily.variables(1)!.valuesArray()![i],
-				apparent_temperature_max: daily.variables(2)!.valuesArray()![i],
-				temperature_2m_min: daily.variables(3)!.valuesArray()![i],
-				apparent_temperature_min: daily.variables(4)!.valuesArray()![i],
-				precipitation_probability_max: daily.variables(5)!.valuesArray()![i],
-				precipitation_hours: daily.variables(6)!.valuesArray()![i],
+				time: new Date((Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) * 1000).toISOString(),
+				weather_code: periods.filter((obj) => obj['time'] === addHours(time, 12).toISOString())[0].weather_code,
+				temperature_2m_max: daily.variables(0)!.valuesArray()![i],
+				apparent_temperature_max: daily.variables(1)!.valuesArray()![i],
+				temperature_2m_min: daily.variables(2)!.valuesArray()![i],
+				apparent_temperature_min: daily.variables(3)!.valuesArray()![i],
+				precipitation_probability_max: daily.variables(4)!.valuesArray()![i],
+				precipitation_hours: daily.variables(5)!.valuesArray()![i],
 			};
 		},
 	);
 
-	const periodsByHour = filterTodayPeriods(periods.map((om, i) => ({
+	function filterTodayPeriods(date: Date, periods: unknown[], prop: string) {
+		const filtered = () => periods?.filter(p => isSameDay(date, (p as { [key: string]: any })[prop]));
+		
+		const timeIdx = filtered().findIndex(p => isThisHour((p as { [key: string]: any })[prop]));
+
+		return filtered().slice(timeIdx);
+	}
+
+	const periodsByHour = filterTodayPeriods(new Date(), periods.map((om, i) => ({
 		...om,
 		...(periods && periods[i] ? periods[i] : {}),
 	})), 'time');

@@ -16,7 +16,7 @@ const {
 <template>
 	<v-app>
 		<AppNavbar>
-			<template #home>
+			<template #location>
 				{{ location.place_name }}
 			</template>
 			<template #location-settings>
