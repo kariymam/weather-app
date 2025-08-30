@@ -92,7 +92,7 @@ async function fetchOpenMeteo(lat: string, long: string, zone?: string) {
 	};
 }
 
-async function fetchWeather(startTime: string, lat: string, long: string) {
+async function fetchWeatherAlerts(startTime: string, lat: string, long: string) {
 	const params = new URLSearchParams([
 		['start', startTime],
 		['message_type', 'alert'],
@@ -116,6 +116,6 @@ async function fetchWeather(startTime: string, lat: string, long: string) {
 }
 
 export default {
-	fetchWeather,
+	fetchWeatherAlerts,
 	fetchOpenMeteo,
 };

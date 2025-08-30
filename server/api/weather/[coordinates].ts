@@ -11,14 +11,14 @@ export default defineEventHandler(async (event) => {
 	try {
 		const openmeteo = await weatherRequest.fetchOpenMeteo(coordinates.latitude, coordinates.longitude, Intl.DateTimeFormat().resolvedOptions().timeZone) as openmeteo;
 
-		const weathergov = await weatherRequest.fetchWeather(openmeteo.current.time, coordinates.latitude, coordinates.longitude);
+		const weathergovAlerts = await weatherRequest.fetchWeatherAlerts(openmeteo.current.time, coordinates.latitude, coordinates.longitude);
 
 		return {
 			coordinates,
 			current: openmeteo.current,
 			periods: openmeteo.periods,
 			daily: openmeteo.daily,
-			alerts: weathergov.features,
+			alerts: weathergovAlerts.features,
 		};
 	}
 	catch (error) {
