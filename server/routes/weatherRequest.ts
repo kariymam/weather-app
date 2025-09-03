@@ -31,6 +31,7 @@ async function fetchOpenMeteo(lat: string, long: string, zone?: string) {
 		timezone: "GMT",
 		wind_speed_unit: 'mph',
 		temperature_unit: 'fahrenheit',
+		models: "gfs_seamless",
 	};
 	const [response] = await fetchWeatherApi(BASE_URL.OPENMETEO, params);
 	const utcOffsetSeconds = response.utcOffsetSeconds();
