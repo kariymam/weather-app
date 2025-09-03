@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
 
 	const { data: { place_name, coordinates } } = await readBody(event);
 
-	console.log(coordinatesString, place_name, coordinates);
+	// console.log(coordinatesString, place_name, coordinates);
 
 	try {
 		const openmeteo = await weatherRequest.fetchOpenMeteo(coordinates.latitude, coordinates.longitude, Intl.DateTimeFormat().resolvedOptions().timeZone) as openmeteo;

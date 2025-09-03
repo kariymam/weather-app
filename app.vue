@@ -2,6 +2,7 @@
 const {
 	location,
 } = await useLocationStore();
+
 </script>
 
 <template>
