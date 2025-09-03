@@ -15,11 +15,12 @@ const { daily, isLoading } = defineProps<{
 		v-if="isLoading === 'success'"
 		id="periodsByDay"
 	>
+	<h2>The week ahead</h2>
 		<div
 			v-for="({ time, weather_code, precipitation_probability_max, temperature_2m_max, temperature_2m_min }, idx) in daily"
 			:key="idx"
 		>
-			<weather-day>
+			<WeatherDay>
 				<template #weekday>
 					{{ useFormatDate(time, 'eee') }}
 				</template>
@@ -38,7 +39,7 @@ const { daily, isLoading } = defineProps<{
 				<template v-if="precipitation_probability_max > 20" #precipitation>
 					{{ precipitation_probability_max }}%
 				</template>
-			</weather-day>
+			</WeatherDay>
 		</div>
 	</div>
 </template>

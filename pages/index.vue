@@ -7,13 +7,18 @@ const { location } = defineProps<{
 
 const coordinates = computed(() => `${location.coordinates.latitude},${location.coordinates.longitude}`);
 
-const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
+const { data, status, refresh } = await useFetch(`/api/weather/${coordinates.value}`, {
 	method: 'post',
 	body: {
 		data: location,
 	},
 },
 );
+
+onBeforeMount(() => {
+	refresh()
+})
+
 </script>
 
 <template>
