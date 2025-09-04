@@ -32,6 +32,8 @@ const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
 	},
 },
 );
+
+
 </script>
 
 <template>
@@ -62,9 +64,7 @@ const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
 <style lang="css">
 .dashboard {
 	display: grid;
-	grid-template-columns: repeat(12, 1fr);
-	grid-template-rows: 1fr 1fr;
-	padding: 16px 64px 48px 64px;
+	grid-template-columns: 1fr;
 	column-gap: 32px;
 	row-gap: 48px;
 	justify-content: stretch;
@@ -77,24 +77,37 @@ const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
 	height: 100%;
 }
 
-.dashboard__1 {
-	grid-column: 1 / 7;
-  	grid-row: 1;
+
+@media screen and (width >= 900px) {
+
+	.dashboard {
+		grid-template-columns: repeat(12, 1fr);
+		grid-template-rows: 1fr 1fr;
+		padding: 16px 64px 48px 64px;
+	}
+
+	.dashboard__1 {
+		grid-column: 1 / 7;
+		grid-row: 1;
+	}
+	
+	.dashboard__2 {
+		grid-column: 7 / 13;
+		grid-row: 1;
+	}
+	
+	.dashboard__3 {
+		grid-column: 1 / 4;
+		grid-row: 2;
+	}
+	
+	.dashboard__4 {
+		display: flex;
+		flex-flow: column nowrap;
+		grid-column: 4 / 13;
+		grid-row: 2;
+	}
 }
 
-.dashboard__2 {
-	grid-column: 7 / 13;
-  	grid-row: 1;
-}
-
-.dashboard__3 {
-	grid-column: 1 / 4;
-  	grid-row: 2;
-}
-
-.dashboard__4 {
-	grid-column: 4 / 13;
-  	grid-row: 2;
-}
 
 </style>

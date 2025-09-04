@@ -1,5 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+	app: {
+    head: {
+      // update Nuxt defaults
+      charset: 'utf-16',
+      viewport: 'width=device-width,user-scalable=no',
+		}
+	},
 	modules: [
 		'@nuxt/eslint',
 		'vuetify-nuxt-module',
