@@ -1,29 +1,29 @@
 <template>
 	<v-card>
 		<v-col>
-			<div :class="$style.weatherDay">
+			<div class="weatherDay">
 				<h3>
 					<slot
 						name="weekday"
 					/>
 				</h3>
 				<v-divider></v-divider>
-				<div :class="$style.weatherCode">
+				<div class="weatherCode">
 					<slot name="weather-code" />
-					<div :class="$style.precipitation">
+					<div class="precipitation">
 						<slot name="precipitation" />
 					</div>
 				</div>
-				<div :class="$style.temperatures">
-					<span :class="$style.high">
+				<div class="temperatures">
+					<span class="high">
 						<slot name="high-temperature" />
 					</span>
-					<span :class="$style.low">
+					<span class="low">
 						 <slot name="low-temperature" />
 					</span>
 				</div>
 				<v-divider></v-divider>
-				<span :class="$style.date">
+				<span class="date">
 					<slot
 						name="date"
 					/>
@@ -33,7 +33,7 @@
 	</v-card>
 </template>
 
-<style lang="css" module>
+<style lang="css">
 .weatherDay {
     display: flex;
 	flex-flow: column nowrap;
@@ -66,20 +66,17 @@
 	font-weight: 300;
 }
 
-.precipitation {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	width: max-content;
-    margin: auto;
-	font-weight: 500;
-}
-
 .weatherCode {
 	position: relative;
 	> img {
-		padding: 32px;
+		margin: auto;
+	}
+	> img ~ .precipitation {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		width: max-content;
 		margin: auto;
 	}
 }
@@ -87,6 +84,5 @@
 .date {
 	font-weight: 300;
 }
-
 
 </style>
