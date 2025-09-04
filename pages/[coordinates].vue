@@ -49,8 +49,11 @@ const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
 				3
 			</div>
 			<div class="dashboard__4">
+				<h2>The week ahead</h2>
+				<v-divider />
 				<WeatherBy7Day
 					:daily="data?.daily"
+					:descriptions="data?.descriptions"
 					:is-loading="status"
 				/>
 			</div>
@@ -73,7 +76,7 @@ const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
 }
 
 .dashboard > div {
-	background-color: grey;
+	background-color: #eee;
 	height: 100%;
 }
 
@@ -102,10 +105,17 @@ const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
 	}
 	
 	.dashboard__4 {
+
+		--padding: 1rem 2rem;
+
 		display: flex;
 		flex-flow: column nowrap;
 		grid-column: 4 / 13;
 		grid-row: 2;
+
+		h2 {
+			padding: var(--padding);
+		}
 	}
 }
 

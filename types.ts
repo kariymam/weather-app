@@ -20,6 +20,33 @@ export interface UserGeolocation {
 	};
 }
 
+  export type WeatherGovPeriods = {
+  number: number,
+  name: string,
+  startTime: string,
+  endTime: string,
+  isDaytime: boolean,
+  temperature: number,
+  temperatureUnit: string,
+  temperatureTrend?: string,
+  probabilityOfPrecipitation: {
+    unitCode: string,
+    value: number
+  }
+  windSpeed: string,
+  windDirection: string,
+  icon: string,
+  shortForecast: string,
+  detailedForecast: string,
+}
+
+export type WeatherDescriptions = {
+	startTime: string,
+	endTime: string,
+	short: string,
+	detailed: string,
+}
+
 export type WeatherCodeObj = {
 	day: { description: string; image: string };
 	night: { description: string; image: string };
@@ -59,6 +86,7 @@ export type WeatherApiResponse = {
 	periods: openmeteo['periods'];
 	daily: openmeteo['daily'];
 	alerts: [] | WeatherGovAlert[];
+	descriptions: WeatherDescriptions[];
 };
 
 export type openmeteo = {

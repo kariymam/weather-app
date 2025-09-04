@@ -1,10 +1,20 @@
 import { fetchWeatherApi } from 'openmeteo';
 import { isSameDay, isThisHour, addHours } from 'date-fns';
+import { WeatherDescriptions, WeatherGovPeriods } from '~/types';
 
 const BASE_URL = {
 	OPENMETEO: 'https://api.open-meteo.com/v1/forecast',
 	WEATHERGOV_ALERTS: 'https://api.weather.gov/alerts?',
+	WEATHERGOV_FORECAST: (lat: string, long: string) => `https://api.weather.gov/points/${lat},${long}`,
 };
+
+const WEATHERGOV_HEADER = {
+	headers: {
+		accept: 'application/geo+json',
+	}
+}
+
+const currentTime = new Date();
 
 async function fetchOpenMeteo(lat: string, long: string, zone?: string) {
 	const params = {
@@ -28,7 +38,7 @@ async function fetchOpenMeteo(lat: string, long: string, zone?: string) {
 			'precipitation_hours',
 		],
 		current: ['temperature_2m', 'precipitation', 'is_day', 'apparent_temperature'],
-		timezone: "GMT",
+		timezone: zone ? zone : 'GMT',
 		wind_speed_unit: 'mph',
 		temperature_unit: 'fahrenheit',
 		models: "gfs_seamless",
@@ -56,7 +66,7 @@ async function fetchOpenMeteo(lat: string, long: string, zone?: string) {
 
 			return {
 				time: new Date((Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) * 1000).toISOString(),
-				weather_code: periods.filter((obj) => obj['time'] === addHours(time, 12).toISOString())[0].weather_code,
+				weather_code: i === 0 ? periods.filter((obj) => obj['time'] === addHours(time, currentTime.getHours()).toISOString())[0].weather_code : periods.filter((obj) => obj['time'] === addHours(time, 12).toISOString())[0].weather_code,
 				temperature_2m_max: daily.variables(0)!.valuesArray()![i],
 				apparent_temperature_max: daily.variables(1)!.valuesArray()![i],
 				temperature_2m_min: daily.variables(2)!.valuesArray()![i],
@@ -104,11 +114,7 @@ async function fetchWeatherAlerts(startTime: string, lat: string, long: string) 
 		['limit', '500'],
 	]).toString();
 
-	const weathergovAlerts = await fetch(BASE_URL.WEATHERGOV_ALERTS + params, {
-		headers: {
-			accept: 'application/geo+json',
-		},
-	}).then(r => r.json()).catch((error) => {
+	const weathergovAlerts = await fetch(BASE_URL.WEATHERGOV_ALERTS + params, WEATHERGOV_HEADER).then(r => r.json()).catch((error) => {
 		console.error(error);
 		return error.status(500).json({ message: error });
 	});
@@ -116,7 +122,41 @@ async function fetchWeatherAlerts(startTime: string, lat: string, long: string) 
 	return weathergovAlerts;
 }
 
+async function fetchWeatherDescriptions(lat: string, long: string) {
+
+
+
+	const weathergov = await fetch(BASE_URL.WEATHERGOV_FORECAST(lat, long), WEATHERGOV_HEADER).then(r => r.json()).catch((error) => {
+		console.error(error);
+		return error.status(500).json({ message: error });
+	});
+
+	const weathergovForecast = async ({ properties }) => { 
+        const response = await fetch(properties.forecast, WEATHERGOV_HEADER).then(r => r.json()).catch((error) => {
+			return error.status(500).json({ message: error });
+		});
+		return response
+	}
+
+	const data = await weathergovForecast(weathergov)
+
+	for (let key in data) {
+		if (key === 'properties' && data[key].hasOwnProperty("periods")){
+			return data[key].periods.map((obj: WeatherGovPeriods) => { 
+				return obj.isDaytime ? {
+					startTime: obj.startTime,
+					endTime: obj.endTime,
+					detailed: obj.detailedForecast, 
+					short: obj.shortForecast
+				} as WeatherDescriptions : false
+			}).filter(Boolean)
+		}
+	}
+
+}
+
 export default {
 	fetchWeatherAlerts,
+	fetchWeatherDescriptions,
 	fetchOpenMeteo,
 };

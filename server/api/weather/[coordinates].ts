@@ -1,4 +1,4 @@
-import type { openmeteo } from '../../../types.ts';
+import type { openmeteo, WeatherDescriptions } from '../../../types.ts';
 import weatherRequest from '../../routes/weatherRequest';
 
 export default defineEventHandler(async (event) => {
@@ -6,12 +6,12 @@ export default defineEventHandler(async (event) => {
 
 	const { data: { place_name, coordinates } } = await readBody(event);
 
-	// console.log(coordinatesString, place_name, coordinates);
-
 	try {
 		const openmeteo = await weatherRequest.fetchOpenMeteo(coordinates.latitude, coordinates.longitude, Intl.DateTimeFormat().resolvedOptions().timeZone) as openmeteo;
 
 		const weathergovAlerts = await weatherRequest.fetchWeatherAlerts(openmeteo.current.time, coordinates.latitude, coordinates.longitude);
+
+		const weathergovDescriptions = await weatherRequest.fetchWeatherDescriptions(coordinates.latitude, coordinates.longitude) as WeatherDescriptions[]
 
 		return {
 			coordinates,
@@ -19,6 +19,7 @@ export default defineEventHandler(async (event) => {
 			periods: openmeteo.periods,
 			daily: openmeteo.daily,
 			alerts: weathergovAlerts.features,
+			descriptions: weathergovDescriptions
 		};
 	}
 	catch (error) {
