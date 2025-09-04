@@ -7,9 +7,11 @@
 						name="weekday"
 					/>
 				</h3>
-				<v-divider></v-divider>
 				<div class="weatherCode">
 					<slot name="weather-code" />
+					<div class="description">
+						<slot name="description" />
+					</div>
 					<div class="precipitation">
 						<slot name="precipitation" />
 					</div>
@@ -22,67 +24,95 @@
 						 <slot name="low-temperature" />
 					</span>
 				</div>
-				<v-divider></v-divider>
-				<span class="date">
-					<slot
-						name="date"
-					/>
-				</span>
 			</div>
 		</v-col>
 	</v-card>
+	<span v-if="$slots.date" class="date">
+		<slot
+			name="date"
+		/>
+	</span>
 </template>
 
 <style lang="css">
 .weatherDay {
-    display: flex;
-	flex-flow: column nowrap;
-	h3 {
-		text-transform: uppercase;
-		font-weight: 300;
-		letter-spacing: 3.7px;
-	}
 	> div {
-		width: 100%;
+		width: initial;
 	}
 	> * {
 		display: flex;
 		align-items: center;
+		align-content: center;
+		justify-content: center;
 	}
+}
+
+@media screen and (width >= 900px) {
+	.weatherDay {
+		display: flex;
+		flex-flow: column nowrap;
+		gap: 12px;
+		width: 148px;
+		text-align: center;
+
+		> hr {
+			margin-top: -12px;
+		}
+	}
+}
+
+.weatherDay hr {
+	width: 100%;
 }
 
 .temperatures {
 	flex-flow: column nowrap;
-	padding: 1rem 0;
 	line-height: 1.1;
-}
-
-.high {
 	font-size: 2rem;
 }
 
-.low {
-	font-size: 1.5rem;
-	font-weight: 300;
+.high, .date {
+	font-weight: bold;
 }
 
 .weatherCode {
 	position: relative;
-	> img {
-		margin: auto;
+
+	> img ~ .description {
+		display: grid;
+		grid-template: 1fr / 1fr;
 	}
 	> img ~ .precipitation {
 		position: absolute;
-		bottom: 0;
 		left: 0;
 		right: 0;
+		top: 0;
 		width: max-content;
 		margin: auto;
 	}
 }
 
-.date {
-	font-weight: 300;
+@media screen and (width >= 900px) {
+	.weatherCode {
+		flex-direction: column;
+
+		> img {
+			margin-top: 12px;
+			width: 100%;
+		}
+
+		> img ~ .description {
+			margin: auto;
+			flex: 2 0 100px;
+		}
+	}
+}
+
+
+@media screen and (width >= 900px) {
+	.description {
+		max-width: 20ch;
+	}
 }
 
 </style>
