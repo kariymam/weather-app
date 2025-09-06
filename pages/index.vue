@@ -1,19 +1,17 @@
 <script lang="ts" setup>
 import type { Geolocation } from '~/types';
 
-const { location } = defineProps<{
-	location: Geolocation;
+const { coordinates } = defineProps<{
+	coordinates: string;
 }>();
 
-const coordinates = computed(() => `${location.coordinates.latitude},${location.coordinates.longitude}`);
+const location = ref(coordinates)
 
-const { data, status, refresh } = await useFetch(`/api/weather/${coordinates.value}`, {
-	method: 'post',
-	body: {
-		data: location,
-	},
-},
-);
+const { data, status, refresh } = await useFetch(`/api/weather/`,{ 
+	query: {
+    	location
+	}
+});
 
 onBeforeMount(() => {
 	refresh()
@@ -23,6 +21,7 @@ onBeforeMount(() => {
 
 <template>
 	<div>
+		{{ coordinates }}
 		{{ data }}
 		{{ status }}
 	</div>

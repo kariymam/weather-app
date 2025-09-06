@@ -8,13 +8,9 @@ definePageMeta({
 	},
 });
 
-const { location } = defineProps<{
-	location: Geolocation;
-}>();
-
 const route = useRoute();
 
-const coordinates = ref(route.params.coordinates);
+const location = ref(route.params.coordinates);
 
 onBeforeMount(async () => {
 	const { data: { value: cookie } } = await useFetch('/api/cookie');
@@ -25,13 +21,11 @@ onBeforeMount(async () => {
 	}
 });
 
-const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
-	method: 'post',
-	body: {
-		data: { location: location },
-	},
-},
-);
+const { data, status, refresh } = await useFetch(`/api/weather/`,{ 
+	query: {
+    	location
+	}
+});
 
 
 </script>
