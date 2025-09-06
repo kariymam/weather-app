@@ -28,7 +28,7 @@ onBeforeMount(async () => {
 const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
 	method: 'post',
 	body: {
-		data: location,
+		data: { location: location },
 	},
 },
 );

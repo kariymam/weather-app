@@ -20,7 +20,7 @@ export interface UserGeolocation {
 	};
 }
 
-  export type WeatherGovPeriods = {
+export type weathergovPeriods = {
   number: number,
   name: string,
   startTime: string,
@@ -89,6 +89,27 @@ export type WeatherApiResponse = {
 	descriptions: WeatherDescriptions[];
 };
 
+export type openmeteoPeriod = {
+	time: string;
+	temperature2m: number;
+	apparentTemperature: number;
+	precipitationProbability: number;
+	showers: number;
+	rain: number;
+	snowfall: number;
+}
+
+export type openmeteoDay = {
+	time: string;
+	weather_code: number;
+	temperature_2m_max: number;
+	apparent_temperature_max: number;
+	temperature_2m_min: number;
+	apparent_temperature_min: number;
+	precipitation_probability_max: number;
+	precipitation_hours: number;
+}
+
 export type openmeteo = {
 	current: {
 		time: string;
@@ -97,25 +118,8 @@ export type openmeteo = {
 		isDay: number;
 		apparentTemperature: number;
 	};
-	periods: {
-		time: string;
-		temperature2m: number;
-		apparentTemperature: number;
-		precipitationProbability: number;
-		showers: number;
-		rain: number;
-		snowfall: number;
-	}[];
-	daily: {
-		time: string;
-		weather_code: number;
-		temperature_2m_max: number;
-		apparent_temperature_max: number;
-		temperature_2m_min: number;
-		apparent_temperature_min: number;
-		precipitation_probability_max: number;
-		precipitation_hours: number;
-	}[];
+	periods: openmeteoPeriod[];
+	daily: openmeteoDay[];
 };
 
 export interface WeatherGovAlert {
