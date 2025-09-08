@@ -1,28 +1,35 @@
 <script lang="ts" setup>
-import type { Geolocation } from '~/types';
+import type { AsyncDataRequestStatus } from '#app';
+import type { openmeteoDay, openmeteoPeriod, WeatherDescriptions } from '~/types';
 
-const { coordinates } = defineProps<{
-	coordinates: string;
+const { weather } = defineProps<{
+	coordinates: string
+	weather: {
+		data: {
+			coordinates: string[];
+			current: {
+				time: string;
+				precipitation: number;
+				temperature2m: number;
+				isDay: number;
+				apparentTemperature: number;
+			}
+			periods: openmeteoPeriod[];
+			daily: openmeteoDay[];
+			descriptions: WeatherDescriptions[];
+		},
+		status: AsyncDataRequestStatus,
+		// @ts-ignore -- Can't find type
+		refresh: (opts?: AsyncDataExecuteOptions) => Promise<void>
+	}
 }>();
 
-const location = ref(coordinates)
-
-const { data, status, refresh } = await useFetch(`/api/weather/`,{ 
-	query: {
-    	location
-	}
-});
-
-onBeforeMount(() => {
-	refresh()
-})
 
 </script>
 
 <template>
 	<div>
-		{{ coordinates }}
-		{{ data }}
-		{{ status }}
+		{{ weather.status }}
+		{{ weather.data }}
 	</div>
 </template>

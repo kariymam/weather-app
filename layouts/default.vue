@@ -11,6 +11,7 @@ const {
 	saveLocationFromMapbox,
 	saveLocation,
 } = await useLocationStore();
+
 </script>
 
 <template>

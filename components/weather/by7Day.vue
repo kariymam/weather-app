@@ -13,7 +13,6 @@ const { daily, descriptions, isLoading } = defineProps<{
 
 <template>
 	<div
-		v-if="isLoading === 'success'"
 		id="periodsByDay"
 		ref="periodByDay"
 	>
