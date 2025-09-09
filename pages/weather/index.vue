@@ -2,10 +2,13 @@
 import type { AsyncDataRequestStatus } from '#app';
 import type { Geolocation, openmeteoDay, openmeteoPeriod, WeatherDescriptions } from '~/types';
 
-definePageMeta({
-	validate: async (route) => {
-		return typeof route.params.coordinates === 'string' && /-?\d{2,}.\d+,-?\d{2,}.\d+/.test(route.params.coordinates);
-	},
+onBeforeMount(async () => {
+	const { data: { value: cookie } } = await useFetch('/api/cookie');
+
+	if (cookie) {
+		const parsedCookie = useParseCookieToLocation(cookie.location);
+		locationStore().saveLocation(parsedCookie as Geolocation);
+	}
 });
 
 const { weather } = defineProps<{
@@ -29,6 +32,9 @@ const { weather } = defineProps<{
 		refresh: (opts?: AsyncDataExecuteOptions) => Promise<void>
 	}
 }>();
+
+
+
 </script>
 
 <template>
