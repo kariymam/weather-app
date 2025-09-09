@@ -32,7 +32,7 @@ const {
 				/>
 			</template>
 			<template #weather>
-				<nuxt-link :to="{ name: 'coordinates', params: { coordinates } }">Weather</nuxt-link>
+				<nuxt-link :to="{ name: 'weather' }">Weather</nuxt-link>
 			</template>
 		</AppNavbar>
 		<v-main>
