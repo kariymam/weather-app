@@ -8,11 +8,14 @@ const { data, status, refresh } = await useFetch(`/api/weather/`,{
 	query: {
     	location: coordinates
 	},
-	watch: [coordinates]
+	watch: [coordinates],
+	lazy: true
 });
 
-onBeforeMount(() => {
-	refresh()
+watch(location, (newValue) => {
+	if(newValue){
+		refresh()
+	}
 })
 
 </script>
