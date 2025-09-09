@@ -27,11 +27,11 @@
 			</div>
 		</v-col>
 	</v-card>
-	<span v-if="$slots.date" class="date">
+	<p v-if="$slots.date" class="date">
 		<slot
 			name="date"
 		/>
-	</span>
+	</p>
 </template>
 
 <style lang="css">

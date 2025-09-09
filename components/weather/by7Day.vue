@@ -63,19 +63,10 @@ const { daily, descriptions, isLoading } = defineProps<{
 	row-gap: var(--row-gap);
 	padding: var(--padding);
 
-	> .day:last-child > span.date {
-		margin-left: auto;
-	}
-
 	> .day {
 		display: flex;
 		flex-flow: column nowrap;
 	}
-
-	> .day span.date {
-		margin: 0 0 var(--row-gap) 0;
-	}
-
 }
 
 
