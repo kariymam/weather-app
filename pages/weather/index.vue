@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Geolocation } from '~/types';
+import type { Geolocation, WeatherAPIResponse } from '~/types';
 
 onBeforeMount(async () => {
 	const { data: { value: cookie } } = await useFetch('/api/cookie');

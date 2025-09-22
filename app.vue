@@ -1,11 +1,23 @@
 <script setup lang="ts">
 
-const { 
-	data, 
-	status, 
-	location,
-    coordinates 
-} = await useWeatherApi()
+const {
+    location,
+    coordinates
+  } = await useLocationStore();
+
+  const { data, status, refresh } = await useFetch(`/api/weather/`,{ 
+    query: {
+        location: coordinates
+    },
+    watch: [coordinates],
+    lazy: true
+  });
+
+  watch(location, (newValue) => {
+    if(newValue){
+      refresh()
+    }
+  })
 
 </script>
 

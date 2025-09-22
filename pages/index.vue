@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Geolocation, WeatherAPIResponse } from '~/types';
+
 const { weather, location } = defineProps<{
 	weather: WeatherAPIResponse["weather"];
 	location: Geolocation;
