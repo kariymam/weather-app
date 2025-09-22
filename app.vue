@@ -1,7 +1,11 @@
 <script setup lang="ts">
-const {
+
+const { 
+	data, 
+	status, 
 	location,
-} = await useLocationStore();
+    coordinates 
+} = await useWeatherApi()
 
 </script>
 
@@ -9,6 +13,8 @@ const {
 	<NuxtLayout>
 		<NuxtPage
 			:location="location"
+			:coordinates="coordinates"
+			:weather="{ data, status }"
 		/>
 	</NuxtLayout>
 </template>

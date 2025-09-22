@@ -4,20 +4,20 @@ import '../styles/global.css';
 const {
 	location,
 	locations,
-	coordinates,
 	geolocationAPI,
 	useGeolocationAPI,
 	useSearchAPI,
 	saveLocationFromMapbox,
 	saveLocation,
 } = await useLocationStore();
+
 </script>
 
 <template>
 	<v-app>
 		<AppNavbar>
-			<template #location>
-				{{ location.place_name }}
+			<template #home>
+				Weather App
 			</template>
 			<template #location-settings>
 				<location-settings-dialog
@@ -31,7 +31,7 @@ const {
 				/>
 			</template>
 			<template #weather>
-				<nuxt-link :to="{ name: 'coordinates', params: { coordinates } }">Weather</nuxt-link>
+				<nuxt-link :to="{ name: 'weather' }">Weather</nuxt-link>
 			</template>
 		</AppNavbar>
 		<v-main>

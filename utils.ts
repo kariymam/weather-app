@@ -70,32 +70,30 @@ export const weatherIconsList = [
 	},
 ];
 
-export const weatherIconAndAssets = (temp: number, string?: string, video?: boolean) => {
+export const weatherIconAndAssets = (string: string) => {
 	const icon: string[] = [];
 	let cldURL: string = '';
 
-	if (string) {
-		const searchForMatch = (term: string) => {
-			const search: string = `${term}*`;
-			const regex: RegExp = new RegExp(search, 'gm');
-			return regex.test(string);
-		};
+	const searchForMatch = (term: string) => {
+		const search: string = `${term}*`;
+		const regex: RegExp = new RegExp(search, 'gm');
+		return regex.test(string);
+	};
 
-		for (const { word, emoji, video } of weatherIconsList) {
-			if (Array.isArray(word)) {
-				for (const key in word) {
-					if (searchForMatch(word[key])) {
-						icon.push(emoji);
-						cldURL = video;
-					}
-				}
-				continue;
-			}
-			else {
-				if (searchForMatch(word)) {
+	for (const { word, emoji, video } of weatherIconsList) {
+		if (Array.isArray(word)) {
+			for (const key in word) {
+				if (searchForMatch(word[key])) {
 					icon.push(emoji);
 					cldURL = video;
 				}
+			}
+			continue;
+		}
+		else {
+			if (searchForMatch(word)) {
+				icon.push(emoji);
+				cldURL = video;
 			}
 		}
 	}

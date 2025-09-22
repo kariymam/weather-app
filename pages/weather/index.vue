@@ -1,20 +1,5 @@
 <script lang="ts" setup>
-import { WeatherBy7Day } from '#components';
 import type { Geolocation } from '~/types';
-
-definePageMeta({
-	validate: async (route) => {
-		return typeof route.params.coordinates === 'string' && /-?\d{2,}.\d+,-?\d{2,}.\d+/.test(route.params.coordinates);
-	},
-});
-
-const { location } = defineProps<{
-	location: Geolocation;
-}>();
-
-const route = useRoute();
-
-const coordinates = ref(route.params.coordinates);
 
 onBeforeMount(async () => {
 	const { data: { value: cookie } } = await useFetch('/api/cookie');
@@ -25,14 +10,10 @@ onBeforeMount(async () => {
 	}
 });
 
-const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
-	method: 'post',
-	body: {
-		data: { location: location },
-	},
-},
-);
-
+const { weather, location } = defineProps<{
+	weather: WeatherAPIResponse["weather"];
+	location: Geolocation;
+}>();
 
 </script>
 
@@ -40,7 +21,10 @@ const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
 	<div>
 		<div class="dashboard">
 			<div class="dashboard__1">
-				1
+				<v-col>
+					<h2>Current forecast in {{ location.place_name }}...</h2>
+					<WeatherCurrent :current="weather.data?.current" :descriptions="weather.data?.descriptions[0]" />
+				</v-col>
 			</div>
 			<div class="dashboard__2">
 				2
@@ -52,17 +36,14 @@ const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
 				<h2>The week ahead</h2>
 				<v-divider />
 				<WeatherBy7Day
-					:daily="data?.daily"
-					:descriptions="data?.descriptions"
-					:is-loading="status"
+					:daily="weather.data?.daily"
+					:descriptions="weather.data?.descriptions"
+					:is-loading="weather.status"
 				/>
 			</div>
 		</div>
-		<!-- <weather-by-hour
-			:periods="data?.periods"
-			:is-loading="status"
-		/> -->
 	</div>
+	<UiVideo :video-name="weather.data?.descriptions[0].cldURL"/>
 </template>
 <style lang="css">
 .dashboard {
@@ -76,8 +57,23 @@ const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
 }
 
 .dashboard > div {
-	background-color: #eee;
+	/* background-color:#eee; */
+	border-style: solid;
+    border-width: thin 0 0 0;
+	border-color: inherit;
+	display: flex;
 	height: 100%;
+    width: 100%;
+}
+
+.dashboard__1 h2 ~ .current {
+	height: fit-content;
+    margin: auto;
+}
+
+.v-col:has(.current) {
+	display: flex;
+    flex-flow: column;
 }
 
 
@@ -86,12 +82,13 @@ const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
 	.dashboard {
 		grid-template-columns: repeat(12, 1fr);
 		grid-template-rows: 1fr 1fr;
-		padding: 16px 64px 48px 64px;
+		padding: 16px 0 48px 0;
 	}
 
 	.dashboard__1 {
 		grid-column: 1 / 7;
 		grid-row: 1;
+		flex-flow: column nowrap;
 	}
 	
 	.dashboard__2 {
@@ -118,6 +115,5 @@ const { data, status } = await useFetch(`/api/weather/${coordinates.value}`, {
 		}
 	}
 }
-
 
 </style>
