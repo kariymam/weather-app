@@ -1,22 +1,11 @@
 <script setup lang="ts">
-const {
+
+const { 
+	data, 
+	status, 
 	location,
-	coordinates
-} = await useLocationStore();
-
-const { data, status, refresh } = await useFetch(`/api/weather/`,{ 
-	query: {
-    	location: coordinates
-	},
-	watch: [coordinates],
-	lazy: true
-});
-
-watch(location, (newValue) => {
-	if(newValue){
-		refresh()
-	}
-})
+    coordinates 
+} = await useWeatherApi()
 
 </script>
 
@@ -25,7 +14,7 @@ watch(location, (newValue) => {
 		<NuxtPage
 			:location="location"
 			:coordinates="coordinates"
-			:weather="{ data, status, refresh }"
+			:weather="{ data, status }"
 		/>
 	</NuxtLayout>
 </template>

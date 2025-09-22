@@ -1,12 +1,8 @@
 <script lang="ts" setup>
-import type { WeatherAPIResponse } from '~/pages/weather/index.vue';
-
-  const { current,  descriptions } = defineProps<{
+const { current,  descriptions } = defineProps<{
     descriptions: WeatherAPIResponse["weather"]["data"]["descriptions"][0]
     current: WeatherAPIResponse["weather"]["data"]["current"]
 }>()
-
-
 </script>
 
 <template>

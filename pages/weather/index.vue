@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import type { AsyncDataRequestStatus } from '#app';
-import { format } from 'date-fns';
-import type { Geolocation, openmeteoDay, openmeteoPeriod, WeatherDescriptions } from '~/types';
+import type { Geolocation } from '~/types';
 
 onBeforeMount(async () => {
 	const { data: { value: cookie } } = await useFetch('/api/cookie');
@@ -12,34 +10,10 @@ onBeforeMount(async () => {
 	}
 });
 
-export type WeatherAPIResponse = {
-	coordinates: string
-	weather: {
-		data: {
-			coordinates: string[];
-			current: {
-				time: string;
-				precipitation: number;
-				temperature2m: number;
-				isDay: number;
-				apparentTemperature: number;
-			}
-			periods: openmeteoPeriod[];
-			daily: openmeteoDay[];
-			descriptions: WeatherDescriptions[];
-		},
-		status: AsyncDataRequestStatus,
-		// @ts-ignore -- Can't find type
-		refresh: (opts?: AsyncDataExecuteOptions) => Promise<void>
-	}
-}
-
 const { weather, location } = defineProps<{
 	weather: WeatherAPIResponse["weather"];
 	location: Geolocation;
 }>();
-
-const time = format(new Date(), 'p')
 
 </script>
 
@@ -69,6 +43,7 @@ const time = format(new Date(), 'p')
 			</div>
 		</div>
 	</div>
+	<UiVideo :video-name="weather.data?.descriptions[0].cldURL"/>
 </template>
 <style lang="css">
 .dashboard {

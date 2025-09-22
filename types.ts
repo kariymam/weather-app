@@ -41,6 +41,8 @@ export type weathergovPeriods = {
 }
 
 export type WeatherDescriptions = {
+	icon: string[];
+	cldURL: string;
 	startTime: string,
 	endTime: string,
 	shortForecast: string,
