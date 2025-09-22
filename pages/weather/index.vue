@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { AsyncDataRequestStatus } from '#app';
+import { format } from 'date-fns';
 import type { Geolocation, openmeteoDay, openmeteoPeriod, WeatherDescriptions } from '~/types';
 
 onBeforeMount(async () => {
@@ -11,7 +12,7 @@ onBeforeMount(async () => {
 	}
 });
 
-const { weather } = defineProps<{
+export type WeatherAPIResponse = {
 	coordinates: string
 	weather: {
 		data: {
@@ -31,9 +32,14 @@ const { weather } = defineProps<{
 		// @ts-ignore -- Can't find type
 		refresh: (opts?: AsyncDataExecuteOptions) => Promise<void>
 	}
+}
+
+const { weather, location } = defineProps<{
+	weather: WeatherAPIResponse["weather"];
+	location: Geolocation;
 }>();
 
-
+const time = format(new Date(), 'p')
 
 </script>
 
@@ -41,7 +47,10 @@ const { weather } = defineProps<{
 	<div>
 		<div class="dashboard">
 			<div class="dashboard__1">
-				1
+				<v-col>
+					<h2>Current forecast in {{ location.place_name }}...</h2>
+					<WeatherCurrent :current="weather.data?.current" :descriptions="weather.data?.descriptions[0]" />
+				</v-col>
 			</div>
 			<div class="dashboard__2">
 				2
@@ -59,10 +68,6 @@ const { weather } = defineProps<{
 				/>
 			</div>
 		</div>
-		<!-- <weather-by-hour
-			:periods="data?.periods"
-			:is-loading="status"
-		/> -->
 	</div>
 </template>
 <style lang="css">
@@ -77,8 +82,23 @@ const { weather } = defineProps<{
 }
 
 .dashboard > div {
-	background-color: #eee;
+	/* background-color:#eee; */
+	border-style: solid;
+    border-width: thin 0 0 0;
+	border-color: inherit;
+	display: flex;
 	height: 100%;
+    width: 100%;
+}
+
+.dashboard__1 h2 ~ .current {
+	height: fit-content;
+    margin: auto;
+}
+
+.v-col:has(.current) {
+	display: flex;
+    flex-flow: column;
 }
 
 
@@ -87,12 +107,13 @@ const { weather } = defineProps<{
 	.dashboard {
 		grid-template-columns: repeat(12, 1fr);
 		grid-template-rows: 1fr 1fr;
-		padding: 16px 64px 48px 64px;
+		padding: 16px 0 48px 0;
 	}
 
 	.dashboard__1 {
 		grid-column: 1 / 7;
 		grid-row: 1;
+		flex-flow: column nowrap;
 	}
 	
 	.dashboard__2 {
@@ -119,6 +140,5 @@ const { weather } = defineProps<{
 		}
 	}
 }
-
 
 </style>

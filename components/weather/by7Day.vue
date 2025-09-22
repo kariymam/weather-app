@@ -9,6 +9,39 @@ const { daily, descriptions, isLoading } = defineProps<{
 	isLoading: AsyncDataRequestStatus;
 }>();
 
+type ImageObj = {
+	day: {
+        description: string;
+        image: string;
+    };
+    night: {
+        description: string;
+        image: string;
+    }
+}
+
+const images: Ref<ImageObj[] | undefined[]> = ref([])
+
+const promises = async () => {
+	const arr: ImageObj[] = []
+	if (daily){
+		for (const obj of daily) {
+			const code = await $fetch(`/api/weather/codes/${obj["weather_code"]}`)
+
+			if(code) {
+				arr.push(code)
+			}
+		}
+	}
+	return images.value = arr
+}
+
+await promises()
+
+const imageAttributes = (obj: ImageObj) => {
+	return obj.day
+}
+
 </script>
 
 <template>
@@ -17,7 +50,7 @@ const { daily, descriptions, isLoading } = defineProps<{
 		ref="periodByDay"
 	>
 		<div
-			v-for="({ time, weather_code, precipitation_probability_max, temperature_2m_max, temperature_2m_min }, idx) in daily"
+			v-for="({ time, precipitation_probability_max, temperature_2m_max, temperature_2m_min }, idx) in daily"
 			:key="idx"
 			class="day"
 		>
@@ -29,16 +62,18 @@ const { daily, descriptions, isLoading } = defineProps<{
 					{{ useFormatDate(time) }}
 				</template>
 				<template #weather-code>
-					<weather-code :code="weather_code" />
+					 <WeatherCode v-if="images[idx] && Object.hasOwn(images[idx], 'day')" :code="imageAttributes(images[idx])" />
 				</template>
 				<template v-if="descriptions" #description>
-					<p>{{ descriptions[idx].short }}</p>
+					<p>{{ descriptions[idx].shortForecast }}</p>
 				</template>
 				<template #high-temperature>
-					{{ Math.round(temperature_2m_max) }}°
+					<span>H</span>
+					{{ Math.round(temperature_2m_max) }}
 				</template>
 				<template #low-temperature>
-					{{ Math.round(temperature_2m_min) }}°
+					<span>L</span>
+					{{ Math.round(temperature_2m_min) }}
 				</template>
 				<template v-if="precipitation_probability_max > 20" #precipitation>
 					<v-chip 
@@ -56,6 +91,7 @@ const { daily, descriptions, isLoading } = defineProps<{
 	--column-gap: 1rem;
 	--row-gap: 1rem;
 	--grid: auto / auto;
+	--font-size-smallest: 0.75rem;
 
 	display: grid;
 	grid-template: var(--grid);
@@ -66,7 +102,15 @@ const { daily, descriptions, isLoading } = defineProps<{
 	> .day {
 		display: flex;
 		flex-flow: column nowrap;
+		div {
+			height: 100%;
+		}
 	}
+}
+
+.high > span, 
+.low > span {
+	font-size: var(--font-size-smallest);
 }
 
 

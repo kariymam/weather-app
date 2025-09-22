@@ -1,0 +1,35 @@
+<script lang="ts" setup>
+import type { WeatherAPIResponse } from '~/pages/weather/index.vue';
+
+  const { current,  descriptions } = defineProps<{
+    descriptions: WeatherAPIResponse["weather"]["data"]["descriptions"][0]
+    current: WeatherAPIResponse["weather"]["data"]["current"]
+}>()
+
+
+</script>
+
+<template>
+  <div class="current">
+    <span class="currentTemperature">{{ current && Math.floor(current.apparentTemperature) }}</span>
+    <h3>{{ descriptions && descriptions.detailedForecast }}</h3>
+  </div>
+</template>
+
+<style>
+
+.currentTemperature::after {
+  content: '°';
+}
+
+.current {
+  h3 {
+    font-size: 2.25rem;
+  }
+  .currentTemperature {
+    font-size: 4.35rem;
+  }
+
+}
+
+</style>

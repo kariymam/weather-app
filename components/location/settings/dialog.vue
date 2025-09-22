@@ -84,7 +84,7 @@ watch(currentLocation, (newLocation) => {
 				variant="text"
 				v-bind="activatorProps"
 			>
-				Location Settings
+				{{ location.place_name }}
 			</v-btn>
 		</template>
 		<v-card>

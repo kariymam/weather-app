@@ -9,6 +9,8 @@ export default defineEventHandler(async (event) => {
 
 	const [results] = features;
 
+	console.log(results)
+
 	return {
 		place_name: results.place_name,
 	};

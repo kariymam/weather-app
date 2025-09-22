@@ -43,8 +43,8 @@ export type weathergovPeriods = {
 export type WeatherDescriptions = {
 	startTime: string,
 	endTime: string,
-	short: string,
-	detailed: string,
+	shortForecast: string,
+	detailedForecast: string,
 }
 
 export type WeatherCodeObj = {
@@ -97,6 +97,7 @@ export type openmeteoPeriod = {
 	showers: number;
 	rain: number;
 	snowfall: number;
+	weather_code: number;
 }
 
 export type openmeteoDay = {

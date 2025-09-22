@@ -35,7 +35,7 @@ const { weather } = defineProps<{
 	<div>
 		<div class="dashboard">
 			<div class="dashboard__1">
-				1
+				<WeatherCurrent :current="weather.data?.current" :descriptions="weather.data?.descriptions[0]" />
 			</div>
 			<div class="dashboard__2">
 				2
@@ -71,7 +71,8 @@ const { weather } = defineProps<{
 }
 
 .dashboard > div {
-	background-color: #eee;
+	/* background-color: #eee; */
+	border: 2px solid #838383;
 	height: 100%;
 }
 
@@ -81,7 +82,7 @@ const { weather } = defineProps<{
 	.dashboard {
 		grid-template-columns: repeat(12, 1fr);
 		grid-template-rows: 1fr 1fr;
-		padding: 16px 64px 48px 64px;
+		padding: 16px 0 48px 0;
 	}
 
 	.dashboard__1 {

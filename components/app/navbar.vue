@@ -23,6 +23,7 @@ const toggleTheme = () => {
 	<nav
 		id="main"
 	>
+	<v-col>
 		<v-row
 			align="center"
 		>
@@ -31,7 +32,7 @@ const toggleTheme = () => {
 			>
 				<h1>
 					<NuxtLink to="/">
-						<slot name="location" />
+						<slot name="home" />
 					</NuxtLink>
 				</h1>
 			</v-col>
@@ -52,5 +53,12 @@ const toggleTheme = () => {
 				/>
 			</v-col>
 		</v-row>
+	</v-col>
 	</nav>
 </template>
+
+<style>
+	nav {
+		display: flex;
+	}
+</style>

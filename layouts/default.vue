@@ -4,7 +4,6 @@ import '../styles/global.css';
 const {
 	location,
 	locations,
-	coordinates,
 	geolocationAPI,
 	useGeolocationAPI,
 	useSearchAPI,
@@ -17,8 +16,8 @@ const {
 <template>
 	<v-app>
 		<AppNavbar>
-			<template #location>
-				{{ location.place_name }}
+			<template #home>
+				Weather App
 			</template>
 			<template #location-settings>
 				<location-settings-dialog

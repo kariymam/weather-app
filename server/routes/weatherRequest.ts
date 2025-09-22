@@ -1,18 +1,7 @@
 import { fetchWeatherApi } from 'openmeteo';
-import { isSameDay, isThisHour, addHours } from 'date-fns';
-import { openmeteoPeriod, WeatherDescriptions, weathergovPeriods } from '~/types';
-
-const BASE_URL = {
-	OPENMETEO: 'https://api.open-meteo.com/v1/forecast',
-	WEATHERGOV_ALERTS: 'https://api.weather.gov/alerts?',
-	WEATHERGOV_FORECAST: (lat: string, long: string) => `https://api.weather.gov/points/${lat},${long}`,
-};
-
-const WEATHERGOV_HEADER = {
-	headers: {
-		accept: 'application/geo+json',
-	}
-}
+import { addHours } from 'date-fns';
+import { openmeteoDay, openmeteoPeriod, WeatherDescriptions, weathergovPeriods } from '~/types';
+import { WEATHERGOV_HEADER, BASE_URL } from '~/constants';
 
 const getWeathergovRes = async (base_url: string, params?: URLSearchParams, header = WEATHERGOV_HEADER) => {
 	return await fetch((params ? base_url + params.toString() : base_url), header).then(r => r.json()).catch((error) => {
@@ -54,8 +43,13 @@ async function fetchOpenMeteo(currentTime: Date, lat: string, long: string, zone
 	const hourly = response.hourly()!;
 	const daily = response.daily()!;
 
-	const periods = Array.from({ length: (Number(hourly.timeEnd()) - Number(hourly.time())) / hourly.interval() }, (_, i) => ({
-		time: new Date((Number(hourly.time()) + i * hourly.interval() + utcOffsetSeconds) * 1000).toISOString(),
+	const convertToLocalFromHourly = (i: number): string => new Date((Number(hourly.time()) + i * hourly.interval() + utcOffsetSeconds) * 1000).toISOString()
+
+	const convertToLocalFromDaily = (i: number): string => new Date((Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) * 1000).toISOString()
+
+	/** Hourly forecast */
+	const periodsByHour: openmeteoPeriod[] = Array.from({ length: (Number(hourly.timeEnd()) - Number(hourly.time())) / hourly.interval() }, (_, i) => ({
+		time: convertToLocalFromHourly(i),
 		temperature2m: hourly.variables(0)!.valuesArray()![i],
 		apparentTemperature: hourly.variables(1)!.valuesArray()![i],
 		precipitationProbability: hourly.variables(2)!.valuesArray()![i],
@@ -65,13 +59,14 @@ async function fetchOpenMeteo(currentTime: Date, lat: string, long: string, zone
 		weather_code: hourly.variables(6)!.valuesArray()![i]
 	}));
 
-	const periodsByDay = [...Array((Number(daily.timeEnd()) - Number(daily.time())) / daily.interval())].map(
+	/** Daily forecast */
+	const periodsByDay: openmeteoDay[] = [...Array((Number(daily.timeEnd()) - Number(daily.time())) / daily.interval())].map(
 			(_, i) => new Date((Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) * 1000)).map(
 		(time, i) => {
 
 			return {
-				time: new Date((Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) * 1000).toISOString(),
-				weather_code: periods.filter((obj) => obj['time'] === addHours(time, currentTime.getHours()).toISOString())[0]["weather_code"],
+				time: convertToLocalFromDaily(i),
+				weather_code: periodsByHour.filter((obj) => obj['time'] === addHours(time, currentTime.getHours()).toISOString())[0]["weather_code"],
 				temperature_2m_max: daily.variables(0)!.valuesArray()![i],
 				apparent_temperature_max: daily.variables(1)!.valuesArray()![i],
 				temperature_2m_min: daily.variables(2)!.valuesArray()![i],
@@ -81,25 +76,6 @@ async function fetchOpenMeteo(currentTime: Date, lat: string, long: string, zone
 			};
 		},
 	);
-
-	const period = (obj: openmeteoPeriod, prop: string) => (obj as { [key: string]: any })[prop]
-
-	console.log(currentTime)
-
-	function filterTodayPeriods(periods: unknown[], prop: string) {
-		const filtered = periods?.filter(p => isSameDay(currentTime, period(p, 'time')));
-		
-		const timeIdx = filtered.findIndex(p => isThisHour((p as { [key: string]: any })[prop]));
-
-		return filtered.slice(timeIdx);
-	}
-
-	const periodsByHour = filterTodayPeriods(periods.map((om, i) => ({
-		...om,
-		...(periods && periods[i] ? periods[i] : {}),
-	})), 'time');
-
-	console.log(periodsByHour)
 
 	return {
 		current: {
@@ -134,23 +110,23 @@ async function fetchWeatherDescriptions(currentTime: Date, lat: string, long: st
 
 	const weathergov = await getWeathergovRes(BASE_URL.WEATHERGOV_FORECAST(lat, long))
 
-	const weathergovForecast = async ({ properties }) => { 
+	const forecast = async ({ properties }) => { 
         const response = await getWeathergovRes(properties.forecast)
 		return response
 	}
 
-	const data = await weathergovForecast(weathergov)
+	const data = await forecast(weathergov)
 
 	const checkTime = (obj: weathergovPeriods) => currentTime.getHours() >= 20 ? !obj.isDaytime : obj.isDaytime;
 
 	for (let key in data) {
 		if (key === 'properties' && data[key].hasOwnProperty("periods")){
-			return data[key].periods.map((obj: weathergovPeriods) => { 
+			return data[key]["periods"].map((obj: weathergovPeriods) => { 
 				return checkTime(obj) ? {
 					startTime: obj.startTime,
 					endTime: obj.endTime,
-					detailed: obj.detailedForecast, 
-					short: obj.shortForecast
+					detailedForecast: obj.detailedForecast, 
+					shortForecast: obj.shortForecast
 				} as WeatherDescriptions : false
 			}).filter(Boolean)
 		}

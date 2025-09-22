@@ -6,36 +6,38 @@
 					<slot
 						name="weekday"
 					/>
+					<span class="weatherDate" v-if="$slots.date">
+						<slot
+							name="date"
+						/>
+					</span>
 				</h3>
 				<div class="weatherCode">
 					<slot name="weather-code" />
-					<div class="description">
-						<slot name="description" />
-					</div>
-					<div class="precipitation">
+					<div v-if="$slots.precipitation" class="precipitation">
 						<slot name="precipitation" />
 					</div>
 				</div>
 				<div class="temperatures">
-					<span class="high">
+					<p class="high">
 						<slot name="high-temperature" />
-					</span>
-					<span class="low">
-						 <slot name="low-temperature" />
-					</span>
+					</p>
+					<p class="low">
+						<slot name="low-temperature" />
+					</p>
+				</div>
+				<div class="weatherDescription">
+					<slot name="description" />
 				</div>
 			</div>
 		</v-col>
 	</v-card>
-	<p v-if="$slots.date" class="date">
-		<slot
-			name="date"
-		/>
-	</p>
 </template>
 
 <style lang="css">
 .weatherDay {
+	--description-size: var(--font-size-smallest);
+
 	> div {
 		width: initial;
 	}
@@ -71,8 +73,13 @@
 	font-size: 2rem;
 }
 
-.high, .date {
+.high, .weatherDescription, .weatherDate {
 	font-weight: bold;
+}
+
+.high::after, .low::after {
+	content: '°';
+	position: absolute;
 }
 
 .weatherCode {
@@ -92,6 +99,22 @@
 	}
 }
 
+img ~ .weatherDescription {
+	margin: auto;
+	flex: 2 0 100px;
+}
+
+.weatherDescription {
+	font-size: var(--description-size);
+	margin: auto;
+	height: 100%;
+}
+
+.weatherDate::before {
+	content: '| ';
+	margin-left: 8px;
+}
+
 @media screen and (width >= 900px) {
 	.weatherCode {
 		flex-direction: column;
@@ -99,11 +122,6 @@
 		> img {
 			margin-top: 12px;
 			width: 100%;
-		}
-
-		> img ~ .description {
-			margin: auto;
-			flex: 2 0 100px;
 		}
 	}
 }
