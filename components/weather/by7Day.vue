@@ -71,7 +71,7 @@ onMounted(() => {
 	>
 			<WeatherDay>
 				<template #weekday>
-					{{ useFormatDate(time, 'eee') }}
+					{{ idx === 0 ? 'Today' : useFormatDate(time, 'eee') }}
 				</template>
 				<template v-if="idx === 0 || idx === 6" #date>
 					{{ useFormatDate(time) }}
