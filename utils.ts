@@ -100,3 +100,25 @@ export const weatherIconAndAssets = (string: string) => {
 
 	return { icon, cldURL };
 };
+
+/**
+ * Is the list of elements
+ * @param target array of HTML Elements,
+ * @param ref is an array of Vue refs
+ */
+
+export const attachObservers = ([...target], [...ref], options = { rootMargin: "16px", threshold: 0.75 }) =>[...target].forEach((elem) => {
+		const intersectionObserver = new IntersectionObserver(entries => {
+			entries.forEach((entry) => {
+				console.log(entry)
+				for (let i in target) {
+					if (entry.target === target[i]){
+						ref[i].value = entry as IntersectionObserverEntry
+					}
+				}
+			})
+		}, options)
+
+		intersectionObserver.observe(elem)
+	}
+)

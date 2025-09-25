@@ -2,6 +2,7 @@
 import type { AsyncDataRequestStatus } from '#app';
 import type { WeatherApiResponse, WeatherDescriptions } from '~/types';
 import '../../styles/temperatures.css';
+import { attachObservers } from '~/utils';
 
 const { daily, descriptions, status } = defineProps<{
 	daily: WeatherApiResponse['daily'] | undefined;
@@ -9,52 +10,54 @@ const { daily, descriptions, status } = defineProps<{
 	status: AsyncDataRequestStatus;
 }>();
 
-const images: Ref<ImageObj[] | undefined[]> = await useGetWeatherCodes(daily)
+// ---- Images
 
+const images: Ref<ImageObj[] | undefined[]> = await useGetWeatherCodes(daily)
 const imageAttributes = (obj: ImageObj, string: string) => {
 	return string === "day" ? obj.day : string === "night" ? obj.night : obj.day
 }
 
-const observer = useTemplateRef('observer');
+// ---- Scroll indicator
 
-const firstElem: Ref<HTMLDivElement | IntersectionObserverEntry | null> = ref(null);
-
-const lastElem: Ref<HTMLDivElement | IntersectionObserverEntry | null> = ref(null);
-
+const target = useTemplateRef('observerRef');
+const firstElemObserverEntry: Ref<IntersectionObserverEntry | null> = ref(null);
+const lastElemObserverEntry: Ref<IntersectionObserverEntry | null> = ref(null);
 const firstElemIsVisible = ref(false);
-
 const lastElemIsVisible = ref(false);
 
 
 onMounted(() => {
-	if (observer.value) {
-		firstElem.value = observer.value[0]
-		lastElem.value = observer.value[observer.value.length - 1]
-	
-		if (firstElem && lastElem) {
-	
-			const ob = (el: any) => {
-				const io = new IntersectionObserver((entries) => entries.forEach(entry => el.value = entry))
+	if (target.value) {
+		/**
+		 * Is the list of elements
+		 * @param target array of HTML Elements,
+		 * @param ref is an array of refs
+		 */
 
-				io.observe(el.value)
-			}
-	
-			ob(firstElem)
-			ob(lastElem)
+		attachObservers(useGetElement(target.value, [0, 6]), [firstElemObserverEntry, lastElemObserverEntry], { rootMargin: "16px", threshold: 1})
 
-			watch(firstElem, (newVal) => {
-				firstElemIsVisible.value = newVal?.isIntersecting
+		if (firstElemObserverEntry && lastElemObserverEntry) {
+
+			watch(firstElemObserverEntry, (newVal) => {
+				if(newVal){
+					firstElemIsVisible.value = newVal?.isIntersecting
+				}
 			})
 	
-			watch(lastElem, (newVal) => {
-				lastElemIsVisible.value = newVal?.isIntersecting
+			watch(lastElemObserverEntry, (newVal) => {
+				if (newVal) {
+					lastElemIsVisible.value = newVal?.isIntersecting
+				}
 			})
 		}
 	}
 })
+// ----
+
 </script>
 
 <template>
+
 	<div
 		id="periodsByDay"
 		ref="periodByDay"
@@ -64,7 +67,7 @@ onMounted(() => {
 	v-for="({ time, precipitation_probability_max, temperature_2m_max, temperature_2m_min }, idx) in daily"
 	:key="idx"
 	class="day"
-	ref="observer"
+	ref="observerRef"
 	>
 			<WeatherDay>
 				<template #weekday>

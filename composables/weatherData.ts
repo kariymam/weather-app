@@ -1,3 +1,5 @@
+import type { WeatherAPIResponse } from "~/types";
+
 export const useWeatherData = (coordinates: ComputedRef<string>) => {
 
   const { data, status, refresh } = useFetch(`/api/weather/`,{ 
@@ -15,7 +17,7 @@ export const useWeatherData = (coordinates: ComputedRef<string>) => {
   
   watch(data, (newValue) => {
     if(newValue){
-      weatherStore().saveWeatherData(data.value)
+      weatherStore().saveWeatherData(data.value as WeatherAPIResponse["weather"]["data"])
     }
   })
 

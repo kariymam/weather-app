@@ -1,23 +1,30 @@
 <script lang="ts" setup>
+import { attachObservers } from '~/utils'
+
 const observer = useTemplateRef('observer')
 
-const observerEntry = ref<IntersectionObserverEntry | {}>({})
+const observerEntry: Ref<IntersectionObserverEntry | null> = ref(null)
 
 const isIntersecting = ref(false)
 
 onMounted(() => {
 	if (observer.value) {
-		const intersectionObserver = new IntersectionObserver((entries) => {
-			entries.forEach(entry => { 
-				observerEntry.value = entry
-			})
-		}, { rootMargin: "16px", threshold: 0.75 })
-		intersectionObserver.observe(observer.value)
+		// const intersectionObserver = new IntersectionObserver((entries) => {
+		// 	entries.forEach(entry => { 
+		// 		observerEntry.value = entry! as IntersectionObserverEntry
+		// 	})
+		// }, { rootMargin: "16px", threshold: 0.75 })
+		// intersectionObserver.observe(observer.value)
+
+		attachObservers(useGetElement(observer.value, [0]), [observerEntry])
+
+		watch(observerEntry, (val) => {
+			if (val) {
+				isIntersecting.value = val.isIntersecting
+			}
+		})
 	}
 
-	watch(observerEntry, (val) => {
-		isIntersecting.value = val.isIntersecting
-	})
 
 })
 
@@ -173,10 +180,6 @@ img ~ .weatherDescription {
 
 .fade-out {
 	background: color-mix(in srgb, rgb(var(--v-theme-surface)) 50%, transparent)!important;
-}
-
-.fade-in {
-	background: initial;
 }
 
 @media screen and (width >= 900px) {
