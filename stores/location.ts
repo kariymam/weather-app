@@ -48,9 +48,15 @@ export const locationStore = defineStore(
 					coordinates: { latitude, longitude },
 				} as Geolocation);
 
+				weatherStore().saveLocation({
+					place_name,
+					coordinates: { latitude, longitude },
+				} as Geolocation);
+
 				return this.location;
 			},
 			saveLocation(location: Geolocation) {
+				weatherStore().saveLocation(location)
 				return this.location = location;
 			},
 			async useNavigatorGeolocation() {
@@ -83,6 +89,14 @@ export const locationStore = defineStore(
 						const { place_name } = await $fetch(`/api/geolocation/reverse/${position.coords.longitude},${position.coords.latitude}`);
 
 						this.saveLocation({
+							place_name,
+							coordinates: {
+								latitude: position.coords.latitude,
+								longitude: position.coords.longitude,
+							},
+						} as Geolocation);
+
+						weatherStore().saveLocation({
 							place_name,
 							coordinates: {
 								latitude: position.coords.latitude,

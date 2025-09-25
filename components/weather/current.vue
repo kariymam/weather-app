@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { WeatherAPIResponse } from '~/types';
+
 const { current,  descriptions } = defineProps<{
     descriptions: WeatherAPIResponse["weather"]["data"]["descriptions"][0]
     current: WeatherAPIResponse["weather"]["data"]["current"]
@@ -19,13 +21,9 @@ const { current,  descriptions } = defineProps<{
 }
 
 .current {
-  h3 {
-    font-size: 2.25rem;
-  }
   .currentTemperature {
     font-size: 4.35rem;
   }
-
 }
 
 </style>

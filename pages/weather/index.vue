@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { Geolocation, WeatherAPIResponse } from '~/types';
 
-onBeforeMount(async () => {
-	const { data: { value: cookie } } = await useFetch('/api/cookie');
+const { data: { value: cookie } } = await useFetch('/api/cookie');
 
+onBeforeMount(async () => {
 	if (cookie) {
 		const parsedCookie = useParseCookieToLocation(cookie.location);
 		locationStore().saveLocation(parsedCookie as Geolocation);
@@ -15,105 +15,65 @@ const { weather, location } = defineProps<{
 	location: Geolocation;
 }>();
 
+const videoString = `
+<video autoplay loop playsinline width="100%" height="100%" aria-hidden="true">
+  <source src="https://res.cloudinary.com/dvf7zwben/video/upload/v1741666482/${weather.data.videoURL}.mp4" type="video/mp4" />
+</video>`
+
 </script>
 
 <template>
 	<div>
-		<div class="dashboard">
-			<div class="dashboard__1">
+		<WeatherDashboard>
+			<template #one>
 				<v-col>
 					<h2>Current forecast in {{ location.place_name }}...</h2>
-					<WeatherCurrent :current="weather.data?.current" :descriptions="weather.data?.descriptions[0]" />
+						<WeatherCurrent :current="weather.data?.current" :descriptions="weather.data?.descriptions[0]" />
 				</v-col>
-			</div>
-			<div class="dashboard__2">
-				2
-			</div>
-			<div class="dashboard__3">
+			</template>
+			<template #two>
+				{{ weather.status }}
+			</template>
+			<template #three>
 				3
-			</div>
-			<div class="dashboard__4">
+			</template>
+			<template #four>
 				<h2>The week ahead</h2>
 				<v-divider />
-				<WeatherBy7Day
-					:daily="weather.data?.daily"
-					:descriptions="weather.data?.descriptions"
-					:is-loading="weather.status"
-				/>
-			</div>
-		</div>
+					<WeatherBy7Day
+						:daily="weather.data?.daily"
+						:descriptions="weather.data?.descriptions"
+						:status="weather.status"
+					/>
+			</template>
+		</WeatherDashboard>
+		<div class="background" v-html="videoString"></div>
 	</div>
-	<UiVideo :video-name="weather.data?.descriptions[0].cldURL"/>
 </template>
 <style lang="css">
-.dashboard {
-	display: grid;
-	grid-template-columns: 1fr;
-	column-gap: 32px;
-	row-gap: 48px;
-	justify-content: stretch;
-	align-content: stretch;
-	align-items: center;
-}
 
-.dashboard > div {
-	/* background-color:#eee; */
-	border-style: solid;
-    border-width: thin 0 0 0;
-	border-color: inherit;
-	display: flex;
+.background {
+	position: absolute;
+	inset: 0;
 	height: 100%;
-    width: 100%;
+	width: 100%;
 }
 
-.dashboard__1 h2 ~ .current {
-	height: fit-content;
-    margin: auto;
+.background::before {
+	content: '';
+	block-size: 100%;
+	inline-size: 100%;
+	inset-block: 0;
+	display: block;
+    position: absolute;
+	background: rgba(var(--v-theme-background), 0.5);
+	/* backdrop-filter: blur(5px); */
 }
 
-.v-col:has(.current) {
-	display: flex;
-    flex-flow: column;
+video {
+	block-size: 100%;
+	inline-size: 100%;
+	inset-block: 0;
+	object-fit: cover;
 }
-
-
-@media screen and (width >= 900px) {
-
-	.dashboard {
-		grid-template-columns: repeat(12, 1fr);
-		grid-template-rows: 1fr 1fr;
-		padding: 16px 0 48px 0;
-	}
-
-	.dashboard__1 {
-		grid-column: 1 / 7;
-		grid-row: 1;
-		flex-flow: column nowrap;
-	}
-	
-	.dashboard__2 {
-		grid-column: 7 / 13;
-		grid-row: 1;
-	}
-	
-	.dashboard__3 {
-		grid-column: 1 / 4;
-		grid-row: 2;
-	}
-	
-	.dashboard__4 {
-
-		--padding: 1rem 2rem;
-
-		display: flex;
-		flex-flow: column nowrap;
-		grid-column: 4 / 13;
-		grid-row: 2;
-
-		h2 {
-			padding: var(--padding);
-		}
-	}
-}
-
 </style>

@@ -3,44 +3,44 @@ import type { AsyncDataRequestStatus } from '#app';
 import type { WeatherApiResponse, WeatherDescriptions } from '~/types';
 import '../../styles/temperatures.css';
 
-const { daily, descriptions, isLoading } = defineProps<{
+const { daily, descriptions, status } = defineProps<{
 	daily: WeatherApiResponse['daily'] | undefined;
 	descriptions: WeatherDescriptions[] | undefined;
-	isLoading: AsyncDataRequestStatus;
+	status: AsyncDataRequestStatus;
 }>();
 
-type ImageObj = {
-	day: {
-        description: string;
-        image: string;
-    };
-    night: {
-        description: string;
-        image: string;
-    }
+const images: Ref<ImageObj[] | undefined[]> = await useGetWeatherCodes(daily)
+
+const imageAttributes = (obj: ImageObj, string: string) => {
+	return string === "day" ? obj.day : string === "night" ? obj.night : obj.day
 }
 
-const images: Ref<ImageObj[] | undefined[]> = ref([])
+const observer = useTemplateRef('observer')
 
-const promises = async () => {
-	const arr: ImageObj[] = []
-	if (daily){
-		for (const obj of daily) {
-			const code = await $fetch(`/api/weather/codes/${obj["weather_code"]}`)
+const firstElem: Ref<HTMLDivElement | null> = ref(null)
 
-			if(code) {
-				arr.push(code)
+const lastElem: Ref<HTMLDivElement | null> = ref(null)
+
+onMounted(() => {
+
+	if (observer.value) {
+		firstElem.value = observer.value[0]
+		lastElem.value = observer.value[observer.value.length - 1]
+	
+		if (firstElem && lastElem) {
+	
+			const ob = (el: HTMLDivElement) => {
+				const io = new IntersectionObserver((entries) => entries.forEach(entry => console.log(entry)))
+				io.observe(el)
 			}
+	
+			ob(firstElem.value)
+			ob(lastElem.value)
 		}
 	}
-	return images.value = arr
-}
 
-await promises()
 
-const imageAttributes = (obj: ImageObj) => {
-	return obj.day
-}
+})
 
 </script>
 
@@ -48,12 +48,14 @@ const imageAttributes = (obj: ImageObj) => {
 	<div
 		id="periodsByDay"
 		ref="periodByDay"
+		class="gradient"
 	>
-		<div
-			v-for="({ time, precipitation_probability_max, temperature_2m_max, temperature_2m_min }, idx) in daily"
-			:key="idx"
-			class="day"
-		>
+	<div
+	v-for="({ time, precipitation_probability_max, temperature_2m_max, temperature_2m_min }, idx) in daily"
+	:key="idx"
+	class="day"
+	ref="observer"
+	>
 			<WeatherDay>
 				<template #weekday>
 					{{ useFormatDate(time, 'eee') }}
@@ -62,7 +64,7 @@ const imageAttributes = (obj: ImageObj) => {
 					{{ useFormatDate(time) }}
 				</template>
 				<template #weather-code>
-					 <WeatherCode v-if="images[idx] && Object.hasOwn(images[idx], 'day')" :code="imageAttributes(images[idx])" />
+					 <WeatherCode v-if="images[idx] && Object.hasOwn(images[idx], 'day')" :code="imageAttributes(images[idx], 'day')" />
 				</template>
 				<template v-if="descriptions" #description>
 					<p>{{ descriptions[idx].shortForecast }}</p>
@@ -76,11 +78,10 @@ const imageAttributes = (obj: ImageObj) => {
 					{{ Math.round(temperature_2m_min) }}
 				</template>
 				<template v-if="precipitation_probability_max > 20" #precipitation>
-					<v-chip 
-					prepend-icon="mdi-weather-rainy"
-					aria-label="Probability of precipitation" role="img" aria-hidden="false">
-					{{ precipitation_probability_max }}%
-					</v-chip>
+					<span class="probability">
+						<v-icon size="x-small" icon="mdi-weather-rainy"></v-icon>
+						{{ precipitation_probability_max }}%
+					</span>
 				</template>
 			</WeatherDay>
 		</div>
@@ -100,17 +101,27 @@ const imageAttributes = (obj: ImageObj) => {
 	padding: var(--padding);
 
 	> .day {
+		border-radius: 4px;
+		backdrop-filter: blur(10px);
 		display: flex;
 		flex-flow: column nowrap;
 		div {
 			height: 100%;
+			display: flex;
 		}
 	}
 }
 
 .high > span, 
-.low > span {
+.low > span,
+.probability {
 	font-size: var(--font-size-smallest);
+}
+
+#periodsByDay.gradient::after {
+	content: '';
+	display: flex;
+	background-image: radial-gradient();
 }
 
 
@@ -131,14 +142,3 @@ const imageAttributes = (obj: ImageObj) => {
 
 }
 </style>
-<!--
-	time: string;
-    weather_code: number;
-    temperature_2m_max: number;
-    apparent_temperature_max: number;
-    temperature_2m_min: number;
-    apparent_temperature_min: number;
-    precipitation_probability_max: number;
-    precipitation_hours: number;
-
--->

@@ -1,3 +1,5 @@
+import type { AsyncDataRequestStatus } from "#app";
+
 export interface Geolocation {
 	place_name: string | '';
 	coordinates: {
@@ -21,6 +23,7 @@ export type WeatherAPIResponse = {
 			periods: openmeteoPeriod[];
 			daily: openmeteoDay[];
 			descriptions: WeatherDescriptions[];
+			videoURL: string;
 		},
 		status: AsyncDataRequestStatus,
 		// @ts-ignore -- Can't find type

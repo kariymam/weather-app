@@ -1,7 +1,36 @@
+<script lang="ts" setup>
+const observer = useTemplateRef('observer')
+
+const observerEntry = ref<IntersectionObserverEntry | {}>({})
+
+const isIntersecting = ref(false)
+
+const visibleClass = ref('fade-in')
+
+const invisibleClass = ref('fade-out')
+
+onMounted(() => {
+	if (observer.value) {
+		const intersectionObserver = new IntersectionObserver((entries) => {
+			entries.forEach(entry => { 
+				observerEntry.value = entry
+			})
+		}, { rootMargin: "16px", threshold: 0.75 })
+		intersectionObserver.observe(observer.value)
+	}
+
+	watch(observerEntry, (val) => {
+		isIntersecting.value = val.isIntersecting
+	})
+
+})
+
+</script>
+
 <template>
-	<v-card>
+	<v-card :class="[isIntersecting ? visibleClass : invisibleClass]">
 		<v-col>
-			<div class="weatherDay">
+			<div class="weatherDay" ref="observer">
 				<h3>
 					<slot
 						name="weekday"
@@ -37,6 +66,9 @@
 <style lang="css">
 .weatherDay {
 	--description-size: var(--font-size-smallest);
+	width: 100%;
+    min-width: 148px;
+	gap: 1em;
 
 	> div {
 		width: initial;
@@ -47,19 +79,41 @@
 		align-content: center;
 		justify-content: center;
 	}
+
+	h3 {
+		flex: auto;
+	}
+
+	h3, .weatherDescription {
+		justify-content: start;
+		width: 100%;
+	}
+
+	.weatherCode {
+		flex: 1;
+	}
+
+	.temperatures {
+		flex: 1 0 25%;
+	}
+
 }
 
 @media screen and (width >= 900px) {
 	.weatherDay {
 		display: flex;
 		flex-flow: column nowrap;
-		gap: 12px;
-		width: 148px;
-		text-align: center;
+		gap: 0;
+		width: 172px;
+		/* text-align: center; */
 
 		> hr {
 			margin-top: -12px;
 		}
+	}
+
+	.v-col:has(.weatherDay) {
+		min-height: 300px;
 	}
 }
 
@@ -73,7 +127,7 @@
 	font-size: 2rem;
 }
 
-.high, .weatherDescription, .weatherDate {
+.high {
 	font-weight: bold;
 }
 
@@ -95,8 +149,13 @@
 		right: 0;
 		top: 0;
 		width: max-content;
-		margin: auto;
+		margin: 0 0 auto 0;
 	}
+
+}
+
+.precipitation {
+	height: min-content!important;
 }
 
 img ~ .weatherDescription {
@@ -108,6 +167,7 @@ img ~ .weatherDescription {
 	font-size: var(--description-size);
 	margin: auto;
 	height: 100%;
+	align-items: end;
 }
 
 .weatherDate::before {
@@ -115,13 +175,23 @@ img ~ .weatherDescription {
 	margin-left: 8px;
 }
 
+.fade-out {
+	background: color-mix(in srgb, rgb(var(--v-theme-surface)) 50%, transparent)!important;
+}
+
+.fade-in {
+	background: initial;
+}
+
 @media screen and (width >= 900px) {
 	.weatherCode {
 		flex-direction: column;
 
 		> img {
-			margin-top: 12px;
-			width: 100%;
+			margin-top: 1em;
+			aspect-ratio: 1 / 1 ;
+			object-fit: cover;
+			object-position: center;
 		}
 	}
 }

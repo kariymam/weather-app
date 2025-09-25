@@ -18,6 +18,7 @@ export const useLocationStore = async () => {
 		locationStore().saveLocation(parsedCookie as Geolocation)
 	}
 
+
 	return {
 		geolocationAPI,
 		location,

@@ -37,11 +37,13 @@ export default defineEventHandler(async (event) => {
 			periods: openmeteo.periods,
 			daily: openmeteo.daily,
 			alerts: weathergovAlerts.features,
-			descriptions: weathergovDescriptions
+			descriptions: weathergovDescriptions,
+			videoURL: weathergovDescriptions[0].cldURL
 		};
 	}
 	catch (error: unknown) {
-		return console.error(error);
+		console.error(error);
+		return error
 	}
 }
 	
