@@ -1,30 +1,30 @@
-export const useGetElement = (elems: HTMLDivElement | HTMLDivElement[], arr?: number[] , index = [0]): HTMLDivElement[] => {
+export const useGetElement = (elems: Element | Element[], arr?: number[] , index = [0]): Element[] => {
 
-      let elements: HTMLDivElement[] = []
-		let selected: HTMLDivElement[] = []
+    let elements: Element[] = []
+	let selected: Element[] = []
 
-		const isArray = (elems: any): elems is HTMLDivElement[] => Array.isArray(elems)
+	const isArray = (elems: any): elems is Element[] => Array.isArray(elems)
 
-		const isSolo = (elems: any): elems is HTMLDivElement => !Array.isArray(elems)
+	const isSolo = (elems: any): elems is Element => !Array.isArray(elems)
 
-		if (isArray(elems)) {
-			elements = [...elems]
-		} else if (isSolo(elems)) {
-			elements = [elems]
-		}
+	if (isArray(elems)) {
+		elements = [...elems]
+	} else if (isSolo(elems)) {
+		elements = [elems]
+	}
 
-		if (arr) {
-			index = arr
-		}
+	if (arr) {
+		index = arr
+	}
 
-		elements.forEach(el => {
-			for (let i in index){
-				if (elements.indexOf(el) === index[i]) {
-					selected.push(el)
-				}
+	elements.forEach(el => {
+		for (let i in index){
+			if (elements.indexOf(el) === index[i]) {
+				selected.push(el)
 			}
-		})
+		}
+	})
 
-		return selected
+	return selected
 }
 

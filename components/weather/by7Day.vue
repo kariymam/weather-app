@@ -34,7 +34,7 @@ onMounted(() => {
 		 * @param ref is an array of refs
 		 */
 
-		attachObservers(useGetElement(target.value, [0, 6]), [firstElemObserverEntry, lastElemObserverEntry], { rootMargin: "16px", threshold: 1})
+		attachObservers(useGetElement(target.value, [0, 6]), [firstElemObserverEntry, lastElemObserverEntry])
 
 		if (firstElemObserverEntry && lastElemObserverEntry) {
 
@@ -155,12 +155,15 @@ onMounted(() => {
 
 		grid-auto-flow: row;
 		overflow-x: scroll;
+		overflow-y: none;
+		scroll-behavior: smooth;
+		scroll-snap-type: x mandatory;
+		scroll-snap-align: start end;
+		scroll-snap-stop: always;
 
 		> .day {
 			flex-flow: column-reverse nowrap;
 		}
-
 	}
-
 }
 </style>

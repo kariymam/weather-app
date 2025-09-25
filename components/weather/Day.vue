@@ -2,30 +2,18 @@
 import { attachObservers } from '~/utils'
 
 const observer = useTemplateRef('observer')
-
 const observerEntry: Ref<IntersectionObserverEntry | null> = ref(null)
-
 const isIntersecting = ref(false)
 
 onMounted(() => {
 	if (observer.value) {
-		// const intersectionObserver = new IntersectionObserver((entries) => {
-		// 	entries.forEach(entry => { 
-		// 		observerEntry.value = entry! as IntersectionObserverEntry
-		// 	})
-		// }, { rootMargin: "16px", threshold: 0.75 })
-		// intersectionObserver.observe(observer.value)
-
-		attachObservers(useGetElement(observer.value, [0]), [observerEntry])
-
+		attachObservers(useGetElement(observer.value), [observerEntry])
 		watch(observerEntry, (val) => {
 			if (val) {
 				isIntersecting.value = val.isIntersecting
 			}
 		})
 	}
-
-
 })
 
 </script>
