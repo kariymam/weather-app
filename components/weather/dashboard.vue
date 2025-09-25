@@ -17,10 +17,12 @@
 <style lang="css">
 
 .dashboard {
+	--dashboard-gap: 32px;
+
 	display: grid;
 	grid-template-columns: 1fr;
-	column-gap: 32px;
-	row-gap: 48px;
+	column-gap: var(--dashboard-gap);
+	row-gap: var(--dashboard-gap);
 	justify-content: stretch;
 	align-content: stretch;
 	align-items: center;
@@ -31,12 +33,11 @@
 
 .dashboard > div {
 	/* background-color:#eee; */
-	border-style: solid;
-    border-width: thin 0 0 0;
-	border-color: inherit;
 	/* display: flex; */
 	height: 100%;
     width: 100%;
+	background: rgba(var(--v-theme-background), 0.5);
+	border-radius: 1em;
 }
 
 .dashboard__1 h2 ~ .current {
@@ -59,7 +60,7 @@
 	.dashboard {
 		grid-template-columns: repeat(12, 1fr);
 		grid-template-rows: 1fr 1fr;
-		padding: 16px 0 48px 0;
+		padding: 16px var(--dashboard-gap) 16px var(--dashboard-gap);
 		height: 100vh;
 	}
 
