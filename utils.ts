@@ -110,7 +110,6 @@ export const weatherIconAndAssets = (string: string) => {
 export const attachObservers = ([...target], [...ref], options = { rootMargin: "0px", threshold: 1 }) =>[...target].forEach((elem) => {
 		const intersectionObserver = new IntersectionObserver(entries => {
 			entries.forEach((entry) => {
-				console.log(entry)
 				for (let i in target) {
 					if (entry.target === target[i]){
 						ref[i].value = entry as IntersectionObserverEntry
