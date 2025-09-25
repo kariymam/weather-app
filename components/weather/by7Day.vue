@@ -15,40 +15,50 @@ const imageAttributes = (obj: ImageObj, string: string) => {
 	return string === "day" ? obj.day : string === "night" ? obj.night : obj.day
 }
 
-const observer = useTemplateRef('observer')
+const observer = useTemplateRef('observer');
 
-const firstElem: Ref<HTMLDivElement | null> = ref(null)
+const firstElem: Ref<HTMLDivElement | IntersectionObserverEntry | null> = ref(null);
 
-const lastElem: Ref<HTMLDivElement | null> = ref(null)
+const lastElem: Ref<HTMLDivElement | IntersectionObserverEntry | null> = ref(null);
+
+const firstElemIsVisible = ref(false);
+
+const lastElemIsVisible = ref(false);
+
 
 onMounted(() => {
-
 	if (observer.value) {
 		firstElem.value = observer.value[0]
 		lastElem.value = observer.value[observer.value.length - 1]
 	
 		if (firstElem && lastElem) {
 	
-			const ob = (el: HTMLDivElement) => {
-				const io = new IntersectionObserver((entries) => entries.forEach(entry => console.log(entry)))
-				io.observe(el)
+			const ob = (el: any) => {
+				const io = new IntersectionObserver((entries) => entries.forEach(entry => el.value = entry))
+
+				io.observe(el.value)
 			}
 	
-			ob(firstElem.value)
-			ob(lastElem.value)
+			ob(firstElem)
+			ob(lastElem)
+
+			watch(firstElem, (newVal) => {
+				firstElemIsVisible.value = newVal?.isIntersecting
+			})
+	
+			watch(lastElem, (newVal) => {
+				lastElemIsVisible.value = newVal?.isIntersecting
+			})
 		}
 	}
-
-
 })
-
 </script>
 
 <template>
 	<div
 		id="periodsByDay"
 		ref="periodByDay"
-		class="gradient"
+		:class="[ firstElemIsVisible && !lastElemIsVisible ? 'scroll-indicator-right' : !firstElemIsVisible && lastElemIsVisible ? 'scroll-indicator-left' : '']"
 	>
 	<div
 	v-for="({ time, precipitation_probability_max, temperature_2m_max, temperature_2m_min }, idx) in daily"
@@ -87,18 +97,25 @@ onMounted(() => {
 		</div>
 	</div>
 </template>
+
 <style lang="css">
 #periodsByDay {
 	--column-gap: 1rem;
 	--row-gap: 1rem;
 	--grid: auto / auto;
 	--font-size-smallest: 0.75rem;
+	--scroll-shadow-left: no-repeat left/ 20% radial-gradient(circle at left, rgba(0, 0, 0, 0.2), transparent);
+	--scroll-shadow-right: no-repeat right/ 20% radial-gradient(circle at right, rgba(0, 0, 0, 0.2), transparent);
 
 	display: grid;
 	grid-template: var(--grid);
 	column-gap: var(--column-gap);
 	row-gap: var(--row-gap);
 	padding: var(--padding);
+	position: relative;
+	background: var(--scroll-shadow-left),
+	var(--scroll-shadow-right);
+	transition-property: background;
 
 	> .day {
 		border-radius: 4px;
@@ -118,10 +135,12 @@ onMounted(() => {
 	font-size: var(--font-size-smallest);
 }
 
-#periodsByDay.gradient::after {
-	content: '';
-	display: flex;
-	background-image: radial-gradient();
+#periodsByDay.scroll-indicator-left {
+	background: var(--scroll-shadow-left);
+}
+
+#periodsByDay.scroll-indicator-right {
+	background: var(--scroll-shadow-right);
 }
 
 

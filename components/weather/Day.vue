@@ -5,10 +5,6 @@ const observerEntry = ref<IntersectionObserverEntry | {}>({})
 
 const isIntersecting = ref(false)
 
-const visibleClass = ref('fade-in')
-
-const invisibleClass = ref('fade-out')
-
 onMounted(() => {
 	if (observer.value) {
 		const intersectionObserver = new IntersectionObserver((entries) => {
@@ -28,7 +24,7 @@ onMounted(() => {
 </script>
 
 <template>
-	<v-card :class="[isIntersecting ? visibleClass : invisibleClass]">
+	<v-card :class="[isIntersecting ? 'fade-in' : 'fade-out']">
 		<v-col>
 			<div class="weatherDay" ref="observer">
 				<h3>
