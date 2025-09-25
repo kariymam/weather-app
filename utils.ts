@@ -107,7 +107,7 @@ export const weatherIconAndAssets = (string: string) => {
  * @param ref is an array of Vue refs
  */
 
-export const attachObservers = ([...target], [...ref], options = { rootMargin: "16px", threshold: 0.75 }) =>[...target].forEach((elem) => {
+export const attachObservers = ([...target], [...ref], options = { rootMargin: "0px", threshold: 1 }) =>[...target].forEach((elem) => {
 		const intersectionObserver = new IntersectionObserver(entries => {
 			entries.forEach((entry) => {
 				console.log(entry)
