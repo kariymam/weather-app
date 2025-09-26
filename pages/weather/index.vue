@@ -1,24 +1,21 @@
 <script lang="ts" setup>
 import type { Geolocation, WeatherAPIResponse } from '~/types';
 
-const { data: { value: cookie } } = await useFetch('/api/cookie');
+// const { data: { value: cookie } } = await useFetch('/api/cookie');
 
-onBeforeMount(async () => {
-	if (cookie) {
-		const parsedCookie = useParseCookieToLocation(cookie.location);
-		locationStore().saveLocation(parsedCookie as Geolocation);
-	}
-});
+// onBeforeMount(async () => {
+// 	if (cookie) {
+// 		const parsedCookie = useParseCookieToLocation(cookie.location);
+// 		locationStore().saveLocation(parsedCookie as Geolocation);
+// 	}
+// });
+
+const { currentWeatherDescription } = storeToRefs(weatherStore())
 
 const { weather, location } = defineProps<{
 	weather: WeatherAPIResponse["weather"];
 	location: Geolocation;
 }>();
-
-const videoString = `
-<video autoplay loop playsinline width="100%" height="100%" aria-hidden="true">
-  <source src="https://res.cloudinary.com/dvf7zwben/video/upload/v1741666482/${weather.data.videoURL}.mp4" type="video/mp4" />
-</video>`
 
 </script>
 
@@ -28,7 +25,7 @@ const videoString = `
 			<template #one>
 				<v-col>
 					<h2>Current forecast in {{ location.place_name }}...</h2>
-						<WeatherCurrent :current="weather.data?.current" :descriptions="weather.data?.descriptions[0]" />
+						<WeatherCurrent :current="weather.data?.current" :descriptions="currentWeatherDescription" />
 				</v-col>
 			</template>
 			<template #two>
@@ -47,33 +44,6 @@ const videoString = `
 					/>
 			</template>
 		</WeatherDashboard>
-		<div class="background" v-html="videoString"></div>
+		<UiVideo :videoName="weather.data.videoURL"></UiVideo>
 	</div>
 </template>
-<style lang="css">
-
-.background {
-	position: absolute;
-	inset: 0;
-	height: 100%;
-	width: 100%;
-}
-
-.background::before {
-	content: '';
-	block-size: 100%;
-	inline-size: 100%;
-	inset-block: 0;
-	display: block;
-    position: absolute;
-	background: rgba(var(--v-theme-background), 0.5);
-	/* backdrop-filter: blur(5px); */
-}
-
-video {
-	block-size: 100%;
-	inline-size: 100%;
-	inset-block: 0;
-	object-fit: cover;
-}
-</style>
