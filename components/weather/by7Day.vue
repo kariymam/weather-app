@@ -1,22 +1,15 @@
 <script lang="ts" setup>
-import type { AsyncDataRequestStatus } from '#app';
-import type { WeatherApiResponse, WeatherDescriptions } from '~/types';
+import type { openmeteo, WeatherDescriptions } from '~/types';
 import '../../styles/temperatures.css';
 import { attachObservers } from '~/utils';
-import { format } from 'date-fns';
+import { format } from 'date-fns'
+import { UTCDate } from "@date-fns/utc";
 
 const { daily, descriptions, status } = defineProps<{
-	daily: WeatherApiResponse['daily'] | undefined;
-	descriptions: WeatherDescriptions[] | undefined;
-	status: AsyncDataRequestStatus;
+	daily: openmeteo["daily"];
+	descriptions: WeatherDescriptions[];
+	status:  "idle" | "pending" | "success" | "error";
 }>();
-
-// ---- Images
-
-const images: Ref<ImageObj[] | undefined[]> = await useGetWeatherCodes(daily)
-const imageAttributes = (obj: ImageObj, string: string) => {
-	return string === "day" ? obj.day : string === "night" ? obj.night : obj.day
-}
 
 // ---- Scroll indicator
 
@@ -25,7 +18,7 @@ const firstElemObserverEntry: Ref<IntersectionObserverEntry | null> = ref(null);
 const lastElemObserverEntry: Ref<IntersectionObserverEntry | null> = ref(null);
 const firstElemIsVisible = ref(false);
 const lastElemIsVisible = ref(false);
-
+const cardWidth = '248px';
 
 onMounted(() => {
 	if (target.value) {
@@ -35,7 +28,7 @@ onMounted(() => {
 		 * @param ref is an array of refs
 		 */
 
-		attachObservers(useGetElement(target.value, [0, 6]), [firstElemObserverEntry, lastElemObserverEntry])
+		attachObservers(useGetElement([...target.value], [0, 6]), [firstElemObserverEntry, lastElemObserverEntry])
 
 		if (firstElemObserverEntry && lastElemObserverEntry) {
 
@@ -59,47 +52,55 @@ onMounted(() => {
 
 <template>
 
-	<div
+	<ul
 		id="periodsByDay"
 		ref="periodByDay"
 		:class="[ firstElemIsVisible && !lastElemIsVisible ? 'scroll-indicator-right' : !firstElemIsVisible && lastElemIsVisible ? 'scroll-indicator-left' : '']"
 	>
-	<div
-	v-for="({ time, precipitation_probability_max, temperature_2m_max, temperature_2m_min }, idx) in daily"
-	:key="idx"
-	class="day"
-	ref="observerRef"
+	<li 
+		v-for="(_) in Array.from({length: 7})"
+		class="day"
+		v-if="status !== 'success'">
+		<v-skeleton-loader 
+			type="card">
+		</v-skeleton-loader>
+	</li>
+	<li
+		v-for="({ time, weather_code, precipitation_probability_max, temperature_2m_max, temperature_2m_min }, idx) in daily"
+		v-if="status === 'success'"
+		:key="idx"
+		class="day"
+		ref="observerRef"
 	>
 			<WeatherDay>
 				<template #weekday>
-					{{ idx === 0 ? 'Today' : format(time, 'eee') }}
+					{{ format(new UTCDate(time), 'eee') }}
 				</template>
 				<template v-if="idx === 0 || idx === 6" #date>
-					{{ format(time, 'eee') }}
+					{{ format(new UTCDate(time), 'MMM c') }}
 				</template>
 				<template #weather-code>
-					 <WeatherCode v-if="images[idx] && Object.hasOwn(images[idx], 'day')" :code="imageAttributes(images[idx], 'day')" />
+					 <WeatherCode :code="weather_code" />
 				</template>
-				<template v-if="descriptions" #description>
-					<p>{{ descriptions[idx].shortForecast }}</p>
+				<template #description>
+					<p>{{ descriptions && descriptions[idx]["shortForecast"] }}</p>
 				</template>
 				<template #high-temperature>
 					<span>H</span>
-					{{ Math.round(temperature_2m_max) }}
+					{{ Math.ceil(temperature_2m_max) }}
 				</template>
 				<template #low-temperature>
 					<span>L</span>
-					{{ Math.round(temperature_2m_min) }}
+					{{ Math.ceil(temperature_2m_min) }}
 				</template>
 				<template v-if="precipitation_probability_max > 20" #precipitation>
 					<span class="probability">
-						<v-icon size="x-small" icon="mdi-weather-rainy"></v-icon>
 						{{ precipitation_probability_max }}%
 					</span>
 				</template>
 			</WeatherDay>
-		</div>
-	</div>
+		</li>
+	</ul>
 </template>
 
 <style lang="css">
@@ -122,13 +123,17 @@ onMounted(() => {
 	transition-property: background;
 
 	> .day {
+		border: thin solid;
 		border-radius: 4px;
 		backdrop-filter: blur(10px);
 		display: flex;
 		flex-flow: column nowrap;
-		div {
+		width: v-bind(cardWidth);
+		> * {
 			height: 100%;
+			width: 100%;
 			display: flex;
+			min-height: 340px;
 		}
 	}
 }

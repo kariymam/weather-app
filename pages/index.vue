@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import type { IUserLocation } from '~/validators';
 
-const { location, location_history } = defineProps<{
+const { location } = defineProps<{
 	location: IUserLocation;
-	location_history: Map<string,IUserLocation>;
 }>();
 
 </script>
@@ -11,6 +10,5 @@ const { location, location_history } = defineProps<{
 <template>
 	<NuxtLayout name="default">
 		{{ location }}
-		{{ location_history }}
 	</NuxtLayout>
 </template>

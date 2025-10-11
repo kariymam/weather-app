@@ -1,18 +1,14 @@
 <script lang="ts" setup>
 import type { IUserLocation } from '~/validators';
 
-const { location, location_history } = defineProps<{
+const { location } = defineProps<{
 	location: IUserLocation;
-	location_history: Map<string,IUserLocation>;
 }>();
-
-definePageMeta({
-	middleware: 'coordinates'
-})
 
 const {
 	createUserLocation,
 	getUserPlaceName,
+	updateUserLocation,
 } = await useLocationStore();
 
 const {
@@ -20,14 +16,11 @@ const {
 	updateOpenmeteoRes,
 	updateWeatherGovAlerts,
 	updateWeatherGovDescriptions,
-} = weatherStore();
-
-const {
 	weatherCoordinates,
 	openmeteo,
 	weatherGov_alerts,
 	weatherGov_descriptions
-} = storeToRefs(weatherStore())
+} = await useWeatherStore();
 
 const route = useRoute()
 const coordinates = computed(() => `${route.params.coordinates}`)
@@ -47,13 +40,29 @@ watch(
 	async (newCoords) => {
 		const newLocation = await getUserPlaceName(createUserLocation(newCoords))
 		currentLocation.value = newLocation
-		updateCoordinates(newCoords)
 		await refresh()
+		updateCoordinates(newCoords)
+	},
+	{ immediate: true }
+)
 
-		if(weather.value){
-			updateOpenmeteoRes(weather.value["openmeteo"])
-			updateWeatherGovAlerts(weather.value["weatherGov_alerts"])
-			updateWeatherGovDescriptions(weather.value["weatherGov_descriptions"])
+watch(
+	currentLocation,
+	(newLocation) => {
+		updateUserLocation(newLocation.place_name, newLocation)
+	},
+	{ immediate: true }
+)
+
+watch(
+	weatherCoordinates,
+	(newCoords) => {
+		if(newCoords){
+			if (weather.value){
+				updateOpenmeteoRes(weather.value["openmeteo"])
+				updateWeatherGovAlerts(weather.value["weatherGov_alerts"])
+				updateWeatherGovDescriptions(weather.value["weatherGov_descriptions"])
+			}
 		}
 	},
 	{ immediate: true }
@@ -62,28 +71,31 @@ watch(
 </script>
 
 <template>
-	<!-- <NuxtLayout name="weather-base">
+	{{ weatherGov_alerts }}
+	<NuxtLayout name="weather-base">
 		<template #current>
 			<header>
-				<h1>Right now</h1>
-
+				<h1>Right now in {{ currentLocation.place_name }}</h1>
 			</header>
+			<weather-current 
+			v-if="openmeteo.hasOwnProperty('current')"
+			:current="openmeteo['current']" 
+			:descriptions="weatherGov_descriptions"></weather-current>
 		</template>
 		<template #week>
 			<header>
 				<h1>The week ahead</h1>
 			</header>
+			<WeatherBy7Day 
+			v-if="openmeteo.hasOwnProperty('daily')"
+			:daily="openmeteo['daily']" 
+			:descriptions="weatherGov_descriptions" 
+			:status="status"></WeatherBy7Day>
 		</template>
 		<template #video>
 
 		</template>
-	</NuxtLayout> -->
-	{{ location }}
-	{{ status }}
-	{{ weatherCoordinates }}
-	{{ openmeteo }}
-	{{ weatherGov_alerts }}
-	{{ weatherGov_descriptions }}
+	</NuxtLayout>
 </template>
 <style lang="css">
 

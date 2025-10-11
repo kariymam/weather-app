@@ -1,16 +1,23 @@
 <script lang="ts" setup>
-import type { WeatherAPIResponse } from '~/types';
+import type { openmeteo, WeatherDescriptions } from '~/types';
 
 const { current,  descriptions } = defineProps<{
-    descriptions: WeatherAPIResponse["weather"]["data"]["descriptions"][0]
-    current: WeatherAPIResponse["weather"]["data"]["current"]
+    descriptions: WeatherDescriptions[]
+    current: openmeteo["current"]
 }>()
+
+const temperature = Math.ceil(current.temperature2m)
+
 </script>
 
 <template>
   <div class="current">
-    <span class="currentTemperature">{{ current && Math.floor(current.apparentTemperature) }}</span>
-    <h3>{{ descriptions && descriptions.detailedForecast }}</h3>
+    <span class="currentTemperature">
+      {{ temperature }}
+    </span>
+    <p>
+      {{ descriptions.length && descriptions[0]["detailedForecast"] }}
+    </p>
   </div>
 </template>
 

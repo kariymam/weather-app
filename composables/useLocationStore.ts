@@ -4,6 +4,7 @@ export const useLocationStore = async () => {
 		createUserLocation,
 		getUserPlaceName,
 		setUserLocation,
+		updateUserLocation,
 	} = locationStore()
 
 	const {
@@ -16,6 +17,7 @@ export const useLocationStore = async () => {
 		UserLocation,
 		Locations,
 		geolocationAPI,
+		updateUserLocation,
 		createUserLocation,
 		getUserPlaceName,
 		setUserLocation,

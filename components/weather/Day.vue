@@ -19,10 +19,9 @@ onMounted(() => {
 </script>
 
 <template>
-	<v-card :class="[isIntersecting ? 'fade-in' : 'fade-out']">
 		<v-col>
-			<div class="weatherDay" ref="observer">
-				<h3>
+			<article class="weatherDay" ref="observer">
+				<h1>
 					<slot
 						name="weekday"
 					/>
@@ -31,32 +30,32 @@ onMounted(() => {
 							name="date"
 						/>
 					</span>
-				</h3>
+				</h1>
+				<div>
+					<v-chip prepend-icon="mdi-weather-rainy" v-if="$slots.precipitation">
+						<slot name="precipitation" />
+					</v-chip>
+				</div>
 				<div class="weatherCode">
 					<slot name="weather-code" />
-					<div v-if="$slots.precipitation" class="precipitation">
-						<slot name="precipitation" />
-					</div>
 				</div>
 				<div class="temperatures">
-					<p class="high">
+					<h2 class="high">
 						<slot name="high-temperature" />
-					</p>
-					<p class="low">
+					</h2>
+					<h3 class="low">
 						<slot name="low-temperature" />
-					</p>
+					</h3>
 				</div>
 				<div class="weatherDescription">
 					<slot name="description" />
 				</div>
-			</div>
+			</article>
 		</v-col>
-	</v-card>
 </template>
 
 <style lang="css">
 .weatherDay {
-	--description-size: var(--font-size-smallest);
 	width: 100%;
     min-width: 148px;
 	gap: 1em;
@@ -71,13 +70,8 @@ onMounted(() => {
 		justify-content: center;
 	}
 
-	h3 {
+	h1 {
 		flex: auto;
-	}
-
-	h3, .weatherDescription {
-		justify-content: start;
-		width: 100%;
 	}
 
 	.weatherCode {
@@ -95,16 +89,12 @@ onMounted(() => {
 		display: flex;
 		flex-flow: column nowrap;
 		gap: 0;
-		width: 172px;
-		/* text-align: center; */
+		margin: auto;
+		height: 100%;
 
 		> hr {
 			margin-top: -12px;
 		}
-	}
-
-	.v-col:has(.weatherDay) {
-		min-height: 300px;
 	}
 }
 
@@ -115,12 +105,18 @@ onMounted(() => {
 .temperatures {
 	flex-flow: column nowrap;
 	line-height: 1.1;
-	font-size: 2rem;
 }
 
-.high {
-	font-weight: bold;
+.high, .low {
+	font-size: 2rem;
 }
+ .high {
+	font-weight: 600;
+ }
+
+ .low {
+	font-weight: 400;
+ }
 
 .high::after, .low::after {
 	content: '°';
@@ -134,19 +130,6 @@ onMounted(() => {
 		display: grid;
 		grid-template: 1fr / 1fr;
 	}
-	> img ~ .precipitation {
-		position: absolute;
-		left: 0;
-		right: 0;
-		top: 0;
-		width: max-content;
-		margin: 0 0 auto 0;
-	}
-
-}
-
-.precipitation {
-	height: min-content!important;
 }
 
 img ~ .weatherDescription {
@@ -155,10 +138,12 @@ img ~ .weatherDescription {
 }
 
 .weatherDescription {
-	font-size: var(--description-size);
 	margin: auto;
 	height: 100%;
 	align-items: end;
+	p {
+		text-align: center;
+	}
 }
 
 .weatherDate::before {
@@ -166,9 +151,9 @@ img ~ .weatherDescription {
 	margin-left: 8px;
 }
 
-.fade-out {
+/* .fade-out {
 	background: color-mix(in srgb, rgb(var(--v-theme-surface)) 50%, transparent)!important;
-}
+} */
 
 @media screen and (width >= 900px) {
 	.weatherCode {

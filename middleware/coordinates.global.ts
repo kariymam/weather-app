@@ -3,23 +3,21 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         UserLocation,
         getUserPlaceName,
         createUserLocation,
-        setUserLocation
+        updateUserLocation,
     } =  await useLocationStore();
 
-    if (from.fullPath === '/'){
-		const cookie = useCookie('location');
-	
-		try {
-			const { data } = await useFetch('/api/cookie');
-			
-			if (cookie.value !== undefined && data.value) {
-				const parsedCookie = createUserLocation(data.value.location);
-				const location = await getUserPlaceName(parsedCookie)
-				setUserLocation(location)
-			}
-		} catch (error) {
-			console.log(error)
-		}
+    const cookie = useCookie('location');
+
+    try {
+        const { data } = await useFetch('/api/cookie');
+        
+        if (cookie.value !== undefined && data.value) {
+            const parsedCookie = createUserLocation(data.value.location);
+            const location = await getUserPlaceName(parsedCookie)
+            updateUserLocation(location.place_name, location)
+        }
+    } catch (error) {
+        console.log(error)
     }
 
     if (to.name === 'weather-coordinates'){

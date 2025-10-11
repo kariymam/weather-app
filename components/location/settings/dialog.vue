@@ -30,7 +30,7 @@ const dialog = ref(false);
 				variant="text"
 				v-bind="activatorProps"
 			>
-				{{ location.place_name }}
+				Change Location
 			</v-btn>
 		</template>
 		<v-card>

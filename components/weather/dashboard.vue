@@ -1,17 +1,17 @@
 <template>
   <div class="dashboard">
-			<div class="dashboard__1">
+			<section class="dashboard__1">
 				<slot name="one"/>
-			</div>
-			<div class="dashboard__2">
+			</section>
+			<section class="dashboard__2">
 				<slot name="two"/>
-			</div>
-			<div class="dashboard__3">
+			</section>
+			<section class="dashboard__3">
 				<slot name="three"/>
-			</div>
-			<div class="dashboard__4">
+			</section>
+			<section class="dashboard__4">
 				<slot name="four"/>
-			</div>
+			</section>
 	</div>
 </template>
 <style lang="css">

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 const { code } = defineProps<{
-    code: {
-        description: string;
-        image: string;
-    };
+    code: number;
 }>();
+
+const imageObj = await $fetch(`/api/weather/codes/${code}`)
+
 </script>
 <template>
-  <img :src="code.image" :alt="code.description" />
+  <img :src="imageObj?.day.image" :alt="imageObj?.day.description" />
 </template>

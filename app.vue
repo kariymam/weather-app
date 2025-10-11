@@ -22,13 +22,14 @@ const {
 				/>
 			</template>
 			<template #weather>
-				<nuxt-link :to="{ name: 'weather' }">Weather</nuxt-link>
+				<nuxt-link :to="{ name: 'weather' }">
+					{{ UserLocation.place_name }}
+				</nuxt-link>
 			</template>
 		</AppNavbar>
 		<v-main>
 				<NuxtPage
 					:location="UserLocation"
-					:location_history="Locations"
 				/>
 		</v-main>
 	</v-app>
