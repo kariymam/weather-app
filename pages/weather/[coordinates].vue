@@ -7,7 +7,6 @@ const { location, location_history } = defineProps<{
 }>();
 
 definePageMeta({
-	layout: 'weather-base',
 	middleware: 'coordinates'
 })
 
@@ -16,6 +15,19 @@ const {
 	getUserPlaceName,
 } = await useLocationStore();
 
+const {
+	updateCoordinates,
+	updateOpenmeteoRes,
+	updateWeatherGovAlerts,
+	updateWeatherGovDescriptions,
+} = weatherStore();
+
+const {
+	weatherCoordinates,
+	openmeteo,
+	weatherGov_alerts,
+	weatherGov_descriptions
+} = storeToRefs(weatherStore())
 
 const route = useRoute()
 const coordinates = computed(() => `${route.params.coordinates}`)
@@ -35,7 +47,14 @@ watch(
 	async (newCoords) => {
 		const newLocation = await getUserPlaceName(createUserLocation(newCoords))
 		currentLocation.value = newLocation
+		updateCoordinates(newCoords)
 		await refresh()
+
+		if(weather.value){
+			updateOpenmeteoRes(weather.value["openmeteo"])
+			updateWeatherGovAlerts(weather.value["weatherGov_alerts"])
+			updateWeatherGovDescriptions(weather.value["weatherGov_descriptions"])
+		}
 	},
 	{ immediate: true }
 )
@@ -47,6 +66,7 @@ watch(
 		<template #current>
 			<header>
 				<h1>Right now</h1>
+
 			</header>
 		</template>
 		<template #week>
@@ -60,8 +80,10 @@ watch(
 	</NuxtLayout> -->
 	{{ location }}
 	{{ status }}
-	<v-divider/>
-	{{ weather }}
+	{{ weatherCoordinates }}
+	{{ openmeteo }}
+	{{ weatherGov_alerts }}
+	{{ weatherGov_descriptions }}
 </template>
 <style lang="css">
 

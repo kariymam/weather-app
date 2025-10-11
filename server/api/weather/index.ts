@@ -1,3 +1,4 @@
+import { openmeteo, WeatherDescriptions, WeatherGovAlert } from '~/types.js';
 import weatherRequest from '../../routes/weatherRequest.js';
 
 export default defineEventHandler(async (event) => {
@@ -18,17 +19,19 @@ export default defineEventHandler(async (event) => {
 		const callbacks = new Map<string, Function>([
 			[
 				'openmeteo', 
-				async () => await weatherRequest.fetchOpenMeteo(new Date(), lat, long, Intl.DateTimeFormat().resolvedOptions().timeZone)],
+				async () => await weatherRequest.fetchOpenMeteo(new Date(), lat, long, Intl.DateTimeFormat().resolvedOptions().timeZone)
+			],
 			[
 				'weathergovAlerts', 
-				async () => await weatherRequest.fetchWeatherAlerts(new Date().toISOString(), lat, long)],
+				async () => await weatherRequest.fetchWeatherAlerts(new Date().toISOString(), lat, long)
+			],
 			[
 				'weathergovDescriptions',
 				async () => await weatherRequest.fetchWeatherDescriptions(new Date(), lat, long)
 			]
 		]);
 
-		const responses = await Promise.all(
+		const [openmeteo, weatherGov_alerts, weatherGov_descriptions] = await Promise.all(
 			Array.from(callbacks).map(async ([_, callback]) => {
 				try {
 					return await callback();
@@ -36,9 +39,14 @@ export default defineEventHandler(async (event) => {
 					return { error };
 				}
 			})
-		)
+		) as [openmeteo, WeatherGovAlert | [], WeatherDescriptions[]]
 
-		return [location, ...responses]
+		return {
+			coordinates,
+			openmeteo, 
+			weatherGov_alerts, 
+			weatherGov_descriptions
+		}
 	}
 	
 });

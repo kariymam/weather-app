@@ -1,6 +1,5 @@
 import { fetchWeatherApi } from 'openmeteo';
-import { addHours } from 'date-fns';
-import { openmeteoDay, openmeteoPeriod, WeatherDescriptions, weathergovPeriods } from '~/types';
+import { openmeteo, openmeteoDay, openmeteoPeriod, WeatherDescriptions, WeatherGovAlert, weathergovPeriods } from '~/types';
 import { WEATHERGOV_HEADER, BASE_URL } from '~/constants';
 
 const getWeathergovRes = async (base_url: string, params?: URLSearchParams, header = WEATHERGOV_HEADER) => {
@@ -30,8 +29,15 @@ async function fetchOpenMeteo(currentTime: Date, lat: string, long: string, zone
 			'apparent_temperature_min',
 			'precipitation_probability_max',
 			'precipitation_hours',
+			'weather_code'
 		],
-		current: ['temperature_2m', 'precipitation', 'is_day', 'apparent_temperature'],
+		current: [
+			'temperature_2m', 
+			'precipitation', 
+			'is_day', 
+			'apparent_temperature',
+			'weather_code'
+		],
 		timezone: zone,
 		wind_speed_unit: 'mph',
 		temperature_unit: 'fahrenheit',
@@ -60,19 +66,22 @@ async function fetchOpenMeteo(currentTime: Date, lat: string, long: string, zone
 	}));
 
 	/** Daily forecast */
-	const periodsByDay: openmeteoDay[] = [...Array((Number(daily.timeEnd()) - Number(daily.time())) / daily.interval())].map(
-			(_, i) => new Date((Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) * 1000)).map(
-		(time, i) => {
+	const periodsByDay: openmeteoDay[] = [
+		...Array((Number(daily.timeEnd()) - Number(daily.time())) / daily.interval())
+	].map(
+			(_, i) => new Date((Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) * 1000))
+			.map(
+				(_, i) => {
 
 			return {
 				time: convertToLocalFromDaily(i),
-				weather_code: periodsByHour.filter((obj) => obj['time'] === addHours(time, currentTime.getHours()).toISOString())[0]["weather_code"],
 				temperature_2m_max: daily.variables(0)!.valuesArray()![i],
 				apparent_temperature_max: daily.variables(1)!.valuesArray()![i],
 				temperature_2m_min: daily.variables(2)!.valuesArray()![i],
 				apparent_temperature_min: daily.variables(3)!.valuesArray()![i],
 				precipitation_probability_max: daily.variables(4)!.valuesArray()![i],
 				precipitation_hours: daily.variables(5)!.valuesArray()![i],
+				weather_code: daily.variables(6)!.valuesArray()![i],
 			};
 		},
 	);
@@ -84,10 +93,11 @@ async function fetchOpenMeteo(currentTime: Date, lat: string, long: string, zone
 			precipitation: current.variables(1)!.value(),
 			isDay: current.variables(2)!.value(),
 			apparentTemperature: current.variables(3)!.value(),
+			weather_code: current.variables(4)!.value(),
 		},
 		periods: periodsByHour,
 		daily: periodsByDay,
-	};
+	} as openmeteo;
 }
 
 async function fetchWeatherAlerts(startTime: string, lat: string, long: string) {
@@ -103,7 +113,7 @@ async function fetchWeatherAlerts(startTime: string, lat: string, long: string) 
 
 	const weathergovAlerts = await getWeathergovRes(BASE_URL.WEATHERGOV_ALERTS, params)
 
-	return weathergovAlerts;
+	return weathergovAlerts["features"] as WeatherGovAlert | []
 }
 
 async function fetchWeatherDescriptions(currentTime: Date, lat: string, long: string) {
@@ -128,7 +138,7 @@ async function fetchWeatherDescriptions(currentTime: Date, lat: string, long: st
 					detailedForecast: obj.detailedForecast, 
 					shortForecast: obj.shortForecast
 				} as WeatherDescriptions : false
-			}).filter(Boolean)
+			}).filter(Boolean) as Array<WeatherDescriptions>
 		}
 	}
 
