@@ -1,6 +1,4 @@
-import type { openmeteo, WeatherDescriptions } from '../../../types.js';
 import weatherRequest from '../../routes/weatherRequest.js';
-import { weatherIconAndAssets } from '~/utils.js';
 
 export default defineEventHandler(async (event) => {
 
@@ -12,39 +10,35 @@ export default defineEventHandler(async (event) => {
 
 	const coordinates = getCoordinates(location as string)
 
+	
 	if (coordinates.length === 0){
-		 throw Error("No coordinates")
+		throw Error("Cannot parse coordinates")
 	} else {
 		const [lat, long] = coordinates
+		const callbacks = new Map<string, Function>([
+			[
+				'openmeteo', 
+				async () => await weatherRequest.fetchOpenMeteo(new Date(), lat, long, Intl.DateTimeFormat().resolvedOptions().timeZone)],
+			[
+				'weathergovAlerts', 
+				async () => await weatherRequest.fetchWeatherAlerts(new Date().toISOString(), lat, long)],
+			[
+				'weathergovDescriptions',
+				async () => await weatherRequest.fetchWeatherDescriptions(new Date(), lat, long)
+			]
+		]);
 
-		try {
-		const openmeteo = await weatherRequest.fetchOpenMeteo(new Date(), lat, long, Intl.DateTimeFormat().resolvedOptions().timeZone) as openmeteo;
+		const responses = await Promise.all(
+			Array.from(callbacks).map(async ([_, callback]) => {
+				try {
+					return await callback();
+				} catch (error) {
+					return { error };
+				}
+			})
+		)
 
-		const weathergovAlerts = await weatherRequest.fetchWeatherAlerts(openmeteo.current.time, lat, long);
-
-		const weathergovDescriptions = await weatherRequest.fetchWeatherDescriptions(new Date(), lat, long) as WeatherDescriptions[]
-
-		const videoUrls = weathergovDescriptions.map(({ shortForecast }) => weatherIconAndAssets(shortForecast))
-
-		for (let i=0; i < weathergovDescriptions.length; i++) {
-			weathergovDescriptions[i].icon = videoUrls[i].icon
-			weathergovDescriptions[i].cldURL = videoUrls[i].cldURL
-		}
-
-		return {
-			coordinates,
-			current: openmeteo.current,
-			periods: openmeteo.periods,
-			daily: openmeteo.daily,
-			alerts: weathergovAlerts.features,
-			descriptions: weathergovDescriptions,
-			videoURL: weathergovDescriptions[0].cldURL
-		};
+		return [location, ...responses]
 	}
-	catch (error: unknown) {
-		console.error(error);
-		return error
-	}
-}
 	
 });

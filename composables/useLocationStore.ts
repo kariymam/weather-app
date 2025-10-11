@@ -12,25 +12,6 @@ export const useLocationStore = async () => {
 		geolocationAPI
 	} = storeToRefs(locationStore());
 
-	const route = useRoute()
-
-	if (route.fullPath === '/') {
-		const cookie = useCookie('location');
-	
-		try {
-			const { data } = await useFetch('/api/cookie');
-			
-			if (cookie.value !== undefined && data.value) {
-				const parsedCookie = createUserLocation(data.value.location);
-				const location = await getUserPlaceName(parsedCookie)
-				setUserLocation(location)
-			}
-		} catch (error) {
-			console.log(error)
-		}
-	}
-
-
 	return {
 		UserLocation,
 		Locations,

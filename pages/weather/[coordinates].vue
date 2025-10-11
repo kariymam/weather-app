@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { WeatherAPIResponse } from '~/types';
 import type { IUserLocation } from '~/validators';
 
 const { location, location_history } = defineProps<{
@@ -15,20 +14,21 @@ definePageMeta({
 const {
 	createUserLocation,
 	getUserPlaceName,
-	setUserLocation
 } = await useLocationStore();
 
+
 const route = useRoute()
-const coordinates = computed(() => route.params.coordinates)
+const coordinates = computed(() => `${route.params.coordinates}`)
 const currentLocation = ref<IUserLocation>(location)
 
-const { data, status, refresh } = await useFetch(`/api/weather/`,{ 
+const { data: weather, status, refresh } = useAsyncData(
+	coordinates,
+	() => $fetch(`/api/weather/`,{ 
 	query: {
-		location: currentLocation.value.coordinates.join(",")
+		location: coordinates.value
 	},
-	watch: [coordinates],
-	lazy: true
-});
+  })
+)
 
 watch(
 	coordinates,
@@ -40,15 +40,6 @@ watch(
 	{ immediate: true }
 )
 
-watch(
-  currentLocation,
-  (newLocation) => {
-	if (newLocation) {
-		setUserLocation(newLocation)
-	}
-  },
-  { immediate: true }
-);
 </script>
 
 <template>
@@ -67,9 +58,10 @@ watch(
 
 		</template>
 	</NuxtLayout> -->
-	{{ currentLocation }}
+	{{ location }}
 	{{ status }}
-	{{ data }}
+	<v-divider/>
+	{{ weather }}
 </template>
 <style lang="css">
 

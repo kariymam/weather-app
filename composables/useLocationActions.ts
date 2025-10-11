@@ -1,4 +1,3 @@
-import { useRoute, useRouter } from 'vue-router'
 import { locationStore } from '~/stores/location'
 
 export function useLocationActions() {
@@ -11,19 +10,23 @@ export function useLocationActions() {
   } = locationStore()
 
   const route = useRoute()
-  const router = useRouter()
 
   const handleLocationPermissionsBtn = async () => {
     const results = await useNavigatorGeolocation()
-    if (results) {
+    if 
+    (results) {
+
       const location = setUserLocation(
         await getUserPlaceName(createUserLocation(String(results)))
       )
+      
       useSetCookie(location)
       updateUserLocation(location.place_name, location)
+
       if (route.params.coordinates) {
-        router.push({ name: 'weather-coordinates', params: { coordinates: `${location.latitude},${location.longitude}` } })
+        navigateTo({ name: 'weather-coordinates', params: { coordinates: `${location.latitude},${location.longitude}` } })
       }
+
     }
   }
 
@@ -31,10 +34,14 @@ export function useLocationActions() {
     if (res) {
       const [long, lat] = res.center
       const newUserLocation = createUserLocation([lat, long])
+
       updateUserLocation(res.place_name, newUserLocation)
-      if (route.params.coordinates) {
-        router.push({ name: 'weather-coordinates', params: { coordinates: `${newUserLocation.latitude},${newUserLocation.longitude}` } })
+
+      if 
+      (route.params.coordinates) {
+        navigateTo({ name: 'weather-coordinates', params: { coordinates: `${newUserLocation.latitude},${newUserLocation.longitude}` } })
       }
+
     } else {
       throw Error('No mapbox response')
     }
