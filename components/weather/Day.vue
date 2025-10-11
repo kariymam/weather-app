@@ -7,7 +7,7 @@ const isIntersecting = ref(false)
 
 onMounted(() => {
 	if (observer.value) {
-		attachObservers(useGetElement(observer.value), [observerEntry])
+		attachObservers(useGetElement([observer.value]), [observerEntry])
 		watch(observerEntry, (val) => {
 			if (val) {
 				isIntersecting.value = val.isIntersecting

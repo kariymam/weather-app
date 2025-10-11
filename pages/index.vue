@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import type { Geolocation, WeatherAPIResponse } from '~/types';
+import type { IUserLocation } from '~/validators';
 
-const { weather, location } = defineProps<{
-	weather: WeatherAPIResponse["weather"];
-	location: Geolocation;
+const { location, location_history } = defineProps<{
+	location: IUserLocation;
+	location_history: Map<string,IUserLocation>;
 }>();
 
 </script>
 
 <template>
-	<div>
-		 {{ location }}
-		 {{ weather }}
-	</div>
+	<NuxtLayout name="default">
+		{{ location }}
+		{{ location_history }}
+	</NuxtLayout>
 </template>

@@ -1,32 +1,43 @@
-import type { Geolocation, MapboxResponseFeature } from '~/types';
-
 export const useLocationStore = async () => {
 
 	const {
-		location,
-		geolocationAPI,
-		locations,
-		coordinates,
+		createUserLocation,
+		getUserPlaceName,
+		setUserLocation,
+	} = locationStore()
+
+	const {
+		UserLocation,
+		Locations,
+		geolocationAPI
 	} = storeToRefs(locationStore());
 
-	const cookie = useCookie('location');
+	const route = useRoute()
 
-	const { data } = await useFetch('/api/cookie');
-
-	if (cookie.value !== undefined && data.value) {
-		const parsedCookie = useParseCookieToLocation(data.value.location);
-		locationStore().saveLocation(parsedCookie as Geolocation)
+	if (route.fullPath === '/') {
+		const cookie = useCookie('location');
+	
+		try {
+			const { data } = await useFetch('/api/cookie');
+			
+			if (cookie.value !== undefined && data.value) {
+				const parsedCookie = createUserLocation(data.value.location);
+				const location = await getUserPlaceName(parsedCookie)
+				setUserLocation(location)
+			}
+		} catch (error) {
+			console.log(error)
+		}
 	}
 
 
 	return {
+		UserLocation,
+		Locations,
 		geolocationAPI,
-		location,
-		locations,
-		coordinates,
-		saveLocation: (location: Geolocation) => locationStore().saveLocation(location),
-		useGeolocationAPI: () => locationStore().useNavigatorGeolocation(),
-		useSearchAPI: async (query: string) => await locationStore().getMapboxSearchResponse(query),
-		saveLocationFromMapbox: (res: MapboxResponseFeature) => locationStore().saveLocationFromMapboxRes(res),
+		createUserLocation,
+		getUserPlaceName,
+		setUserLocation,
+		useSearchAPI: async (query: string) => await locationStore().getMapboxSearchResponse(query)
 	};
 };

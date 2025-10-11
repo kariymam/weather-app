@@ -1,34 +1,22 @@
 import { defineStore } from 'pinia';
-import type { Geolocation, GeolocationNavigatorError, MapboxResponseFeature } from '~/types';
+import type { NavigatorGeolocationError } from '~/types';
+import { UserLocation, type IUserLocation } from '~/validators';
 
 export const locationStore = defineStore(
 	'location', {
 		state: () => ({
-			location: {
-			/**
-          * @default place_name
-          */
+			UserLocation: {
 				place_name: 'New York, New York, United States',
-				/**
-           * @default coordinates
-           * [latitude, longitude]
-          */
-				coordinates: {
-					latitude: 40.730610,
-					longitude: -73.935242,
-				},
-			} as Geolocation,
+				coordinates: [40.730610,-73.935242],
+				latitude: 40.730610,
+				longitude: -73.935242,
+			} as IUserLocation,
 			geolocationAPI: {
 				isError: false,
-				error: {} as GeolocationNavigatorError,
-				success: false,
+				error: {} as NavigatorGeolocationError,
 			},
-			locations: new Set() as Set<Geolocation>,
-			error: null as null | unknown,
+			Locations: new Map() as Map<string,IUserLocation>,
 		}),
-		getters: {
-			coordinates: state => `${state.location.coordinates.latitude},${state.location.coordinates.longitude}`,
-		},
 		actions: {
 			async getMapboxSearchResponse(query: string) {
 				if (query === '' || query === null || query.length < 1) {
@@ -38,26 +26,32 @@ export const locationStore = defineStore(
 
 				return features;
 			},
-			saveLocationFromMapboxRes(res: MapboxResponseFeature) {
-				const { center, place_name } = res;
-
-				const [longitude, latitude] = center;
-
-				this.saveLocation({
-					place_name,
-					coordinates: { latitude, longitude },
-				} as Geolocation);
-
-				weatherStore().saveLocation({
-					place_name,
-					coordinates: { latitude, longitude },
-				} as Geolocation);
-
-				return this.location;
+			createUserLocation(value: string | string[] | number[]){
+				const location = UserLocation(value)
+				return location
 			},
-			saveLocation(location: Geolocation) {
-				weatherStore().saveLocation(location)
-				return this.location = location;
+			updateUserLocation(place_name: string, location: IUserLocation){
+				return this.Locations.set(place_name, location)
+			},
+			async getUserPlaceName(location: IUserLocation){
+				if 
+				(location.place_name === '')
+				{
+					const { place_name } = await $fetch(`/api/geolocation/reverse/${location.longitude},${location.latitude}`);
+					location.place_name = place_name;
+				} 
+				else if 
+				(location.place_name && this.Locations.has(location.place_name))
+				{
+					const newLocation = this.Locations.get(location.place_name)
+					if(newLocation) {
+						location = newLocation
+					}
+				}
+				return location;
+			},
+			setUserLocation(location: IUserLocation) {
+				return this.UserLocation = location
 			},
 			async useNavigatorGeolocation() {
 				const onError = async (error: GeolocationPositionError) => {
@@ -68,10 +62,9 @@ export const locationStore = defineStore(
 							code: error.code,
 							name: (error.code === 3) ? 'TIMEOUT' : (error.code === 2) ? 'POSITION_UNAVAILABLE' : 'PERMISSION_DENIED',
 						},
-						success: false,
 					};
 
-					return error;
+					return error.message;
 				};
 
 				try {
@@ -86,25 +79,7 @@ export const locationStore = defineStore(
 							},
 						));
 
-						const { place_name } = await $fetch(`/api/geolocation/reverse/${position.coords.longitude},${position.coords.latitude}`);
-
-						this.saveLocation({
-							place_name,
-							coordinates: {
-								latitude: position.coords.latitude,
-								longitude: position.coords.longitude,
-							},
-						} as Geolocation);
-
-						weatherStore().saveLocation({
-							place_name,
-							coordinates: {
-								latitude: position.coords.latitude,
-								longitude: position.coords.longitude,
-							},
-						} as Geolocation);
-
-						return position;
+						return `${position.coords.latitude},${position.coords.longitude}`;
 					}
 				}
 				catch {

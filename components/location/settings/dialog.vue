@@ -1,74 +1,20 @@
 <script lang="ts" setup>
-import type { Geolocation, GeolocationNavigatorError, MapboxResponseFeature } from '~/types';
+import type { MapboxResponseFeature } from '~/types';
+import type { IUserLocation } from '~/validators';
+const { handleLocationPermissionsBtn, handleSearchSelect } = useLocationActions()
 
-const { location, locations, geolocationAPI, useSearchAPI, useGeolocationAPI, saveLocationFromMapbox, saveLocation } = defineProps<{
-	location: Geolocation;
-	locations: Set<Geolocation>;
-	geolocationAPI: {
-		isError: boolean;
-		error: GeolocationNavigatorError;
-		success: boolean;
-	};
-	useGeolocationAPI: () => Promise<GeolocationPosition | undefined>;
+const { 
+	location,
+	locations, 
+	useSearchAPI, 
+} = defineProps<{
+	location: IUserLocation;
+	locations: Map<string,IUserLocation>;
 	useSearchAPI: (query: string) => Promise<MapboxResponseFeature[] | undefined>;
-	saveLocationFromMapbox: (res: MapboxResponseFeature) => {
-		place_name: string | '';
-		coordinates: {
-			latitude: number | string;
-			longitude: number | string;
-		};
-	};
-	saveLocation: (location: Geolocation) => Geolocation;
 }>();
 
-const route = useRoute();
-const router = useRouter();
 const dialog = ref(false);
-const currentLocation = computed(() => location);
-const selected: Ref<MapboxResponseFeature | null> = ref(null);
 
-const handleLocationPermissionsBtn = async () => {
-	const results = await useGeolocationAPI();
-	if (results) {
-		useSetCookie(location);
-		if (route.params.coordinates) {
-			router.push({ name: 'coordinates', params: { coordinates: `${results.coords.latitude},${results.coords.longitude}` } });
-		}
-		return dialog.value = false;
-	}
-};
-
-const handleSearchSelect = async (res: MapboxResponseFeature) => {
-	selected.value = res;
-
-	dialog.value = false;
-
-	if (res) {
-		const [longitude, latitude] = res.center;
-
-		const place_name = res.place_name;
-
-		useSetCookie({ place_name, coordinates: { longitude, latitude } });
-
-		saveLocationFromMapbox(res);
-
-		if (route.params.coordinates) {
-			router.push({ name: 'coordinates', params: { coordinates: `${latitude},${longitude}` } });
-		}
-
-		return dialog.value = false;
-	}
-	else {
-		dialog.value = false;
-		selected.value = null;
-		throw Error('No mapbox response');
-	}
-};
-
-watch(currentLocation, (newLocation) => {
-	saveLocation(newLocation);
-	return newLocation ? dialog.value = false : dialog.value;
-});
 </script>
 
 <template>
@@ -113,8 +59,7 @@ watch(currentLocation, (newLocation) => {
 				</v-list-item>
 				<v-list-item subtitle="Location services">
 					<location-permissions-btn
-						:geolocation-status="geolocationAPI"
-						:click-func="handleLocationPermissionsBtn"
+						:permissions-func="handleLocationPermissionsBtn"
 					/>
 				</v-list-item>
 				<v-divider />
@@ -127,16 +72,8 @@ watch(currentLocation, (newLocation) => {
 						:search-func="useSearchAPI"
 					/>
 				</v-list-item>
-				<v-list-item
-					v-if="locations.size > 0"
-					:subtitle="locations.size === 1 ? 'Previous location' : 'Previous locations'"
-				>
-					<div
-						v-for="(place, idx) in locations"
-						:key="idx"
-					>
-						{{ place.place_name }}
-					</div>
+				<v-list-item>
+					{{ locations }}
 				</v-list-item>
 			</v-list>
 		</v-card>

@@ -1,11 +1,38 @@
-export const useSetCookie = (location: {
-	place_name: string;
-	coordinates: {
-		latitude: string | number;
-		longitude: string | number;
-	}; }) => {
-  return useSetLocationCookie(
+import type { IUserLocation } from "~/validators";
+
+export const LocationCookie = (
+	name: string, 
+	data: string
+) => {
+	const cookie = useCookie(
+		name,
+		{
+			default: () => '',
+			watch: 'shallow',
+		},
+	);
+
+	cookie.value = cookie.value || data;
+
+	const saveCookie = () => {
+		cookie.value = data;
+	};
+
+	const resetCookie = () => {
+		cookie.value = '';
+	};
+
+	return {
+		saveCookie,
+		resetCookie,
+	};
+};
+
+export const useSetCookie = (
+	location: IUserLocation
+) => {
+  return LocationCookie(
 		'location',
-		`${location.place_name}/${location.coordinates.latitude}/${location.coordinates.longitude}`,
+		`${location.latitude},${location.longitude}`,
 	).saveCookie();
 }

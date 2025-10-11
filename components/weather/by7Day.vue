@@ -3,6 +3,7 @@ import type { AsyncDataRequestStatus } from '#app';
 import type { WeatherApiResponse, WeatherDescriptions } from '~/types';
 import '../../styles/temperatures.css';
 import { attachObservers } from '~/utils';
+import { format } from 'date-fns';
 
 const { daily, descriptions, status } = defineProps<{
 	daily: WeatherApiResponse['daily'] | undefined;
@@ -71,10 +72,10 @@ onMounted(() => {
 	>
 			<WeatherDay>
 				<template #weekday>
-					{{ idx === 0 ? 'Today' : useFormatDate(time, 'eee') }}
+					{{ idx === 0 ? 'Today' : format(time, 'eee') }}
 				</template>
 				<template v-if="idx === 0 || idx === 6" #date>
-					{{ useFormatDate(time) }}
+					{{ format(time, 'eee') }}
 				</template>
 				<template #weather-code>
 					 <WeatherCode v-if="images[idx] && Object.hasOwn(images[idx], 'day')" :code="imageAttributes(images[idx], 'day')" />

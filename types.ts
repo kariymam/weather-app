@@ -1,13 +1,5 @@
 import type { AsyncDataRequestStatus } from "#app";
 
-export interface Geolocation {
-	place_name: string | '';
-	coordinates: {
-		latitude: number | string;
-		longitude: number | string;
-	};
-}
-
 export type WeatherAPIResponse = {
 	coordinates: string
 	weather: {
@@ -32,18 +24,10 @@ export type WeatherAPIResponse = {
 }
 
 
-export interface GeolocationNavigatorError {
+export interface NavigatorGeolocationError {
 	name: string;
 	code: number;
 	message: string;
-}
-
-export interface UserGeolocation {
-	location: Geolocation;
-	navigator: {
-		isError: boolean;
-		error?: GeolocationNavigatorError | undefined;
-	};
 }
 
 export type weathergovPeriods = {

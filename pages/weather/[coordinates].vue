@@ -1,47 +1,58 @@
 <script lang="ts" setup>
 import type { WeatherAPIResponse } from '~/types';
+import type { IUserLocation } from '~/validators';
+
+const { location, location_history } = defineProps<{
+	location: IUserLocation;
+	location_history: Map<string,IUserLocation>;
+}>();
 
 definePageMeta({
-	layout: false,
-	validate(route) {
-		const regex = /^(-?\d+\.{1}\d+),{1}(-?\d+\.{1}\d+)$/gm
-		return regex.test(route.params.coordinates as string)
-	},
+	layout: 'weather-base',
+	middleware: 'coordinates'
 })
 
+const {
+	createUserLocation,
+	getUserPlaceName,
+	setUserLocation
+} = await useLocationStore();
+
 const route = useRoute()
-const { weather } = storeToRefs(weatherStore())
 const coordinates = computed(() => route.params.coordinates)
-  
+const currentLocation = ref<IUserLocation>(location)
+
 const { data, status, refresh } = await useFetch(`/api/weather/`,{ 
 	query: {
-		location: route.params.coordinates
+		location: currentLocation.value.coordinates.join(",")
 	},
 	watch: [coordinates],
 	lazy: true
 });
 
 watch(
-  () => route.params.coordinates,
-  async (newCoords) => {
-	if (newCoords) {
-	  refresh()
+	coordinates,
+	async (newCoords) => {
+		const newLocation = await getUserPlaceName(createUserLocation(newCoords))
+		currentLocation.value = newLocation
+		await refresh()
+	},
+	{ immediate: true }
+)
+
+watch(
+  currentLocation,
+  (newLocation) => {
+	if (newLocation) {
+		setUserLocation(newLocation)
 	}
   },
   { immediate: true }
 );
-
-watch(
-	() => data.value,
-	(newData) => {
-		weatherStore().saveWeatherData(newData as WeatherAPIResponse["weather"]["data"])
-	}
-)
-
 </script>
 
 <template>
-	<NuxtLayout name="weather-base">
+	<!-- <NuxtLayout name="weather-base">
 		<template #current>
 			<header>
 				<h1>Right now</h1>
@@ -55,7 +66,10 @@ watch(
 		<template #video>
 
 		</template>
-	</NuxtLayout>
+	</NuxtLayout> -->
+	{{ currentLocation }}
+	{{ status }}
+	{{ data }}
 </template>
 <style lang="css">
 
