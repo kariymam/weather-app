@@ -59,6 +59,8 @@ onMounted(() => {
 	width: 100%;
     min-width: 148px;
 	gap: 1em;
+	display: flex;
+		flex-flow: column nowrap;
 
 	> div {
 		width: initial;
@@ -71,23 +73,25 @@ onMounted(() => {
 	}
 
 	h1 {
-		flex: auto;
+		flex: 0 0 min-content;
 	}
 
 	.weatherCode {
-		flex: 1;
+		flex: 2 1 100%;
 	}
 
 	.temperatures {
-		flex: 1 0 25%;
+		flex: 1 1 50%;
+	}
+
+	.weatherDescription {
+		flex: 1 1 50%;
 	}
 
 }
 
 @media screen and (width >= 900px) {
 	.weatherDay {
-		display: flex;
-		flex-flow: column nowrap;
 		gap: 0;
 		margin: auto;
 		height: 100%;
@@ -132,14 +136,8 @@ onMounted(() => {
 	}
 }
 
-img ~ .weatherDescription {
-	margin: auto;
-	flex: 2 0 100px;
-}
-
 .weatherDescription {
 	margin: auto;
-	height: 100%;
 	align-items: end;
 	p {
 		text-align: center;
@@ -160,7 +158,6 @@ img ~ .weatherDescription {
 		flex-direction: column;
 
 		> img {
-			margin-top: 1em;
 			aspect-ratio: 1 / 1 ;
 			object-fit: cover;
 			object-position: center;

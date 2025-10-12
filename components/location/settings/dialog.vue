@@ -27,7 +27,7 @@ const dialog = ref(false);
 			<v-btn
 				prepend-icon="mdi-map-marker"
 				size="small"
-				variant="text"
+				variant="outlined"
 				v-bind="activatorProps"
 			>
 				Change Location

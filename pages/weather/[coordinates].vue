@@ -35,6 +35,7 @@ const { data: weather, status, refresh } = useAsyncData(
   })
 )
 
+onMounted(() => {
 watch(
 	coordinates,
 	async (newCoords) => {
@@ -67,6 +68,9 @@ watch(
 	},
 	{ immediate: true }
 )
+})
+
+
 
 </script>
 
