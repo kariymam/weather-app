@@ -1,20 +1,32 @@
 <script lang="ts" setup>
-import type { WeatherApiResponse } from '~/types';
+import type { WeatherGovAlert } from '~/types';
 
 const { alerts } = defineProps<{
-	alerts: WeatherApiResponse['alerts'];
+	alerts: WeatherGovAlert[];
 }>();
+
+const headlines: Ref<any[]> = ref([])
+
+for (const alert of alerts) {
+	for (let key in alert){
+		if(key === 'properties'){
+			headlines.value.push(alert[key]["headline"])
+		}
+	}
+}
+
 </script>
 
 <template>
-	<div v-if="alerts !== undefined">
-		<v-alert
-			v-for="({ headline, description }, idx) in alerts"
-			:key="idx"
-			:text="description"
-			:title="headline"
-			type="warning"
-			closable
-		/>
-	</div>
+	<v-banner 
+		v-for="text in headlines"
+		lines="one" 
+		:stacked="false">
+		<v-banner-text>
+			{{  text  }}
+		</v-banner-text>
+		<template v-slot:actions>
+			<v-btn>Dismiss</v-btn>
+		</template>
+	</v-banner>
 </template>

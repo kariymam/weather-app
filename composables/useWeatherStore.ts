@@ -11,7 +11,7 @@ export const useWeatherStore = async () => {
     weatherCoordinates,
     openmeteo,
     weatherGov_alerts,
-    weatherGov_descriptions
+    weatherGov_descriptions,
   } = storeToRefs(weatherStore())
 
   return {

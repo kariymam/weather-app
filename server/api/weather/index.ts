@@ -2,7 +2,6 @@ import { openmeteo, WeatherDescriptions, WeatherGovAlert } from '~/types.js';
 import weatherRequest from '../../routes/weatherRequest.js';
 
 export default defineEventHandler(async (event) => {
-
 	const { location } = getQuery(event)
 
 	const getCoordinates = (string: string | undefined) => {
@@ -11,7 +10,8 @@ export default defineEventHandler(async (event) => {
 
 	const coordinates = getCoordinates(location as string)
 
-	
+	const date = new Date()
+
 	if (coordinates.length === 0){
 		throw Error("Cannot parse coordinates")
 	} else {
@@ -19,15 +19,15 @@ export default defineEventHandler(async (event) => {
 		const callbacks = new Map<string, Function>([
 			[
 				'openmeteo', 
-				async () => await weatherRequest.fetchOpenMeteo(new Date(), lat, long, Intl.DateTimeFormat().resolvedOptions().timeZone)
+				async () => await weatherRequest.fetchOpenMeteo(date, lat, long, Intl.DateTimeFormat().resolvedOptions().timeZone)
 			],
 			[
 				'weathergovAlerts', 
-				async () => await weatherRequest.fetchWeatherAlerts(new Date().toISOString(), lat, long)
+				async () => await weatherRequest.fetchWeatherAlerts(date, lat, long)
 			],
 			[
 				'weathergovDescriptions',
-				async () => await weatherRequest.fetchWeatherDescriptions(new Date(), lat, long)
+				async () => await weatherRequest.fetchWeatherDescriptions(date, lat, long)
 			]
 		]);
 
@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
 					return { error };
 				}
 			})
-		) as [openmeteo, WeatherGovAlert | [], WeatherDescriptions[]]
+		) as [openmeteo, WeatherGovAlert[] | [], WeatherDescriptions[]]
 
 		return {
 			coordinates,

@@ -10,13 +10,15 @@ export const useLocationStore = async () => {
 	const {
 		UserLocation,
 		Locations,
-		geolocationAPI
+		geolocationAPI,
+		getLocationHistory
 	} = storeToRefs(locationStore());
 
 	return {
 		UserLocation,
 		Locations,
 		geolocationAPI,
+		getLocationHistory,
 		updateUserLocation,
 		createUserLocation,
 		getUserPlaceName,

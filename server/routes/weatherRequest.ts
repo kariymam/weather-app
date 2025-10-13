@@ -100,20 +100,25 @@ async function fetchOpenMeteo(currentTime: Date, lat: string, long: string, zone
 	} as openmeteo;
 }
 
-async function fetchWeatherAlerts(startTime: string, lat: string, long: string) {
+async function fetchWeatherAlerts(startTime: Date, lat: string, long: string) {
+
+	const start = new Date(startTime.setUTCHours(0, 0, 0, 0)).toISOString()
+
+	console.log(start)
+
 	const params = new URLSearchParams([
-		['start', startTime],
 		['message_type', 'alert'],
 		['point', `${lat},${long}`],
 		// ['urgency', 'Immediate'],
 		// ['severity', 'Severe'],
 		// ['certainty', 'Observed'],
-		['limit', '500'],
 	]);
 
 	const weathergovAlerts = await getWeathergovRes(BASE_URL.WEATHERGOV_ALERTS, params)
 
-	return weathergovAlerts["features"] as WeatherGovAlert | []
+	console.log(weathergovAlerts)
+
+	return weathergovAlerts["features"] as WeatherGovAlert[] | []
 }
 
 async function fetchWeatherDescriptions(currentTime: Date, lat: string, long: string) {

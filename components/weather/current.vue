@@ -3,17 +3,20 @@ import type { openmeteo, WeatherDescriptions } from '~/types';
 
 const { current,  descriptions } = defineProps<{
     descriptions: WeatherDescriptions[]
-    current: openmeteo["current"]
+    current: openmeteo['current']
 }>()
 
-const temperature = Math.ceil(current.temperature2m)
+const { value: { temperature2m, apparentTemperature } } = ref(current)
 
 </script>
 
 <template>
   <div class="current">
     <span class="currentTemperature">
-      {{ temperature }}
+      {{ Math.ceil(temperature2m) }}
+    </span>
+    <span>
+      Feels like {{ Math.ceil(apparentTemperature) }}°F
     </span>
     <p>
       {{ descriptions.length && descriptions[0]["detailedForecast"] }}

@@ -59,7 +59,10 @@ const dialog = ref(false);
 				</v-list-item>
 				<v-list-item subtitle="Location services">
 					<location-permissions-btn
-						:permissions-func="handleLocationPermissionsBtn"
+						:permissions-func="() =>{ 
+							handleLocationPermissionsBtn()
+							return dialog = false
+						}"
 					/>
 				</v-list-item>
 				<v-divider />
@@ -68,7 +71,10 @@ const dialog = ref(false);
 					title="Select a new location"
 				>
 					<location-search
-						:select-func="(res) => handleSearchSelect(res)"
+						:select-func="(res) => {
+							handleSearchSelect(res)
+							return dialog = false
+						}"
 						:search-func="useSearchAPI"
 					/>
 				</v-list-item>

@@ -9,6 +9,6 @@ const { location } = defineProps<{
 
 <template>
 	<NuxtLayout name="default">
-		{{ location }}
+		{{location}}
 	</NuxtLayout>
 </template>

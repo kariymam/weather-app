@@ -5,12 +5,12 @@ export const weatherStore = defineStore('weather', {
   state: () => ({
     weatherCoordinates: '',
     openmeteo: {} as openmeteo,
-    weatherGov_alerts: [] as WeatherGovAlert | [],
+    weatherGov_alerts: [] as WeatherGovAlert[] | [],
     weatherGov_descriptions: [] as WeatherDescriptions[],
     weather: {} as WeatherAPIResponse["weather"]["data"]
   }),
   getters: {
-    currentWeatherDescription: state => state.weather.descriptions.shift()
+    currentWeatherDescription: state => state.weather.descriptions.shift(),
   },
   actions: {
     saveWeatherData(weather: WeatherAPIResponse["weather"]["data"]) {
@@ -22,7 +22,7 @@ export const weatherStore = defineStore('weather', {
     updateOpenmeteoRes(res: openmeteo) {
       return this.openmeteo = res
     },
-    updateWeatherGovAlerts(res: WeatherGovAlert | []) {
+    updateWeatherGovAlerts(res: WeatherGovAlert[] | []) {
       return this.weatherGov_alerts = res
     },
     updateWeatherGovDescriptions(res: WeatherDescriptions[]) {

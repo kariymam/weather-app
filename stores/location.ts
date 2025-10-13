@@ -17,21 +17,19 @@ export const locationStore = defineStore(
 		},
 		Locations: new Map() as Map<string, IUserLocation>,
 	}),
+	getters: {
+		getLocationHistory: (state) => Array.from(state.Locations),
+	},
 	actions: {
-		async getMapboxSearchResponse(query: string) {
-			if (query === '' || query === null || query.length < 1) {
-				return;
-			}
-			const features = await $fetch(`/api/geolocation/forward/${query}`);
-
-			return features;
-		},
 		createUserLocation(value: string | string[] | number[]) {
 			const location = UserLocation(value)
 			return location
 		},
 		updateUserLocation(place_name: string, location: IUserLocation) {
 			return this.Locations.set(place_name, location)
+		},
+		setUserLocation(location: IUserLocation) {
+			return this.UserLocation = location
 		},
 		async getUserPlaceName(location: IUserLocation) {
 			if
@@ -48,8 +46,13 @@ export const locationStore = defineStore(
 			}
 			return location;
 		},
-		setUserLocation(location: IUserLocation) {
-			return this.UserLocation = location
+		async getMapboxSearchResponse(query: string) {
+			if (query === '' || query === null || query.length < 1) {
+				return;
+			}
+			const features = await $fetch(`/api/geolocation/forward/${query}`);
+
+			return features;
 		},
 		async useNavigatorGeolocation() {
 			const onError = async (error: GeolocationPositionError) => {

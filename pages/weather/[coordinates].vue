@@ -25,6 +25,7 @@ const {
 const route = useRoute()
 const coordinates = computed(() => `${route.params.coordinates}`)
 const currentLocation = ref<IUserLocation>(location)
+updateUserLocation(currentLocation.value.place_name, currentLocation.value)
 
 const { data: weather, status, refresh } = useAsyncData(
 	coordinates,
@@ -75,8 +76,11 @@ watch(
 </script>
 
 <template>
-	{{ weatherGov_alerts }}
 	<NuxtLayout name="weather-base">
+		<template #alerts>
+			<WeatherAlerts :alerts="weatherGov_alerts">
+			</WeatherAlerts>
+		</template>
 		<template #current>
 			<header>
 				<h1>Right now in {{ currentLocation.place_name }}</h1>
