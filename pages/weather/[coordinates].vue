@@ -86,9 +86,10 @@ watch(
 				<h1>Right now in {{ currentLocation.place_name }}</h1>
 			</header>
 			<weather-current 
-			v-if="openmeteo.hasOwnProperty('current')"
-			:current="openmeteo['current']" 
-			:descriptions="weatherGov_descriptions"></weather-current>
+				v-if="openmeteo.hasOwnProperty('current')"
+				:temperature="openmeteo['current'].temperature2m" 
+				:description="weatherGov_descriptions[0].detailedForecast">
+			</weather-current>
 		</template>
 		<template #week>
 			<header>

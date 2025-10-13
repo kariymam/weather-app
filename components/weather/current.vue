@@ -1,25 +1,21 @@
 <script lang="ts" setup>
-import type { openmeteo, WeatherDescriptions } from '~/types';
-
-const { current,  descriptions } = defineProps<{
-    descriptions: WeatherDescriptions[]
-    current: openmeteo['current']
+const { temperature, description } = defineProps<{
+    temperature: number
+    description: string
 }>()
-
-const { value: { temperature2m, apparentTemperature } } = ref(current)
 
 </script>
 
 <template>
   <div class="current">
     <span class="currentTemperature">
-      {{ Math.ceil(temperature2m) }}
+      {{ Math.ceil(temperature) }}
     </span>
     <span>
-      Feels like {{ Math.ceil(apparentTemperature) }}
+      Feels like {{ Math.ceil(temperature) }}
     </span>
     <p>
-      {{ descriptions.length && descriptions[0]["detailedForecast"] }}
+      {{ description }}
     </p>
   </div>
 </template>
