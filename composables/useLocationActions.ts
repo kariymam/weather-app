@@ -32,6 +32,7 @@ export function useLocationActions() {
         if (res) {
             const [long, lat] = res.center
             const newUserLocation = createUserLocation([lat, long])
+            setUserLocation(newUserLocation, res.place_name)
             updateUserLocation(res.place_name, newUserLocation)
 
             if

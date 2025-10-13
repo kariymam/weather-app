@@ -2,7 +2,7 @@
 
 const {
     UserLocation,
-	Locations,
+	getLocationHistory,
 	useSearchAPI,
 } = await useLocationStore();
   
@@ -17,7 +17,7 @@ const {
 			<template #location-settings>
 				<location-settings-dialog
 					:location="UserLocation"
-					:locations="Locations"
+					:locations="getLocationHistory"
 					:use-search-a-p-i="useSearchAPI"
 				/>
 			</template>

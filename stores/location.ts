@@ -28,7 +28,10 @@ export const locationStore = defineStore(
 		updateUserLocation(place_name: string, location: IUserLocation) {
 			return this.Locations.set(place_name, location)
 		},
-		setUserLocation(location: IUserLocation) {
+		setUserLocation(location: IUserLocation, place_name?: string) {
+			if (place_name && location.place_name === '') {
+				location.place_name = place_name
+			}
 			return this.UserLocation = location
 		},
 		async getUserPlaceName(location: IUserLocation) {

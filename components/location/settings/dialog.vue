@@ -9,11 +9,15 @@ const {
 	useSearchAPI, 
 } = defineProps<{
 	location: IUserLocation;
-	locations: Map<string,IUserLocation>;
+	locations: Array<[string,IUserLocation]>;
 	useSearchAPI: (query: string) => Promise<MapboxResponseFeature[] | undefined>;
 }>();
 
 const dialog = ref(false);
+
+const settings = {
+	title: 'Change location'
+}
 
 </script>
 
@@ -30,12 +34,12 @@ const dialog = ref(false);
 				variant="outlined"
 				v-bind="activatorProps"
 			>
-				Change Location
+				{{ settings.title }}
 			</v-btn>
 		</template>
 		<v-card>
 			<v-toolbar>
-				<v-toolbar-title>Location Settings</v-toolbar-title>
+				<v-toolbar-title>{{ settings.title }}</v-toolbar-title>
 				<template #append>
 					<div class="d-flex ga-4 align-center">
 						<v-btn
@@ -49,7 +53,8 @@ const dialog = ref(false);
 			</v-toolbar>
 			<v-list lines="two">
 				<v-list-item
-					title="Current location"
+					title="Location"
+					subtitle="Your current location setting"
 				>
 					<v-col>
 						<v-row>
@@ -57,7 +62,8 @@ const dialog = ref(false);
 						</v-row>
 					</v-col>
 				</v-list-item>
-				<v-list-item subtitle="Location services">
+				<v-divider />
+				<v-list-item title="Allow Location" subtitle="Enable location services">
 					<location-permissions-btn
 						:permissions-func="() =>{ 
 							handleLocationPermissionsBtn()
@@ -67,8 +73,8 @@ const dialog = ref(false);
 				</v-list-item>
 				<v-divider />
 				<v-list-item
-					subtitle="Seach for a different location"
-					title="Select a new location"
+					title="Search"
+					subtitle="Search and select a new location"
 				>
 					<location-search
 						:select-func="(res) => {

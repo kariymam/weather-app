@@ -27,7 +27,7 @@ const { value: { temperature2m, apparentTemperature } } = ref(current)
 <style>
 
 .currentTemperature::after {
-  content: '°';
+  content: '°F';
 }
 
 .current {

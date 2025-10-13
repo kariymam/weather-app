@@ -104,8 +104,6 @@ async function fetchWeatherAlerts(startTime: Date, lat: string, long: string) {
 
 	const start = new Date(startTime.setUTCHours(0, 0, 0, 0)).toISOString()
 
-	console.log(start)
-
 	const params = new URLSearchParams([
 		['message_type', 'alert'],
 		['point', `${lat},${long}`],
@@ -115,8 +113,6 @@ async function fetchWeatherAlerts(startTime: Date, lat: string, long: string) {
 	]);
 
 	const weathergovAlerts = await getWeathergovRes(BASE_URL.WEATHERGOV_ALERTS, params)
-
-	console.log(weathergovAlerts)
 
 	return weathergovAlerts["features"] as WeatherGovAlert[] | []
 }

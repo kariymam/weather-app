@@ -11,7 +11,6 @@ const { daily, descriptions, status } = defineProps<{
 	status:  "idle" | "pending" | "success" | "error";
 }>();
 
-
 // ---- Device detection
 const device = useDevice()
 const cardWidth = '248px';
@@ -52,7 +51,13 @@ onMounted(() => {
 		})
 	}
 })
+
 // ----
+
+onUpdated(() => {
+	const elems = useGetElement(target.value as Element | Element[], [0, 6])
+	attachObservers(elems, [firstElemObserverEntry, lastElemObserverEntry])
+})
 
 </script>
 
@@ -68,7 +73,8 @@ onMounted(() => {
 		<li 
 			v-for="(_) in Array.from({length: 7})"
 			class="day"
-			v-if="status !== 'success'">
+			v-if="status !== 'success'"
+			>
 			<v-skeleton-loader 
 				type="card">
 			</v-skeleton-loader>
@@ -148,8 +154,8 @@ onMounted(() => {
 	position: relative;
 	border: thin var(--border-color) solid;
 	border-radius: var(--border-radius);
-	background: var(--scroll-shadow-left),
-	var(--scroll-shadow-right);
+	/* background: var(--scroll-shadow-left),
+	var(--scroll-shadow-right); */
 	transition-property: background;
 	grid-auto-flow: row;
 	overflow-x: scroll;
@@ -183,12 +189,12 @@ onMounted(() => {
 	font-size: var(--font-size-smallest);
 }
 
-#periodsByDay.scroll-indicator-left {
+/* #periodsByDay.scroll-indicator-left {
 	background: var(--scroll-shadow-left);
 }
 
 #periodsByDay.scroll-indicator-right {
 	background: var(--scroll-shadow-right);
-}
+} */
 
 </style>

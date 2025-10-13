@@ -123,7 +123,7 @@ onMounted(() => {
  }
 
 .high::after, .low::after {
-	content: '°';
+	content: '°F';
 	position: absolute;
 }
 
