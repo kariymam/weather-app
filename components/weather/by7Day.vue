@@ -183,8 +183,6 @@ onUpdated(() => {
 	}
 }
 
-.high > span, 
-.low > span,
 .probability {
 	font-size: var(--font-size-smallest);
 }

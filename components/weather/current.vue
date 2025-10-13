@@ -16,7 +16,7 @@ const { value: { temperature2m, apparentTemperature } } = ref(current)
       {{ Math.ceil(temperature2m) }}
     </span>
     <span>
-      Feels like {{ Math.ceil(apparentTemperature) }}°F
+      Feels like {{ Math.ceil(apparentTemperature) }}
     </span>
     <p>
       {{ descriptions.length && descriptions[0]["detailedForecast"] }}
@@ -28,6 +28,9 @@ const { value: { temperature2m, apparentTemperature } } = ref(current)
 
 .currentTemperature::after {
   content: '°F';
+  position: absolute;
+  font-size: large;
+  line-height: 4.35rem;
 }
 
 .current {

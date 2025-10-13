@@ -32,7 +32,7 @@ onMounted(() => {
 					</span>
 				</h1>
 				<div>
-					<v-chip prepend-icon="mdi-weather-rainy" v-if="$slots.precipitation">
+					<v-chip prepend-icon="mdi-weather-rainy" v-if="$slots.precipitation" class="precipitation">
 						<slot name="precipitation" />
 					</v-chip>
 				</div>
@@ -109,6 +109,17 @@ onMounted(() => {
 .temperatures {
 	flex-flow: column nowrap;
 	line-height: 1.1;
+	> * {
+		position: relative;
+	}
+	> * > span {
+		position: absolute;
+		left: -16px;
+		line-height: 1.5rem;
+		font-size: small;
+		bottom: 0;
+		opacity: 0.5;
+	}
 }
 
 .high, .low {
@@ -123,8 +134,9 @@ onMounted(() => {
  }
 
 .high::after, .low::after {
-	content: '°F';
 	position: absolute;
+	font-size: small;
+	line-height: 1.5rem;
 }
 
 .weatherCode {
@@ -147,6 +159,11 @@ onMounted(() => {
 .weatherDate::before {
 	content: '| ';
 	margin-left: 8px;
+}
+
+.precipitation {
+	position: absolute;
+	top: 14%;
 }
 
 /* .fade-out {
