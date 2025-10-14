@@ -62,8 +62,6 @@ onUpdated(() => {
 </script>
 
 <template>
-	{{ firstElemIsVisible }} {{ lastElemIsVisible }}
-	<v-divider />
 	<div class="by7DayContainer">
 		<ul
 			id="periodsByDay"

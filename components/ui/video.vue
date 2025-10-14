@@ -29,7 +29,6 @@ const videoString = `
 	inset-block: 0;
 	display: block;
     position: absolute;
-	background: rgba(var(--v-theme-background), 0.5);
 	/* backdrop-filter: blur(5px); */
 }
 

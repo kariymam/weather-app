@@ -3,10 +3,12 @@ const { alerts } = defineProps<{
 	alerts?: { title: string; text: string }[] | null;
 }>();
 const theme = useTheme();
-const current = shallowRef('dark');
+const current = ref(theme.name.value === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night');
+
 const toggleTheme = () => {
 	return theme.global.current.value.dark ? theme.change('light') : theme.change('dark');
 };
+
 </script>
 
 <template>
@@ -20,39 +22,32 @@ const toggleTheme = () => {
 		/>
 	</div>
 	<nav
-		id="main"
+		id="main-navigation"
 	>
-	<v-col>
-		<v-row
-			align="center"
-		>
-			<v-col
-				class="link-home"
-			>
-				<h1>
-					<NuxtLink to="/">
-						<slot name="home" />
-					</NuxtLink>
-				</h1>
+			<v-col>
+				<v-row>
+					<h1>
+						<NuxtLink to="/">
+							<slot name="home" />
+						</NuxtLink>
+					</h1>
+					<v-divider vertical />
+					<h2>
+						<slot name="weather" />
+					</h2>
+				</v-row>
 			</v-col>
-			<v-col
-				align="center"
-				cols="6"
-			>
-				<slot name="location-settings" />
+			<v-col>
+				<v-row justify="end">
+					<slot name="location-settings" />
+					<v-btn
+						class="ml-2" 
+						variant="flat"
+						:icon="current"
+						@click="toggleTheme"
+					/>
+				</v-row>
 			</v-col>
-			<v-col
-				align="end"
-			>
-				<slot name="weather" />
-				<v-btn
-					:prepend-icon="current === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
-					variant="text"
-					@click="toggleTheme"
-				/>
-			</v-col>
-		</v-row>
-	</v-col>
 	</nav>
 </template>
 
@@ -60,5 +55,9 @@ const toggleTheme = () => {
 	nav {
 		display: flex;
 		z-index: 1;
+		> div > div {
+			align-items: center;
+			gap: 0.5em;
+		}
 	}
 </style>

@@ -31,15 +31,6 @@
 	position: relative;
 }
 
-.dashboard > div {
-	/* background-color:#eee; */
-	/* display: flex; */
-	height: 100%;
-    width: 100%;
-	background: rgba(var(--v-theme-background), 0.5);
-	border-radius: 1em;
-}
-
 .dashboard__1 h2 ~ .current {
 	height: fit-content;
     margin: auto;

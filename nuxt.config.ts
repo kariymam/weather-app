@@ -17,6 +17,9 @@ export default defineNuxtConfig({
 	imports: {
 		dirs: ['store'],
 	},
+	css: [
+        '~/styles/global.css'
+      ],
 	devtools: { enabled: true },
 	runtimeConfig: {
 		mpbx: process.env.MAPBOX_API_KEY,

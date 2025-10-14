@@ -1,0 +1,9 @@
+header {
+    padding: 0 12px;
+}
+
+.dashboard section {
+    display: grid;
+    grid-column: 1fr;
+    grid-row: 1fr 1fr;
+} 

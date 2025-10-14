@@ -118,7 +118,6 @@ onMounted(() => {
 		line-height: 1.5rem;
 		font-size: small;
 		bottom: 0;
-		opacity: 0.5;
 	}
 }
 
@@ -165,10 +164,6 @@ onMounted(() => {
 	position: absolute;
 	top: 14%;
 }
-
-/* .fade-out {
-	background: color-mix(in srgb, rgb(var(--v-theme-surface)) 50%, transparent)!important;
-} */
 
 @media screen and (width >= 900px) {
 	.weatherCode {

@@ -43,7 +43,8 @@ const settings = {
 				<template #append>
 					<div class="d-flex ga-4 align-center">
 						<v-btn
-							prepend-icon="mdi-close"
+							variant="flat"
+							icon="mdi-close"
 							@click="() => {
 								dialog = false
 							}"
@@ -63,7 +64,7 @@ const settings = {
 					</v-col>
 				</v-list-item>
 				<v-divider />
-				<v-list-item title="Allow Location" subtitle="Enable location services">
+				<v-list-item title="Allow Geolocation" subtitle="Enable location services">
 					<location-permissions-btn
 						:permissions-func="() =>{ 
 							handleLocationPermissionsBtn()

@@ -130,6 +130,7 @@ export type openmeteo = {
 		precipitation: number;
 		isDay: number;
 		apparentTemperature: number;
+		weather_code: number;
 	};
 	periods: openmeteoPeriod[];
 	daily: openmeteoDay[];
