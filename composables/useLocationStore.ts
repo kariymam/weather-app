@@ -1,28 +1,33 @@
-export const useLocationStore = async () => {
+export const useLocationStore = () => {
 
 	const {
 		createUserLocation,
 		getUserPlaceName,
 		setUserLocation,
 		updateUserLocation,
+		handleLocationPermissionsBtn,
+		handleSearchSelect,
+		getMapboxSearchResponse,
 	} = locationStore()
 
 	const {
 		UserLocation,
 		Locations,
-		geolocationAPI,
+		GeolocationAPI,
 		getLocationHistory
 	} = storeToRefs(locationStore());
 
 	return {
 		UserLocation,
 		Locations,
-		geolocationAPI,
+		GeolocationAPI,
 		getLocationHistory,
 		updateUserLocation,
+		handleLocationPermissionsBtn,
+		handleSearchSelect,
 		createUserLocation,
 		getUserPlaceName,
 		setUserLocation,
-		useSearchAPI: async (query: string) => await locationStore().getMapboxSearchResponse(query)
+		getMapboxSearchResponse,
 	};
 };

@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import type { IUserLocation } from '~/validators';
-
-const { location } = defineProps<{
-	location: IUserLocation;
-}>();
+definePageMeta({
+	layout: 'default',
+	middleware: 'cookie'
+})
+const {
+        UserLocation
+} = useLocationStore();
 
 </script>
 
 <template>
-	<NuxtLayout name="default">
-		{{location}}
-	</NuxtLayout>
+		{{ UserLocation }}
 </template>

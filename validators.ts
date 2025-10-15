@@ -45,12 +45,15 @@ export function UserLocation(input: unknown): IUserLocation {
         validate(input);
 
         input = Array.from([...String(input).split(',')]).map(val => parseFloat(val))
-
     } 
         
-    if (typeof input === 'object' && Array.isArray(input)){
-        input = input as unknown[]
-    } 
+    if (Array.isArray(input) 
+        && input.length === 2 
+        && typeof input[0] === 'number' 
+        && typeof input[1] === 'number'
+    ){
+        input = input as number[]
+    }
     
     const [latitude, longitude] = input as number[]
 

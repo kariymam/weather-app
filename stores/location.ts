@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { NavigatorGeolocationError } from '~/types';
+import type { MapboxResponseFeature, NavigatorGeolocationError } from '~/types';
 import { UserLocation, type IUserLocation } from '~/validators';
 
 export const locationStore = defineStore(
@@ -11,7 +11,7 @@ export const locationStore = defineStore(
 			latitude: 40.730610,
 			longitude: -73.935242,
 		} as IUserLocation,
-		geolocationAPI: {
+		GeolocationAPI: {
 			isError: false,
 			error: {} as NavigatorGeolocationError,
 		},
@@ -21,45 +21,71 @@ export const locationStore = defineStore(
 		getLocationHistory: (state) => Array.from(state.Locations),
 	},
 	actions: {
-		createUserLocation(value: string | string[] | number[]) {
-			const location = UserLocation(value)
-			return location
-		},
-		updateUserLocation(place_name: string, location: IUserLocation) {
-			return this.Locations.set(place_name, location)
-		},
-		setUserLocation(location: IUserLocation, place_name?: string) {
-			if (place_name && location.place_name === '') {
+		createUserLocation(value?: string | string[] | number[], place_name?: string) {
+			let location = {} as IUserLocation
+			if (value) {
+				location = UserLocation(value)
+			}
+			if (place_name) {
 				location.place_name = place_name
 			}
+			return location
+		},
+		updateUserLocation(location: IUserLocation, place_name = location.place_name,) {
+			return this.Locations.set(place_name, location)
+		},
+		setUserLocation(location: IUserLocation) {
 			return this.UserLocation = location
 		},
-		async getUserPlaceName(location: IUserLocation) {
-			if
-				(location.place_name === '') {
-				const { place_name } = await $fetch(`/api/geolocation/reverse/${location.longitude},${location.latitude}`);
-				location.place_name = place_name;
+		async handleSearchSelect(res: MapboxResponseFeature) {
+			if (res) {
+				const [long, lat] = res.center
+				const _location = this.createUserLocation([lat, long], res.place_name)
+				this.setUserLocation(_location)
+				this.updateUserLocation(_location)
+			} else {
+				console.error('No mapbox response')
 			}
-			else if
-				(location.place_name && this.Locations.has(location.place_name)) {
-				const newLocation = this.Locations.get(location.place_name)
-				if (newLocation) {
-					location = newLocation
+			return res
+		},
+		async handleLocationPermissionsBtn(locations: [string, IUserLocation][]) {
+			let results = await this.useNavigatorGeolocation().then(async (res) => {
+				let location = this.createUserLocation(res)
+				for (const [place_name, _location] of locations) {
+					if (location.coordinates === _location.coordinates) {
+						location.place_name = place_name
+					} else {
+						location = await this.getUserPlaceName(location)
+					}
+					break
 				}
-			}
-			return location;
+				return location
+			}).catch((error) => {
+				if (error) {
+					console.error(error)
+				}
+				return {} as IUserLocation
+			})
+			this.setUserLocation(results)
+			this.updateUserLocation(results)
+			return results
+		},
+		async getUserPlaceName(location: IUserLocation) {
+			const { place_name } = await $fetch(`/api/geolocation/reverse/${location.longitude},${location.latitude}`);
+			location.place_name = place_name;
+
+			return (location satisfies IUserLocation) && location;
 		},
 		async getMapboxSearchResponse(query: string) {
 			if (query === '' || query === null || query.length < 1) {
 				return;
 			}
 			const features = await $fetch(`/api/geolocation/forward/${query}`);
-
 			return features;
 		},
 		async useNavigatorGeolocation() {
 			const onError = async (error: GeolocationPositionError) => {
-				this.geolocationAPI = {
+				this.GeolocationAPI = {
 					isError: true,
 					error: {
 						message: (error.code === 2) ? 'User position unavailable' : error.message,

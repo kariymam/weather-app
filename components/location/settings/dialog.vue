@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { MapboxResponseFeature } from '~/types';
 import type { IUserLocation } from '~/validators';
-const { handleLocationPermissionsBtn, handleSearchSelect } = useLocationActions()
+const { handleLocationPermissionsBtn, handleSearchSelect } = await useLocationStore()
 
 const { 
 	location,
@@ -67,8 +67,9 @@ const settings = {
 				<v-list-item title="Allow Geolocation" subtitle="Enable location services">
 					<location-permissions-btn
 						:permissions-func="() =>{ 
-							handleLocationPermissionsBtn()
-							return dialog = false
+							dialog = false
+							handleLocationPermissionsBtn(locations)
+							return navigateTo({ name: 'weather'});
 						}"
 					/>
 				</v-list-item>
@@ -79,8 +80,9 @@ const settings = {
 				>
 					<location-search
 						:select-func="(res) => {
+							dialog = false
 							handleSearchSelect(res)
-							return dialog = false
+							return navigateTo({ name: 'weather'});
 						}"
 						:search-func="useSearchAPI"
 					/>

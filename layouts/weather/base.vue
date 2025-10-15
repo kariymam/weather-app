@@ -1,5 +1,6 @@
 <template>
 	<v-main>
+		<slot name="navigation"/>
 		<slot name="alerts" v-if="$slots.alerts" />
 		<WeatherDashboard>
 			<template #one>

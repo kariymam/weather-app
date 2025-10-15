@@ -63,6 +63,7 @@ onUpdated(() => {
 
 <template>
 	<div class="by7DayContainer">
+		<!-- {{ firstElemIsVisible }}{{ lastElemIsVisible }} -->
 		<ul
 			id="periodsByDay"
 			ref="periodByDay"

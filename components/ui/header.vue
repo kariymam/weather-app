@@ -1,14 +1,5 @@
-<script setup lang="ts">
-const {
-    UserLocation,
-} = useLocationStore();
-  
-</script>
-
 <template>
-	<v-app>
-		<NuxtLayout>
-			<!-- <header id="main-header">
+  <header id="main-header">
 				<AppNavbar>
 					<template #home>
 						Weather App
@@ -26,9 +17,17 @@ const {
 						</nuxt-link>
 					</template>
 				</AppNavbar>
-			</header> -->
-			<UiHeader />
-			<NuxtPage />
-		</NuxtLayout>
-	</v-app>
+			</header>
 </template>
+
+<script lang="ts" setup>
+const {
+    UserLocation,
+    getLocationHistory,
+    getMapboxSearchResponse,
+} = useLocationStore();
+</script>
+
+<style>
+
+</style>

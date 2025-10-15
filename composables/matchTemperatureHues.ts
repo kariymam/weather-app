@@ -1,37 +1,39 @@
-const colorMap = [
-	{
-		name: '--orange',
-		map: new Map([
-			[[60, 65], '0'],
-			[[65, 70], '100'],
-			[[70, 75], '200'],
-			[[75, 80], '300'],
-			[[80, 90], '400'],
-			[[90, 100], '500'],
-		]),
-	},
-	{
-		name: '--green',
-		map: new Map([
-			[[30, 35], '300'],
-			[[35, 40], '200'],
-			[[40, 50], '100'],
-			[[50, 60], '0'],
-		]),
-	},
-	{
-		name: '--blue',
-		map: new Map([
-			[[0, 5], '300'],
-			[[5, 10], '200'],
-			[[10, 20], '100'],
-			[[20, 30], '0'],
-		]),
-	},
-];
+export type CssVariable = { temp: number; cssVariable: string }
 
 export const useMatchTemperatureHues = (temperature: number) => {
-	const cssVariable: { temp: number; cssVariable: string } = {
+	const colorMap = [
+		{
+			name: '--orange',
+			map: new Map([
+				[[60, 65], '0'],
+				[[65, 70], '100'],
+				[[70, 75], '200'],
+				[[75, 80], '300'],
+				[[80, 90], '400'],
+				[[90, 100], '500'],
+			]),
+		},
+		{
+			name: '--green',
+			map: new Map([
+				[[30, 35], '300'],
+				[[35, 40], '200'],
+				[[40, 50], '100'],
+				[[50, 60], '0'],
+			]),
+		},
+		{
+			name: '--blue',
+			map: new Map([
+				[[0, 5], '300'],
+				[[5, 10], '200'],
+				[[10, 20], '100'],
+				[[20, 30], '0'],
+			]),
+		},
+	];
+
+	const cssVariable: CssVariable = {
 		temp: temperature,
 		cssVariable: '',
 	};

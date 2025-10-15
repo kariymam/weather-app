@@ -21,6 +21,7 @@
 
 	display: grid;
 	grid-template-columns: 1fr;
+	grid-template-rows: 1fr 1fr;
 	column-gap: var(--dashboard-gap);
 	row-gap: var(--dashboard-gap);
 	justify-content: stretch;
@@ -30,6 +31,13 @@
 	z-index: 1;
 	position: relative;
 }
+
+.dashboard section {
+    display: grid;
+    grid-template-rows: minmax(auto, 68px) 1fr auto;
+    height: 100%;
+} 
+
 
 .dashboard__1 h2 ~ .current {
 	height: fit-content;
@@ -50,7 +58,6 @@
 
 	.dashboard {
 		grid-template-columns: repeat(12, 1fr);
-		grid-template-rows: 1fr 1fr;
 		padding: 16px var(--dashboard-gap) 16px var(--dashboard-gap);
 		height: 100vh;
 	}
