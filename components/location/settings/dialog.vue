@@ -66,10 +66,11 @@ const settings = {
 				<v-divider />
 				<v-list-item title="Allow Geolocation" subtitle="Enable location services">
 					<location-permissions-btn
-						:permissions-func="() =>{ 
+						:permissions-func="async () =>{ 
 							dialog = false
-							handleLocationPermissionsBtn(locations)
-							return navigateTo({ name: 'weather'});
+							const _locaton = await handleLocationPermissionsBtn(locations)
+							const coordinates = _locaton.coordinates.join(',')
+							return navigateTo({ name: 'weather-coordinates', params: { coordinates } });
 						}"
 					/>
 				</v-list-item>

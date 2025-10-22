@@ -39,6 +39,7 @@
 } 
 
 
+
 .dashboard__1 h2 ~ .current {
 	height: fit-content;
     margin: auto;

@@ -2,23 +2,27 @@ import { defineStore } from 'pinia';
 import type { MapboxResponseFeature, NavigatorGeolocationError } from '~/types';
 import { UserLocation, type IUserLocation } from '~/validators';
 
+export interface LocationState {
+	UserLocation: IUserLocation;
+	GeolocationAPI: NavigatorGeolocationError;
+	Locations:  Map<string, IUserLocation>;
+}
+
 export const locationStore = defineStore(
 	'location', {
-	state: () => ({
+	state: (): LocationState => ({
 		UserLocation: {
 			place_name: 'New York, New York, United States',
 			coordinates: [40.730610, -73.935242],
 			latitude: 40.730610,
 			longitude: -73.935242,
 		} as IUserLocation,
-		GeolocationAPI: {
-			isError: false,
-			error: {} as NavigatorGeolocationError,
-		},
+		GeolocationAPI: {} as NavigatorGeolocationError,
 		Locations: new Map() as Map<string, IUserLocation>,
 	}),
 	getters: {
 		getLocationHistory: (state) => Array.from(state.Locations),
+		getCoordinates: (state) => state.UserLocation.coordinates.join(',')
 	},
 	actions: {
 		createUserLocation(value?: string | string[] | number[], place_name?: string) {
@@ -49,32 +53,24 @@ export const locationStore = defineStore(
 			return res
 		},
 		async handleLocationPermissionsBtn(locations: [string, IUserLocation][]) {
-			let results = await this.useNavigatorGeolocation().then(async (res) => {
-				let location = this.createUserLocation(res)
-				for (const [place_name, _location] of locations) {
-					if (location.coordinates === _location.coordinates) {
-						location.place_name = place_name
-					} else {
-						location = await this.getUserPlaceName(location)
-					}
-					break
-				}
-				return location
+			let results = async () => await this.useNavigatorGeolocation().then(async (res) => {
+				const response = await $fetch(`/api/geolocation/reverse/${res}`);
+				return response
 			}).catch((error) => {
 				if (error) {
 					console.error(error)
 				}
 				return {} as IUserLocation
 			})
-			this.setUserLocation(results)
-			this.updateUserLocation(results)
-			return results
-		},
-		async getUserPlaceName(location: IUserLocation) {
-			const { place_name } = await $fetch(`/api/geolocation/reverse/${location.longitude},${location.latitude}`);
-			location.place_name = place_name;
 
-			return (location satisfies IUserLocation) && location;
+			const location = await results()
+
+			if (location.place_name !== ''){
+				this.setUserLocation(location)
+				this.updateUserLocation(location)
+			}
+
+			return location
 		},
 		async getMapboxSearchResponse(query: string) {
 			if (query === '' || query === null || query.length < 1) {
@@ -86,13 +82,10 @@ export const locationStore = defineStore(
 		async useNavigatorGeolocation() {
 			const onError = async (error: GeolocationPositionError) => {
 				this.GeolocationAPI = {
-					isError: true,
-					error: {
-						message: (error.code === 2) ? 'User position unavailable' : error.message,
-						code: error.code,
-						name: (error.code === 3) ? 'TIMEOUT' : (error.code === 2) ? 'POSITION_UNAVAILABLE' : 'PERMISSION_DENIED',
-					},
-				};
+					name: (error.code === 3) ? 'TIMEOUT' : (error.code === 2) ? 'POSITION_UNAVAILABLE' : 'PERMISSION_DENIED',
+					code: error.code,
+					message: (error.code === 2) ? 'User position unavailable' : error.message
+				}
 
 				return error.message;
 			};

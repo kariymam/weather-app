@@ -2,21 +2,23 @@
 import type { openmeteo, WeatherDescriptions } from '~/types';
 import '../../styles/temperatures.css';
 import { attachObservers } from '~/utils';
-import { format } from 'date-fns'
-import { UTCDate } from "@date-fns/utc";
+import { formatISO9075, format } from "date-fns";
 
-const { daily, descriptions, status } = defineProps<{
+const { daily, descriptions } = defineProps<{
 	daily: openmeteo["daily"];
 	descriptions: WeatherDescriptions[];
-	status:  "idle" | "pending" | "success" | "error";
+	// status:  "idle" | "pending" | "success" | "error";
 }>();
 
-// ---- Device detection
+//  Date
+const date = (time: string) => ref(formatISO9075(new Date(time).setUTCHours(12, 0, 0, 0)))
+
+//  Device detection
 const device = useDevice()
 const cardWidth = '248px';
 const full = ref(device.isMobile || device.isTablet ? 'full' : ' ')
 
-// ---- Scroll indicator
+//  Scroll indicator
 const target = useTemplateRef('observerRef');
 const firstElemObserverEntry: Ref<IntersectionObserverEntry | null> = ref(null);
 const lastElemObserverEntry: Ref<IntersectionObserverEntry | null> = ref(null);
@@ -52,8 +54,6 @@ onMounted(() => {
 	}
 })
 
-// ----
-
 onUpdated(() => {
 	const elems = useGetElement(target.value as Element | Element[], [0, 6])
 	attachObservers(elems, [firstElemObserverEntry, lastElemObserverEntry])
@@ -63,34 +63,24 @@ onUpdated(() => {
 
 <template>
 	<div class="by7DayContainer">
-		<!-- {{ firstElemIsVisible }}{{ lastElemIsVisible }} -->
+		{{ firstElemIsVisible }}{{ lastElemIsVisible }}
 		<ul
 			id="periodsByDay"
 			ref="periodByDay"
 			:class="full + ' ' + [ firstElemIsVisible && !lastElemIsVisible ? 'scroll-indicator-right' : !firstElemIsVisible && lastElemIsVisible ? 'scroll-indicator-left' : '']"
 		>
-		<li 
-			v-for="(_) in Array.from({length: 7})"
-			class="day"
-			v-if="status !== 'success'"
-			>
-			<v-skeleton-loader 
-				type="card">
-			</v-skeleton-loader>
-		</li>
 		<li
 			v-for="({ time, weather_code, precipitation_probability_max, temperature_2m_max, temperature_2m_min }, idx) in daily"
-			v-if="status === 'success'"
 			:key="idx"
 			class="day"
 			ref="observerRef"
 		>
 				<WeatherDay>
 					<template #weekday>
-						{{ format(new UTCDate(time), 'eee') }}
+						{{ format(date(time).value, 'eee') }}
 					</template>
 					<template v-if="idx === 0 || idx === 6" #date>
-						{{ format(new UTCDate(time), 'MMM c') }}
+						{{ format(date(time).value, 'MMM dd') }}
 					</template>
 					<template #weather-code>
 						 <WeatherCode :code="weather_code" />

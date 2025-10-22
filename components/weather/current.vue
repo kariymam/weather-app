@@ -1,40 +1,29 @@
-<script lang="ts" setup>
-const { temperature, description, weather_code } = defineProps<{
-  temperature: number;
-  description: string;
-  weather_code: number;
-}>()
-
-</script>
-
 <template>
     <v-row class="currentTemperature">
-      <weather-code :code="weather_code" />
+      <div>
+        <slot name="image" />
+      </div>
       <h2>
-        {{ Math.ceil(temperature) }}
+        <slot name="temperature2m" :rounded="(temp: number) =>  Math.ceil(temp)">
+        </slot>
       </h2>
-      <small>
-        Feels like {{ Math.ceil(temperature) }}
-      </small>
     </v-row>
-    <v-expansion-panels>
-      <v-expansion-panel
-        title="Details"
-      >
-        <v-expansion-panel-text>
-            {{ description }}
-          </v-expansion-panel-text>
-      </v-expansion-panel>
-  </v-expansion-panels>
+    <h3>
+      Feels like 
+      <slot name="apparentTemperature" :rounded="(temp: number) =>  Math.ceil(temp)"/>
+    </h3>
+    <details>
+      <summary>More Information</summary>
+      <p>
+        <slot name="detailedForecast"/>
+      </p>
+    </details>
 </template>
 
 <style>
 
 .currentTemperature {
-  display: grid;
-  grid-template-columns: 100px auto 1fr;
-  align-items: center;
-  grid-gap: 0.75em;
+  display: flex;
 }
 
 .currentTemperature h2::after {
@@ -49,6 +38,7 @@ const { temperature, description, weather_code } = defineProps<{
 }
 
 .currentTemperature h2 {
+  display: flex;
   font-size: 4.35rem;
   position: relative;
 }

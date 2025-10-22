@@ -1,10 +1,8 @@
 export default defineNuxtRouteMiddleware(async () => {
     const {
-        getUserPlaceName,
-        createUserLocation,
         setUserLocation,
         updateUserLocation,
-    } = useLocationStore();
+    } = locationStore();
 
     // Get cookie
     const cookie = useCookie('location');
@@ -12,13 +10,7 @@ export default defineNuxtRouteMiddleware(async () => {
         const { data } = await useFetch('/api/cookie');
         if (cookie.value !== undefined && data.value) {
 
-            // Create a user location object from the cookie string value
-            const parsedCookie = createUserLocation(data.value.location);
-
-            // Update the location object with a place_name
-            const location = await getUserPlaceName(parsedCookie)
-
-            // Add the saved UserLocation to the Locations Map and set to User Location
+            const location = await $fetch(`/api/geolocation/reverse/${data.value.location}`);
             updateUserLocation(location)
             setUserLocation(location)
         }

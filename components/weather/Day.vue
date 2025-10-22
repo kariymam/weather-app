@@ -21,6 +21,7 @@ onMounted(() => {
 <template>
 		<v-col>
 			<article class="weatherDay" ref="observer">
+				{{ isIntersecting }}
 				<h1>
 					<slot
 						name="weekday"
@@ -88,6 +89,12 @@ onMounted(() => {
 		flex: 1 1 50%;
 	}
 
+}
+
+article.weatherDay {
+	h1 {
+		font-size: 1rem;
+	}
 }
 
 @media screen and (width >= 900px) {

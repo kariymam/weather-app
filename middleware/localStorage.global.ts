@@ -3,7 +3,7 @@ import { type IUserLocation } from "~/validators";
 export default defineNuxtRouteMiddleware(async (to) => {
     const {
         Locations,
-    } = await useLocationStore();
+    } = useLocationStore();
 
     const getLocalStorage = () => window.localStorage.getItem("search")
     const setLocalStorage = (val: { place_name: string, location: IUserLocation }[]) => window.localStorage.setItem("search", JSON.stringify(val))
@@ -42,5 +42,5 @@ export default defineNuxtRouteMiddleware(async (to) => {
             }
         }
         browserHasSupport()
-    }
+    } 
 })

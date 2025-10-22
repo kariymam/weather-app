@@ -1,6 +1,7 @@
 import { fetchWeatherApi } from 'openmeteo';
 import { openmeteo, openmeteoDay, openmeteoPeriod, WeatherDescriptions, WeatherGovAlert, weathergovPeriods } from '~/types';
 import { WEATHERGOV_HEADER, BASE_URL } from '~/constants';
+import { format, isSameDay, addDays } from 'date-fns';
 
 const getWeathergovRes = async (base_url: string, params?: URLSearchParams, header = WEATHERGOV_HEADER) => {
 	return await fetch((params ? base_url + params.toString() : base_url), header).then(r => r.json()).catch((error) => {
@@ -10,6 +11,10 @@ const getWeathergovRes = async (base_url: string, params?: URLSearchParams, head
 }
 
 async function fetchOpenMeteo(currentTime: Date, lat: string, long: string, zone: string) {
+
+	const today = new Date(currentTime.setHours(0,0,0,0));
+	const dayIn7 = addDays(today, 6);
+
 	const params = {
 		latitude: lat,
 		longitude: long,
@@ -42,6 +47,8 @@ async function fetchOpenMeteo(currentTime: Date, lat: string, long: string, zone
 		wind_speed_unit: 'mph',
 		temperature_unit: 'fahrenheit',
 		models: "gfs_seamless",
+		start_date: format(today, 'yyyy-MM-dd'),
+		end_date: format(dayIn7, 'yyyy-MM-dd'),
 	};
 	const [response] = await fetchWeatherApi(BASE_URL.OPENMETEO, params);
 	const utcOffsetSeconds = response.utcOffsetSeconds();
@@ -49,13 +56,9 @@ async function fetchOpenMeteo(currentTime: Date, lat: string, long: string, zone
 	const hourly = response.hourly()!;
 	const daily = response.daily()!;
 
-	const convertToLocalFromHourly = (i: number): string => new Date((Number(hourly.time()) + i * hourly.interval() + utcOffsetSeconds) * 1000).toISOString()
-
-	const convertToLocalFromDaily = (i: number): string => new Date((Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) * 1000).toISOString()
-
 	/** Hourly forecast */
-	const periodsByHour: openmeteoPeriod[] = Array.from({ length: (Number(hourly.timeEnd()) - Number(hourly.time())) / hourly.interval() }, (_, i) => ({
-		time: convertToLocalFromHourly(i),
+	const hourlyArr = [...Array.from({ length: ((Number(hourly.timeEnd()) - Number(hourly.time())) / hourly.interval()) }, (_, i) => ({
+		time: new Date((Number(hourly.time()) + i * hourly.interval() + utcOffsetSeconds) * 1000).toISOString(),
 		temperature2m: hourly.variables(0)!.valuesArray()![i],
 		apparentTemperature: hourly.variables(1)!.valuesArray()![i],
 		precipitationProbability: hourly.variables(2)!.valuesArray()![i],
@@ -63,28 +66,19 @@ async function fetchOpenMeteo(currentTime: Date, lat: string, long: string, zone
 		rain: hourly.variables(4)!.valuesArray()![i],
 		snowfall: hourly.variables(5)!.valuesArray()![i],
 		weather_code: hourly.variables(6)!.valuesArray()![i]
-	}));
+	}))].filter(({ time }) => isSameDay(today, time))
 
 	/** Daily forecast */
-	const periodsByDay: openmeteoDay[] = [
-		...Array((Number(daily.timeEnd()) - Number(daily.time())) / daily.interval())
-	].map(
-			(_, i) => new Date((Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) * 1000))
-			.map(
-				(_, i) => {
-
-			return {
-				time: convertToLocalFromDaily(i),
-				temperature_2m_max: daily.variables(0)!.valuesArray()![i],
-				apparent_temperature_max: daily.variables(1)!.valuesArray()![i],
-				temperature_2m_min: daily.variables(2)!.valuesArray()![i],
-				apparent_temperature_min: daily.variables(3)!.valuesArray()![i],
-				precipitation_probability_max: daily.variables(4)!.valuesArray()![i],
-				precipitation_hours: daily.variables(5)!.valuesArray()![i],
-				weather_code: daily.variables(6)!.valuesArray()![i],
-			};
-		},
-	);
+	const dailyArr = Array.from({ length: ((Number(daily.timeEnd()) - Number(daily.time())) / daily.interval()) }, (_, i) => ({
+		time: new Date((Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) * 1000).toISOString(),
+		temperature_2m_max: daily.variables(0)!.valuesArray()![i],
+		apparent_temperature_max: daily.variables(1)!.valuesArray()![i],
+		temperature_2m_min: daily.variables(2)!.valuesArray()![i],
+		apparent_temperature_min: daily.variables(3)!.valuesArray()![i],
+		precipitation_probability_max: daily.variables(4)!.valuesArray()![i],
+		precipitation_hours: daily.variables(5)!.valuesArray()![i],
+		weather_code: daily.variables(6)!.valuesArray()![i],
+	}))
 
 	return {
 		current: {
@@ -95,8 +89,8 @@ async function fetchOpenMeteo(currentTime: Date, lat: string, long: string, zone
 			apparentTemperature: current.variables(3)!.value(),
 			weather_code: current.variables(4)!.value(),
 		},
-		periods: periodsByHour,
-		daily: periodsByDay,
+		periods: hourlyArr,
+		daily: dailyArr,
 	} as openmeteo;
 }
 

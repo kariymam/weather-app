@@ -2,7 +2,6 @@ export const useLocationStore = () => {
 
 	const {
 		createUserLocation,
-		getUserPlaceName,
 		setUserLocation,
 		updateUserLocation,
 		handleLocationPermissionsBtn,
@@ -13,6 +12,7 @@ export const useLocationStore = () => {
 	const {
 		UserLocation,
 		Locations,
+		getCoordinates,
 		GeolocationAPI,
 		getLocationHistory
 	} = storeToRefs(locationStore());
@@ -22,11 +22,11 @@ export const useLocationStore = () => {
 		Locations,
 		GeolocationAPI,
 		getLocationHistory,
+		getCoordinates,
 		updateUserLocation,
 		handleLocationPermissionsBtn,
 		handleSearchSelect,
 		createUserLocation,
-		getUserPlaceName,
 		setUserLocation,
 		getMapboxSearchResponse,
 	};

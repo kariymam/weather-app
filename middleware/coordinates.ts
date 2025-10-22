@@ -1,17 +1,11 @@
-import type { IUserLocation } from "~/validators";
-
-export default defineNuxtRouteMiddleware(async (to, from) => {
+export default defineNuxtRouteMiddleware(async (to) => {
     const {
         UserLocation,
-        getUserPlaceName,
-        createUserLocation,
     } = useLocationStore();
 
-    const currentLocation = async (location: IUserLocation) => {
-        location = await getUserPlaceName(location)
-        return location
-    }
+    const response = await $fetch(`/api/geolocation/reverse/${to.params.coordinates}`);
 
-    const location = await currentLocation(createUserLocation(to.params.coordinates))
-    UserLocation.value = location
+    if (response.place_name) {
+        UserLocation.value = response
+    }
 })

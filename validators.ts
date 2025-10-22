@@ -1,4 +1,3 @@
-// 
 // Latitude must be in range of -90 to 90°
 export interface IUserLocation {
   place_name: string;
@@ -43,7 +42,6 @@ export function UserLocation(input: unknown): IUserLocation {
 
     if (typeof input === 'string') {
         validate(input);
-
         input = Array.from([...String(input).split(',')]).map(val => parseFloat(val))
     } 
         
@@ -62,7 +60,7 @@ export function UserLocation(input: unknown): IUserLocation {
             coordinates: [latitude, longitude],
             latitude,
             longitude
-    } as IUserLocation;
+    };
 
 }
 
