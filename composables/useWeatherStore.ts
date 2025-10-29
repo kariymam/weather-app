@@ -1,47 +1,33 @@
-export const useWeatherStore = async () => {
-
-  const {
-    UserLocation
-  } = useLocationStore()
+export const useWeatherStore = () => {
 
   const {
     updateOpenmeteoRes,
     updateWeatherGovAlerts,
     updateWeatherGovDescriptions,
+    updateImages,
   } = weatherStore();
 
   const {
+    images,
     current,
     daily,
     periods,
     openmeteo,
     weatherGov_alerts,
     weatherGov_descriptions,
+    currentDescription,
   } = storeToRefs(weatherStore())
 
-  // Initial load
-  const coordinates = computed(() => UserLocation.value.coordinates.join(','))
-  const { data } = await useFetch(
-    '/api/weather/', { 
-      query: { location: coordinates.value },
-      lazy: true
-    }
-  )
-
-  const weather = data.value as WeatherState
-  if (weather){
-    updateOpenmeteoRes(weather["openmeteo"])
-    updateWeatherGovAlerts(weather["weatherGov_alerts"])
-    updateWeatherGovDescriptions(weather["weatherGov_descriptions"])
-  }
-
   return {
-    openmeteo,
-    weatherGov_alerts,
-    weatherGov_descriptions,
     current,
     daily,
     periods,
+    openmeteo,
+    weatherGov_alerts,
+    weatherGov_descriptions,
+    currentDescription,
+    images,
+    updateImages,
     updateOpenmeteoRes,
     updateWeatherGovAlerts,
     updateWeatherGovDescriptions,

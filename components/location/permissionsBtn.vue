@@ -6,7 +6,7 @@ const { permissionsFunc } = defineProps<{
 </script>
 
 <template>
-	<v-btn
+	<button
 		prepend-icon="mdi-map-marker"
 		class="my-2"
 		size="small"
@@ -16,5 +16,5 @@ const { permissionsFunc } = defineProps<{
 		}"
 	>
 		Allow access to current location
-	</v-btn>
+	</button>
 </template>

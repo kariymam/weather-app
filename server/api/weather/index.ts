@@ -1,5 +1,7 @@
 import { openmeteo, WeatherDescriptions, WeatherGovAlert } from '~/types.js';
 import weatherRequest from '../../routes/weatherRequest.js';
+import { weatherStore } from '~/stores/weather.js';
+import weatherCodes from '../weather/codes/descriptions.json' assert {type: 'json'}
 
 export default defineEventHandler(async (event) => {
 	const { location } = getQuery(event)
@@ -41,8 +43,28 @@ export default defineEventHandler(async (event) => {
 			})
 		) as [openmeteo, WeatherGovAlert[] | [], WeatherDescriptions[]]
 
+		// const { data } = await $fetch(() => `/api/weather/codes/${code}`)
+
+		const images = openmeteo.daily.map(({ weather_code }) => {
+			const code = weatherCodes[String(weather_code) as keyof typeof weatherCodes]
+			return code
+		})
+
+
+		const {
+			updateOpenmeteoRes,
+			updateWeatherGovAlerts,
+			updateWeatherGovDescriptions,
+			updateImages,
+		} = weatherStore();
+		
+		updateImages(images)
+		updateOpenmeteoRes(openmeteo)
+		updateWeatherGovAlerts(weatherGov_alerts)
+		updateWeatherGovDescriptions(weatherGov_descriptions)
+
 		return {
-			coordinates,
+			images,
 			openmeteo, 
 			weatherGov_alerts, 
 			weatherGov_descriptions

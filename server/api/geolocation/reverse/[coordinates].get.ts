@@ -1,7 +1,12 @@
+import { locationStore } from '~/stores/location';
 import type { MapboxResponse } from '~/types';
 import { UserLocation } from '~/validators';
 
 export default defineEventHandler(async (event) => {
+	const {
+        updateUserLocation,
+    } = locationStore();
+
 	const config = useRuntimeConfig(event);
 	const { coordinates } = getRouterParams(event);
 	const location = UserLocation(coordinates)
@@ -11,6 +16,7 @@ export default defineEventHandler(async (event) => {
 	 if (features.length){
         const [results] = features
         location.place_name = results.place_name
+		updateUserLocation(location, location.place_name)
     }
 
 	return location

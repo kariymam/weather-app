@@ -7,5 +7,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
     if (response.place_name) {
         UserLocation.value = response
+        // Locations.value = new Map([...Locations.value, [response.place_name, response]])
     }
+
 })

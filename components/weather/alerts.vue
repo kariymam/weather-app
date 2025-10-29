@@ -18,15 +18,13 @@ for (const alert of alerts) {
 </script>
 
 <template>
-	<v-banner 
+	<div
 		v-for="text in headlines"
 		lines="one" 
 		:stacked="false">
-		<v-banner-text>
+		<p>
 			{{  text  }}
-		</v-banner-text>
-		<template v-slot:actions>
-			<v-btn>Dismiss</v-btn>
-		</template>
-	</v-banner>
+		</p>
+		<button>Dismiss</button>
+	</div>
 </template>

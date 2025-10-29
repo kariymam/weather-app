@@ -1,0 +1,71 @@
+/*
+globals
+*/
+
+.flex-md-row {
+    display: flex;
+    gap: 12px;
+}
+
+
+.flex-sm-row {
+    display: flex;
+    gap: 8px;
+}
+
+
+/* 
+app-header
+*/
+
+/* 
+app-navbar
+*/
+
+
+
+nav#main-navigation {
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0 32px;
+
+    h1 {
+        font-size: var(--font-size-6);
+    }
+
+    > div[data-navbar="page-title"]{
+        flex: 1 3 max-content;
+    }
+    > div[data-navbar="actions"]{
+        flex: 0 1 auto;
+    }
+    > hr {
+        flex: 1 0 100%;
+        margin: 0;
+    }
+}
+
+@media screen and (width >= 900px) {
+    nav#main-navigation{
+        > *:not(hr) {
+        height: var(--size-fluid-5);
+        display: flex;
+            > * {
+                margin: auto 0;
+            }
+        }
+    }
+}
+
+/* 
+weather-day
+*/
+
+.day__card {
+  box-shadow: var(--shadow-1);
+  border: var(--border-size-1) solid var(--gray-1);
+
+  &:hover {
+    box-shadow: var(--shadow-3);
+  }
+}

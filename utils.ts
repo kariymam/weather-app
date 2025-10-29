@@ -1,4 +1,4 @@
-// import { isSameDay, isThisHour } from 'date-fns';
+import A11yDialog from 'a11y-dialog'
 
 // export function filterTodayPeriods(periods: unknown[], prop: string) {
 // 	const filtered = () => periods?.filter(p => isSameDay(new Date(), p[prop]));
@@ -6,6 +6,11 @@
 
 // 	return filtered().slice(timeIdx);
 // }
+
+export const useA11YDialog = (el: HTMLElement) => {
+	const dialog = new A11yDialog(el)
+	return dialog
+}
 
 export const weatherIconsList = [
 	{

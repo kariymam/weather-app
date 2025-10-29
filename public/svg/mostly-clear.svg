@@ -1,0 +1,76 @@
+<svg ref="svgEl" width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" id="screenshot-1d86f8db-5cd3-806c-8006-ffd68e348060">
+  <defs>
+
+    <linearGradient id="fill-color-gradient-render-5780-0" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0.45" stop-color="#6cabf2" stop-opacity="1" />
+      <stop offset="0.67" stop-color="#a5b8d6ff" stop-opacity="0.78" />
+      <stop offset="0.77" stop-color="#b4cbffff" stop-opacity="0.51" />
+      <stop offset="1" stop-color="#f9f4c9ff" stop-opacity="0.51" />
+    </linearGradient>
+
+    <radialGradient id="fill-color-gradient-render-5781-0" cx="0.5" cy="0.5" r="0.5" gradientTransform="matrix(-1,0,0,-1,1,1)">
+      <stop offset="0.42" stop-color="#fff" stop-opacity="1" />
+      <stop offset="0.73" stop-color="#ffe600" stop-opacity="0.26" />
+      <stop offset="0.91" stop-color="#ffe600" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="fill-color-gradient-render-5782-0" cx="0.5" cy="0.5" r="0.5" gradientTransform="matrix(-1,0,0,-1,1,1)">
+      <stop offset="0.38" stop-color="#fff" stop-opacity="1" />
+      <stop offset="0.58" stop-color="#fff" stop-opacity="0.618" />
+      <stop offset="0.73" stop-color="#fff" stop-opacity="0.26" />
+      <stop offset="0.91" stop-color="#fff" stop-opacity="0" />
+    </radialGradient>
+
+    <filter id="filter-render-5782" x="-0.038" y="-0.038" width="1.075" height="1.075" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+      <feGaussianBlur stdDeviation="2" />
+    </filter>
+
+    <filter id="filter-render-5783" x="-0.04" y="-0.571" width="1.08" height="2.143" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+      <feGaussianBlur stdDeviation="4" />
+    </filter>
+
+    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" />
+    </filter>
+    <filter id="blur-2" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" />
+    </filter>
+    <filter id="distort" x="-50%" y="-50%" width="200%" height="200%">
+      <feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="8" seed="7" result="turbulence" />
+      <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="150" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+    <filter id='marble' x='0%' y='0%' width='100%' height='100%'>
+      <feTurbulence baseFrequency="0.008" />
+      <feColorMatrix type="matrix" values=
+              "1 1 1 0 0
+              1 1 1 0 0
+              1 1 1 0 1
+              0 1 0 0 0 "/>
+    
+    </filter>
+  </defs>
+  
+  <rect x="0" width="100%" height="100%" fill="url(#fill-color-gradient-render-5780-0)" />
+
+  <ellipse cx="10" cy="10" rx="20" ry="20" fill="url(#fill-color-gradient-render-5782-0)" fill-opacity="0.5" />
+  <ellipse cx="35" cy="35" rx="53" ry="53" fill="url(#fill-color-gradient-render-5781-0)" fill-opacity="0.5" />
+
+  <clipPath id="clip">
+    <ellipse cx="110%" cy="90%" rx="200" ry="40" fill="#000000e6" filter="url(#blur-2)" />
+  </clipPath>
+
+  <g class="cloud" filter="url(#distort)">
+    <ellipse cx="110%" cy="90%" rx="300" ry="60" fill="#eeeeeee6" filter="url(#blur)" />
+    <ellipse cx="110%" cy="90%" rx="300" ry="50" fill="#ffffffdd" filter="url(#blur)" />
+  </g>
+  <g class="cloud" filter="url(#distort)">
+    <g filter="url(#blur)">
+      <ellipse cx="110%" cy="90%" rx="275" ry="40" fill="#eeeeeeb3" filter="url(#marble)" clip-path="url(#clip)" />
+    </g>
+  </g>
+
+</svg>

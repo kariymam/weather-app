@@ -1,11 +1,17 @@
 import { defineStore } from 'pinia';
-import type { MapboxResponseFeature, NavigatorGeolocationError } from '~/types';
+import type { MapboxResponseFeature } from '~/types';
 import { UserLocation, type IUserLocation } from '~/validators';
 
 export interface LocationState {
 	UserLocation: IUserLocation;
 	GeolocationAPI: NavigatorGeolocationError;
 	Locations:  Map<string, IUserLocation>;
+}
+
+export interface NavigatorGeolocationError {
+	name: string;
+	code: number;
+	message: string;
 }
 
 export const locationStore = defineStore(

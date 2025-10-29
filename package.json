@@ -14,17 +14,20 @@
     "@date-fns/utc": "^2.1.1",
     "@nuxt/eslint": "^1.4.1",
     "@nuxt/eslint-config": "^1.4.1",
+    "@nuxt/image": "^1.11.0",
     "@nuxtjs/device": "^3.2.4",
     "@pinia/nuxt": "^0.11.1",
-    "@vueuse/core": "^13.5.0",
+    "@vueuse/core": "^13.9.0",
+    "a11y-dialog": "^8.1.4",
     "date-fns": "^4.1.0",
+    "gsap": "^3.13.0",
     "npm": "^11.4.2",
     "nuxt": "^3.17.5",
+    "nuxt-svgo": "^4.2.6",
     "openmeteo": "^1.2.0",
     "pinia": "^3.0.3",
     "vue": "^3.5.16",
-    "vue-router": "^4.5.1",
-    "vuetify-nuxt-module": "^0.16.1"
+    "vue-router": "^4.5.1"
   },
   "devDependencies": {
     "typescript": "^5.8.3"

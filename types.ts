@@ -1,29 +1,3 @@
-export interface NavigatorGeolocationError {
-	name: string;
-	code: number;
-	message: string;
-}
-
-export type weathergovPeriods = {
-  number: number,
-  name: string,
-  startTime: string,
-  endTime: string,
-  isDaytime: boolean,
-  temperature: number,
-  temperatureUnit: string,
-  temperatureTrend?: string,
-  probabilityOfPrecipitation: {
-    unitCode: string,
-    value: number
-  }
-  windSpeed: string,
-  windDirection: string,
-  icon: string,
-  shortForecast: string,
-  detailedForecast: string,
-}
-
 export type WeatherDescriptions = {
 	icon: string[];
 	cldURL: string;
@@ -66,37 +40,6 @@ export type MapboxResponse = {
 	attribution: 'NOTICE: © 2025 Mapbox and its suppliers. All rights reserved. Use of this data is subject to the Mapbox Terms of Service (https://www.mapbox.com/about/maps/). This response and the information it contains may not be retained.';
 };
 
-export type WeatherApiResponse = {
-	coordinates: string;
-	current: openmeteo['current'];
-	periods: openmeteo['periods'];
-	daily: openmeteo['daily'];
-	alerts: [] | WeatherGovAlert[];
-	descriptions: WeatherDescriptions[];
-};
-
-export type openmeteoPeriod = {
-	time: string;
-	temperature2m: number;
-	apparentTemperature: number;
-	precipitationProbability: number;
-	showers: number;
-	rain: number;
-	snowfall: number;
-	weather_code: number;
-}
-
-export type openmeteoDay = {
-	time: string;
-	weather_code: number;
-	temperature_2m_max: number;
-	apparent_temperature_max: number;
-	temperature_2m_min: number;
-	apparent_temperature_min: number;
-	precipitation_probability_max: number;
-	precipitation_hours: number;
-}
-
 export type openmeteo = {
 	current: {
 		time: string;
@@ -109,6 +52,29 @@ export type openmeteo = {
 	periods: openmeteoPeriod[];
 	daily: openmeteoDay[];
 };
+
+export type openmeteoDay = {
+	time: string;
+	weather_code: number;
+	temperature_2m_max: number;
+	apparent_temperature_max: number;
+	temperature_2m_min: number;
+	apparent_temperature_min: number;
+	precipitation_probability_max: number;
+	precipitation_hours: number;
+}
+
+export type openmeteoPeriod = {
+	time: string;
+	temperature2m: number;
+	apparentTemperature: number;
+	precipitationProbability: number;
+	showers: number;
+	rain: number;
+	snowfall: number;
+	weather_code: number;
+}
+
 
 export interface WeatherGovAlert {
 	'@id': string;

@@ -1,7 +1,27 @@
 import { fetchWeatherApi } from 'openmeteo';
-import { openmeteo, openmeteoDay, openmeteoPeriod, WeatherDescriptions, WeatherGovAlert, weathergovPeriods } from '~/types';
+import { openmeteo, WeatherDescriptions, WeatherGovAlert } from '~/types';
 import { WEATHERGOV_HEADER, BASE_URL } from '~/constants';
 import { format, isSameDay, addDays } from 'date-fns';
+
+type weathergovPeriods = {
+  number: number,
+  name: string,
+  startTime: string,
+  endTime: string,
+  isDaytime: boolean,
+  temperature: number,
+  temperatureUnit: string,
+  temperatureTrend?: string,
+  probabilityOfPrecipitation: {
+    unitCode: string,
+    value: number
+  }
+  windSpeed: string,
+  windDirection: string,
+  icon: string,
+  shortForecast: string,
+  detailedForecast: string,
+}
 
 const getWeathergovRes = async (base_url: string, params?: URLSearchParams, header = WEATHERGOV_HEADER) => {
 	return await fetch((params ? base_url + params.toString() : base_url), header).then(r => r.json()).catch((error) => {

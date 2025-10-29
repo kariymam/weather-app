@@ -20,5 +20,12 @@
     --bg-blue-200: rgb(0, 30, 47);
     --bg-blue-100: rgb(0, 68, 84);
     --bg-blue-0: var(--blue);
+    --sky-background: linear-gradient(
+        to bottom,
+        #6cabf2 45%,
+        #a5b8d6ff 67%,
+        #b4cbffff 77%,
+        #f9f4c9ff 100%
+        );
 
 }

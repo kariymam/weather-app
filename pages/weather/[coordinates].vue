@@ -1,97 +1,100 @@
 <script setup lang="ts">
+import '~/assets/css/weather.css'
+
 definePageMeta({
-	middleware: 'coordinates',
+	middleware: ['coordinates'],
 	layout: 'weather-base',
 })
 
-const {
-	getCoordinates
-} = useLocationStore()
+const route = useRoute()
+const coordinates = computed(() => route.params.coordinates)
+
+const { data, status, refresh } = await useFetch(`/api/weather/`, {
+	query: { location: coordinates.value },
+	lazy: true,
+	watch: [coordinates]
+}); 
 
 const {
-	weatherGov_alerts,
-	weatherGov_descriptions,
 	current,
+	weatherGov_alerts,
+	images,
 	daily,
+	weatherGov_descriptions,
+	currentDescription,
 	updateOpenmeteoRes,
 	updateWeatherGovAlerts,
 	updateWeatherGovDescriptions,
-} = await useWeatherStore();
+	updateImages,
+} = useWeatherStore()
 
-// Initial load
-const { data, status } = await useFetch(
-	'/api/weather/', {
-		query: { location: getCoordinates.value },
-		lazy: true
-	}
-)
- onMounted(() => {
-	const weather = data.value
-	if (weather) {
-		updateOpenmeteoRes(weather["openmeteo"])
-		updateWeatherGovAlerts(weather["weatherGov_alerts"])
-		updateWeatherGovDescriptions(weather["weatherGov_descriptions"])
-	}
- })
-
-// Handle updates
-watch(() => data.value, (newData, oldData) => {
-	if (newData && newData !== oldData) {
-		const weather = newData as WeatherState
-		updateOpenmeteoRes(weather["openmeteo"])
-		updateWeatherGovAlerts(weather["weatherGov_alerts"])
-		updateWeatherGovDescriptions(weather["weatherGov_descriptions"])
+watch(() => data.value, (newData) => {
+	if (newData) {
+		updateImages(newData["images"])
+		updateOpenmeteoRes(newData["openmeteo"])
+		updateWeatherGovAlerts(newData["weatherGov_alerts"])
+		updateWeatherGovDescriptions(newData["weatherGov_descriptions"])
 	}
 })
+
+onMounted(async () => await refresh())
 
 </script>
 
 <template>
-	{{ status }}
-	<WeatherAlerts :alerts="weatherGov_alerts">
-	</WeatherAlerts>
-	<WeatherDashboard>
-		<template #one>
-			<header>
-				<h1>Right now...</h1>
-			</header>
-			<article>
-				<WeatherCurrent>
-					<template #image>
-						<weather-code :code="current?.weather_code" />
-					</template>
-					<template #temperature2m="{ rounded }">
-						{{ rounded(current?.apparentTemperature) }}
-					</template>
-					<template #apparentTemperature="{ rounded }">
-						{{ rounded(current?.apparentTemperature) }}
-					</template>
-					<template #detailedForecast>
-						{{ weatherGov_descriptions[0]['detailedForecast'] }}
-					</template>
-				</WeatherCurrent>
-			</article>
-		</template>
-		<template #two>
-			<header>
-				<h1>The week ahead</h1>
-			</header>
-			<article>
-				<WeatherBy7Day :daily="daily" :descriptions="weatherGov_descriptions">
-				</WeatherBy7Day>
-			</article>
-		</template>
-	</WeatherDashboard>
-		<div>
-			Video here
-		</div>
+	<div>
+		{{ status }}
+		<WeatherAlerts :alerts="weatherGov_alerts"></WeatherAlerts>
+		<WeatherDashboard>
+			<template #one>
+				<div class="background">
+					<!-- <WeatherBackgroundSVG/> -->
+				</div>
+				<header>
+					<h2>Right now...</h2>
+				</header>
+				<article>
+					<weather-current>
+						<template #image>
+							<NuxtImg :src="images[0].night.image" />
+						</template>
+						<template #temperature2m="{ rounded }">
+							{{ rounded(current.temperature2m) }}
+						</template>
+						<template #apparentTemperature="{ rounded }">
+							{{ rounded(current.apparentTemperature) }}
+						</template>
+						<template #detailedForecast>
+							{{ currentDescription }}
+						</template>
+					</weather-current>
+				</article>
+			</template>
+			<template #two>
+				<header>
+					<h2>The week ahead</h2>
+				</header>
+				<article>
+					<WeatherBy7Day :daily="daily" :images="images" :descriptions="weatherGov_descriptions">
+					</WeatherBy7Day>
+				</article>
+			</template>
+		</WeatherDashboard>
+	</div>
 </template>
+
 <style lang="css">
 .background {
 	position: absolute;
 	inset: 0;
+	object-fit: cover;
 	height: 100%;
 	width: 100%;
+	z-index: 0;
+}
+
+section:has(.background) *:not(.background) {
+	z-index: 1;
 }
 
 .background::before {
@@ -101,7 +104,6 @@ watch(() => data.value, (newData, oldData) => {
 	inline-size: 100%;
 	inset-block: 0;
 	position: absolute;
-	background: rgba(var(--v-theme-background), 0.5);
 }
 
 video {

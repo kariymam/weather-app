@@ -1,6 +1,4 @@
 <template>
-	<v-main>
-		<UiHeader />
-		<slot />
-	</v-main>
+	<app-header/>
+	<slot />
 </template>

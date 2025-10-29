@@ -2,62 +2,55 @@
 const { alerts } = defineProps<{
 	alerts?: { title: string; text: string }[] | null;
 }>();
-const theme = useTheme();
-const current = ref(theme.name.value === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night');
+// const theme = useTheme();
+// const current = ref(theme.name.value === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night');
 
-const toggleTheme = () => {
-	return theme.global.current.value.dark ? theme.change('light') : theme.change('dark');
-};
+// const toggleTheme = () => {
+// 	return theme.global.current.value.dark ? theme.change('light') : theme.change('dark');
+// };
 
 </script>
 
 <template>
 	<div v-if="$slots.alerts && alerts !== null">
-		<v-alert
+		<div
 			v-for="(alert, idx) in alerts"
 			:key="idx"
 			:text="alert.text.includes('null') ? '' : alert.text"
 			:title="alert.title"
 			type="warning"
-		/>
+		>
+			{{ alert  }}
+		</div>
 	</div>
 	<nav
 		id="main-navigation"
+		class="flex-md-row"
 	>
-			<v-col>
-				<v-row>
-					<h1>
-						<NuxtLink to="/">
-							<slot name="home" />
-						</NuxtLink>
-					</h1>
-					<v-divider vertical />
-					<h2>
-						<slot name="weather" />
-					</h2>
-				</v-row>
-			</v-col>
-			<v-col>
-				<v-row justify="end">
+			<div data-navbar="og-title">
+				<h1>
+					<NuxtLink to="/">
+						<slot name="home" />
+					</NuxtLink>
+				</h1>
+			</div>
+			<div data-navbar="page-title">
+				<h2>
+					<slot name="weather" />
+				</h2>
+			</div>
+			<div data-navbar="actions">
+				<div class="flex-sm-row">
 					<slot name="location-settings" />
-					<v-btn
+					<button>Toggle Theme</button>
+					<!-- <button
 						class="ml-2" 
 						variant="flat"
 						:icon="current"
 						@click="toggleTheme"
-					/>
-				</v-row>
-			</v-col>
+					/> -->
+				</div>
+			</div>
+			<hr aria-hidden="true"/>
 	</nav>
 </template>
-
-<style>
-	nav {
-		display: flex;
-		z-index: 1;
-		> div > div {
-			align-items: center;
-			gap: 0.5em;
-		}
-	}
-</style>

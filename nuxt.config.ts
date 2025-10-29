@@ -5,21 +5,27 @@ export default defineNuxtConfig({
 			// update Nuxt defaults
 			charset: 'utf-16',
 			viewport: 'width=device-width,user-scalable=no',
+			link: [
+				{ rel: 'stylesheet', href: 'https://unpkg.com/open-props' },
+				{ rel: 'stylesheet', href: "https://unpkg.com/open-props/normalize.min.css" }],
 		}
 	},
 	modules: [
 		'@nuxt/eslint',
-		'vuetify-nuxt-module',
-		['@pinia/nuxt', { autoImports: ['defineStore'] },
+		[
+			'@pinia/nuxt', { autoImports: ['defineStore'] },
 		],
-		'@nuxtjs/device'
+		'@nuxtjs/device',
+		'nuxt-svgo',
+		'@nuxt/image',
 	],
+	svgo: {
+		autoImportPath: 'public/svg',
+		defaultImport: 'component',
+	},
 	imports: {
 		dirs: ['store'],
 	},
-	css: [
-        '~/styles/global.css'
-      ],
 	devtools: { enabled: true },
 	runtimeConfig: {
 		mpbx: process.env.MAPBOX_API_KEY,
