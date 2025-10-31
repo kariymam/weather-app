@@ -1,6 +1,14 @@
+<script lang="ts" setup>
+const { UserLocation, getCoordinates } = useLocationStore()
+await useFetch(`/api/weather/`, {
+	query: { location: getCoordinates.value },
+}); 
+
+</script>
 <template>
 	<NuxtLayout>
-		<NuxtPage />
+		<app-header :location="UserLocation"/>
+		<NuxtPage :location="UserLocation" />
 	</NuxtLayout>
 </template>
 <style lang="css">
