@@ -3,12 +3,13 @@ export default defineNuxtConfig({
 	app: {
 		head: {
 			// update Nuxt defaults
+			title: 'Nuxt',
 			charset: 'utf-16',
 			viewport: 'width=device-width,user-scalable=no',
 			link: [
 				{ rel: 'stylesheet', href: 'https://unpkg.com/open-props' },
 				{ rel: 'stylesheet', href: "https://unpkg.com/open-props/normalize.min.css" }],
-		}
+		},
 	},
 	modules: [
 		'@nuxt/eslint',

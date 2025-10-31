@@ -34,6 +34,7 @@ const { alerts } = defineProps<{
 					</NuxtLink>
 				</h1>
 			</div>
+			<div class="vl"></div>
 			<div data-navbar="page-title">
 				<h2>
 					<slot name="weather" />
@@ -51,6 +52,6 @@ const { alerts } = defineProps<{
 					/> -->
 				</div>
 			</div>
-			<hr aria-hidden="true"/>
-	</nav>
+		</nav>
+		<hr aria-hidden="true"/>
 </template>

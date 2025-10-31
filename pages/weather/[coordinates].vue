@@ -1,39 +1,46 @@
 <script setup lang="ts">
 import '~/assets/css/weather.css'
+import type { IUserLocation } from '~/validators';
+const { 
+	location,
+} = defineProps<{
+	location: IUserLocation;
+}>();
+
+useHead({
+  title: `Weather | ${location.place_name.split(',')[0]}`,
+  meta: [
+    { name: 'Weather App', content: 'A weather app.' },
+  ],
+})
 
 definePageMeta({
 	middleware: ['coordinates'],
-	layout: 'weather-base',
 })
 
 const route = useRoute()
 const coordinates = computed(() => route.params.coordinates)
-
 const { data, status, refresh } = await useFetch(`/api/weather/`, {
 	query: { location: coordinates.value },
 	lazy: true,
 	watch: [coordinates]
 }); 
 
-const {
-	current,
-	weatherGov_alerts,
-	images,
-	daily,
-	weatherGov_descriptions,
-	currentDescription,
-	updateOpenmeteoRes,
-	updateWeatherGovAlerts,
-	updateWeatherGovDescriptions,
-	updateImages,
-} = useWeatherStore()
+  const {
+    images,
+    current,
+    daily,
+    weatherGov_alerts,
+    weatherGov_descriptions,
+    currentDescription,
+  } = storeToRefs(weatherStore())
 
 watch(() => data.value, (newData) => {
 	if (newData) {
-		updateImages(newData["images"])
-		updateOpenmeteoRes(newData["openmeteo"])
-		updateWeatherGovAlerts(newData["weatherGov_alerts"])
-		updateWeatherGovDescriptions(newData["weatherGov_descriptions"])
+		weatherStore().updateImages(newData["images"])
+		weatherStore().updateOpenmeteoRes(newData["openmeteo"])
+		weatherStore().updateWeatherGovAlerts(newData["weatherGov_alerts"])
+		weatherStore().updateWeatherGovDescriptions(newData["weatherGov_descriptions"])
 	}
 })
 
@@ -42,7 +49,6 @@ onMounted(async () => await refresh())
 </script>
 
 <template>
-	<div>
 		{{ status }}
 		<WeatherAlerts :alerts="weatherGov_alerts"></WeatherAlerts>
 		<WeatherDashboard>
@@ -50,37 +56,32 @@ onMounted(async () => await refresh())
 				<div class="background">
 					<!-- <WeatherBackgroundSVG/> -->
 				</div>
-				<header>
-					<h2>Right now...</h2>
-				</header>
-				<article>
+				<h2>Right now...</h2>
+				<div>
 					<weather-current>
 						<template #image>
-							<NuxtImg :src="images[0].night.image" />
+							<!-- <NuxtImg :src="images?[0]" /> -->
 						</template>
 						<template #temperature2m="{ rounded }">
-							{{ rounded(current.temperature2m) }}
+							{{ rounded(current?.temperature2m) }}
 						</template>
 						<template #apparentTemperature="{ rounded }">
-							{{ rounded(current.apparentTemperature) }}
+							{{ rounded(current?.apparentTemperature) }}
 						</template>
 						<template #detailedForecast>
 							{{ currentDescription }}
 						</template>
 					</weather-current>
-				</article>
+				</div>
 			</template>
 			<template #two>
-				<header>
-					<h2>The week ahead</h2>
-				</header>
-				<article>
+				<h2>The week ahead</h2>
+				<div>
 					<WeatherBy7Day :daily="daily" :images="images" :descriptions="weatherGov_descriptions">
 					</WeatherBy7Day>
-				</article>
+				</div>
 			</template>
 		</WeatherDashboard>
-	</div>
 </template>
 
 <style lang="css">

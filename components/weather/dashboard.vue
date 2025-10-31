@@ -1,5 +1,5 @@
 <template>
-  <div class="dashboard">
+  <div id="weather" class="dashboard">
 			<section class="dashboard__1">
 				<slot name="one"/>
 			</section>

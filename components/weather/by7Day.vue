@@ -74,7 +74,7 @@ onUpdated(() => {
 			class="day"
 			ref="observerRef"
 		>
-				<WeatherDay>
+				<WeatherDay :idx="idx" :date="format(date(time).value, 'yyyy-dd-MM')">
 					<template #weekday>
 						{{ format(date(time).value, 'eee') }}
 					</template>

@@ -111,12 +111,15 @@ watch(() => location, (newLocation) => {
 }
 
 .dialog__overlay {
-  background-color: rgb(43 46 56 / 0.9)
+  background-color: rgba(25, 25, 33, 0.9)
 }
 
 .dialog__content {
-	background-color: #fff;
 	display: flex;
     flex-flow: column;
+	background-color: var(--surface-1);
 }
+
+
+
 </style>

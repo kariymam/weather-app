@@ -1,13 +1,16 @@
 <script lang="ts" setup>
 definePageMeta({
-	layout: 'default',
+	middleware: 'cookie'
 })
-const {
-    UserLocation
-} = useLocationStore();
+import type { IUserLocation } from '~/validators';
+const { 
+	location,
+} = defineProps<{
+	location: IUserLocation;
+}>();
 
 </script>
 
 <template>
-		{{ UserLocation }}
+		{{ location }}
 </template>

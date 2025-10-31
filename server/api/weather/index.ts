@@ -49,19 +49,11 @@ export default defineEventHandler(async (event) => {
 			const code = weatherCodes[String(weather_code) as keyof typeof weatherCodes]
 			return code
 		})
-
-
-		const {
-			updateOpenmeteoRes,
-			updateWeatherGovAlerts,
-			updateWeatherGovDescriptions,
-			updateImages,
-		} = weatherStore();
 		
-		updateImages(images)
-		updateOpenmeteoRes(openmeteo)
-		updateWeatherGovAlerts(weatherGov_alerts)
-		updateWeatherGovDescriptions(weatherGov_descriptions)
+		weatherStore().updateImages(images)
+		weatherStore().updateOpenmeteoRes(openmeteo)
+		weatherStore().updateWeatherGovAlerts(weatherGov_alerts)
+		weatherStore().updateWeatherGovDescriptions(weatherGov_descriptions)
 
 		return {
 			images,

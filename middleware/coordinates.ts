@@ -1,13 +1,21 @@
-export default defineNuxtRouteMiddleware(async (to) => {
+
+
+export default defineNuxtRouteMiddleware(async (to, from) => {
     const {
-        UserLocation,
+        setUserLocation,
+        updateUserLocation,
     } = useLocationStore();
 
-    const response = await $fetch(`/api/geolocation/reverse/${to.params.coordinates}`);
+    if(import.meta.server && 
+        (to.name === 'weather-coordinates' || from.name !== 'weather')
+    ){
+        const location = await $fetch(`/api/geolocation/reverse/${to.params.coordinates}`);
+        updateUserLocation(location)
+        setUserLocation(location)
+    }
 
-    if (response.place_name) {
-        UserLocation.value = response
-        // Locations.value = new Map([...Locations.value, [response.place_name, response]])
+    if (import.meta.client) {
+        return
     }
 
 })

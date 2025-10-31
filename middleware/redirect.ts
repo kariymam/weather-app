@@ -1,8 +1,7 @@
 export default defineNuxtRouteMiddleware(() => {
     const {
-        UserLocation,
-    } = useLocationStore();
+        getCoordinates,
+    } = locationStore();
 
-    const coordinates = UserLocation.value.coordinates.join(',')
-    return navigateTo({ name: 'weather-coordinates', params: { coordinates } });
+    return navigateTo({ name: 'weather-coordinates', params: { coordinates: getCoordinates } });
 })

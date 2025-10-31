@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 definePageMeta({
-	layout: false,
 	middleware: 'redirect'
 })
 </script>
