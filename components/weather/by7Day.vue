@@ -71,7 +71,7 @@ onUpdated(() => {
 		<li
 			v-for="({ time, weather_code, precipitation_probability_max, temperature_2m_max, temperature_2m_min }, idx) in daily"
 			:key="idx"
-			class="day"
+			class="day partly-cloudy"
 			ref="observerRef"
 		>
 				<WeatherDay :idx="idx" :date="format(date(time).value, 'yyyy-dd-MM')">
@@ -82,7 +82,7 @@ onUpdated(() => {
 						({{ format(date(time).value, 'MMM dd') }})
 					</template>
 					<template #weather-code>
-						 <NuxtImg :src="images[idx].day.image" />
+						 <NuxtImg :src="images[idx].day.image" class="icon" />
 					</template>
 					<template #description>
 						<p>{{ descriptions && descriptions[idx]["shortForecast"] }}</p>

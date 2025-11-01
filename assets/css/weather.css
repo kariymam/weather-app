@@ -245,38 +245,50 @@ weather-day
 
 	display: grid;
 	grid-template-areas: 
-	"header header"
-	"temp  image"
+	"header image"
+	"temp  ."
 	".   rain "
 	;
 	grid-template-rows: auto 1fr auto;
   	grid-template-columns: 1fr auto;
 	grid-auto-flow: row;
-	padding: 1em;
+	padding: 0.5em 0.5em 1em 1em;
 	width: min(65vw, var(--size-13));
 	height: 100%;
 	position: relative;
 	aspect-ratio: 1 / 1;
 
-	img {
+	img.icon {
 		grid-area: image;
-		margin: auto;
-		background-color: var(--image-bg);
+		/* margin: auto; */
+		background-color: color-mix(var(--image-bg), transparent 10%);
+		backdrop-filter: blur(5px);
 		border-radius: var(--radius-round);
+		z-index: 1;
+	}
+
+	.day__bg {
+		display: inline-block;
+		width: 300px;
+		height: 200px;
+		/* spritesheet */
+		background-size: 1224px 1024px;
+		background-image: url("https://res.cloudinary.com/dvf7zwben/image/upload/v1762015584/Untitled_Artwork_kczbss.png");
+		background-repeat: no-repeat;
+		/** background-position classes further down, position is is based on weather_code */
 		position: absolute;
-		right: 0;
-		top: calc(var(--header-size) * -1);
+		pointer-events: none;
 	}
 
 	/* +++++++ Typography +++++++ */
 
+	p, h3 {
+		text-shadow: 1px 1px 20px rgba(0, 0, 0, 0.15);
+	}
+
 	h3 {
 		font-size: var(--labels);
 		font-weight: var(--font-weight-6);
-	}
-
-	h3, small, .day__description {
-		color: var(--text-2);
 	}
 
 	.day__description p {
@@ -323,6 +335,8 @@ weather-day
 
 .day__card {
 	height: 100%;
+	overflow: hidden;
+	color: white;
 }
 
 .day__description {
@@ -338,6 +352,7 @@ weather-day
 }
 
 .day__header {
+	display: inline-flex;
 	grid-area: header;
 	height: var(--header-size);
 	h3 {
@@ -368,3 +383,16 @@ weather-day
 	align-self: end;
     justify-self: end;
 }
+
+/* +++++++ Background Images +++++++ */
+
+.day.partly-cloudy {
+	.day__bg {
+		background-position: 20px 25px;
+	}
+	.day__card {
+		background: linear-gradient(rgba(0, 124, 165) 65%, #a5d0d6);
+	}
+}
+
+/* ^^^^^^^ Background Images ^^^^^^^ */

@@ -30,6 +30,7 @@ onMounted(() => {
 <template>
 	<div class="day__card card">
 		<article :id="id.article" ref="observer" :tabindex="idx + 1">
+			<div class="day__bg"></div>
 			<div class="day__header">
 				<h3>
 					<slot
@@ -46,7 +47,7 @@ onMounted(() => {
 				<slot name="precipitation" />
 			</span>
 			<slot name="weather-code" />
-			<div 
+			<div
 				class="day__description"
 				:class="{ full: !$slots.precipitation }"
 			>
