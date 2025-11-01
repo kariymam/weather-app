@@ -1,5 +1,12 @@
 #weather {
-	padding: 0 var(--size-3);
+	--margin-d1: 0;
+	--margin-d2: 0;
+	--border-width-d1: 0px;
+	--border-width-d2: 0px;
+	--border-r-d1: 0;
+	--border-r-d2: 0;
+	--padding: 0;
+	padding: var(--padding);
 }
 
 .background {
@@ -12,20 +19,30 @@
 }
 
 #weather section.dashboard__1 {
-	margin: 32px 0 32px 32px;
-	border-top: var(--border);
-	border-left: var(--border);
-	border-bottom: var(--border);
-	border-radius: var(--radius-4) 0 0 var(--radius-4);
+	margin: var(--margin-d1);
+	border: var(--border);
+	border-width: var(--border-width-d1);
+	border-radius: var(--border-r-d1);
 
 }
 
 #weather section.dashboard__2 {
-	margin: 32px 32px 32px 0;
-	border-top: var(--border);
-	border-right: var(--border);
-	border-bottom: var(--border);
-	border-radius: 0 var(--radius-4) var(--radius-4) 0;
+	margin: var(--margin-d2);
+	border: var(--border);
+	border-width: var(--border-width-d2);
+	border-radius: var(--border-r-d2);
+}
+
+@media screen and (width >= 900px) {
+	#weather {
+	--margin-d1: 32px 0 32px 32px;
+	--margin-d2: 32px 32px 32px 0;
+	--border-width-d1: var(--border-size-1) 0 var(--border-size-1) var(--border-size-1);
+	--border-width-d2: var(--border-size-1) var(--border-size-1) var(--border-size-1) 0;
+	--border-r-d1: var(--radius-4) 0 0 var(--radius-4);
+	--border-r-d2: 0 var(--radius-4) var(--radius-4) 0;
+	--padding: 0 var(--size-3);
+	}
 }
 
 section:has(.background) *:not(.background) {
@@ -168,6 +185,7 @@ weather-by7day
 	grid-template-columns: 0 1fr 0;
 	grid-template-rows: minmax(max-content, 1fr);
 	padding: 12px 0;
+	border-left: 0;
 	> * {
 		grid-column: 2 / -2;
 	}
@@ -194,11 +212,8 @@ weather-by7day
 	--scroll-shadow-right: no-repeat right/ 20% radial-gradient(circle at right, rgba(0, 0, 0, 0.2), transparent);
 
 	display: grid;
-	grid-gap: 10px;
 	grid-template: var(--grid);
-	column-gap: var(--column-gap);
-	row-gap: var(--row-gap);
-	padding: var(--row-gap) calc(var(--row-gap) * 2) 0.5rem var(--row-gap);
+	padding: var(--size-3) var(--size-6) var(--size-3) var(--size-6);
 	position: relative;
 	border-radius: var(--border-radius);
 	/* background: var(--scroll-shadow-left),
@@ -235,10 +250,10 @@ weather-day
 	".   rain "
 	;
 	grid-template-rows: auto 1fr auto;
-  	/* grid-template-columns: 1fr 1fr; */
+  	grid-template-columns: 1fr auto;
 	grid-auto-flow: row;
 	padding: 1em;
-	width: min(65vw, var(--size-14));
+	width: min(65vw, var(--size-13));
 	height: 100%;
 	position: relative;
 	aspect-ratio: 1 / 1;
